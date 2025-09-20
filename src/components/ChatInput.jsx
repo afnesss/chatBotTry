@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 
-const ChatInput = ({onSend}) => {
+const ChatInput = ({onSend, loading}) => {
   const [inputText, setText] = useState('');
 
   const clickSend = () => {
@@ -19,7 +19,7 @@ const ChatInput = ({onSend}) => {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {if (e.key === 'Enter') clickSend()}}
       />
-      <button onClick = {clickSend} className="hover:bg-green-700 shadow-md px-5 py-2 rounded-xl bg-green-600 text-white font-semibold mx-5">
+      <button disabled = {loading || !inputText.trim()} onClick = {clickSend} className={`hover:bg-green-700 shadow-md px-5 py-2 rounded-xl bg-green-600 text-white font-semibold mx-5 ${loading || !inputText.trim() ? "opacity-80 cursor-not-allowed" : "hover:bg-green-700"}`}>
         Send
       </button>
     </div>

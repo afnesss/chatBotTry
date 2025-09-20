@@ -14,18 +14,25 @@ function App() {
   // const [combinedResponse, setCombRes] = useState('default');
   const [loading, setLoading] = useState(false);
 
-  let combRes = 'default';
+  // let loading = 'default';
   // const [activeScroll, setActiveScroll] = useState(false);
 
   const handleSend = async (message) => {
   setMessages(prev => [...prev, { message, sender: "user" }]);
 
 
-  setLoading(true);
-  await fetchRes(message);
-  setMessages(prev => [...prev, { message: combRes, sender: "robot" }]);
+  
+  setMessages(prev => [...prev, {sender: "robot", loading: true}]);
+  const response = await fetchRes(message);
+  
+  setMessages(prev => {
+    const newMessages = [...prev];
+    newMessages[newMessages.length-1] = {sender: "robot", message: response, loading: false};
+    return newMessages;
+  });
 
   };
+
 
   useEffect(() => {
     const div = containerRef.current;
@@ -36,6 +43,7 @@ function App() {
   }, [messages]);
 
   const fetchRes = async (message) => {
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:11434/api/generate",{
         method: "POST",
@@ -48,7 +56,7 @@ function App() {
     })
 
     const data = await res.text();
-    combRes = data
+    return data
         .split("\n")
         .filter(line => line.trim())          // remove empty lines
         .map(line => JSON.parse(line).response) // parse each line
@@ -70,7 +78,7 @@ function App() {
         <div className="flex flex-col items-center mx-20 flex-1 overflow-y-auto">
         {toUp === true &&           
         <div className=' w-full mb-5'>
-              <ChatInput onSend={handleSend} />
+              <ChatInput onSend={handleSend} loading={loading} />
           </div>}
         <div className='px-5 py-7 w-full flex flex-col overflow-y-auto h-173 bg-gray-50 rounded-2xl' ref={containerRef}>
         {messages.length > 0 ? 
@@ -80,6 +88,7 @@ function App() {
             <Message key={index} 
             message={msg.message} 
             sender={msg.sender} 
+            loading={msg.loading}
             ref = {isLast? messagesRef : null}/>
           )
         }
@@ -87,11 +96,11 @@ function App() {
         ): 
         <div className={`text-gray-500 text-center w-full ${toUp || "mt-auto"}`}>Welcome to the chatbot project! Send a message using the textbox {toUp? "above": "below"}.</div>} 
 
-        {loading && (
+        {/* {loading && (
           <div className="flex justify-start mt-3">
             <ThreeDot variant="bounce" color="#6a8db0ff" size="small" text="" textColor="" />
           </div>
-        )}
+        )} */}
         </div>
         {toUp === false && (
           <div className='mt-auto w-full mb-5'>
@@ -101,7 +110,9 @@ function App() {
         )}
         
         </div>
-        <button onClick={() => setToUp(prev => !prev)} className='text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer'>Move textbox to {toUp? "bottom": "top"}</button>
+        <button 
+        onClick={() => setToUp(prev => !prev)} 
+        className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer">Move textbox to {toUp? "bottom": "top"}</button>
       </div>
     </section>
 
