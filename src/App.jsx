@@ -1,9 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import ChatInput from './components/ChatInput'
 import Message from './components/Message'
-import { ThreeDot } from 'react-loading-indicators'
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -13,22 +10,20 @@ function App() {
   const containerRef = useRef(null);
   // const [combinedResponse, setCombRes] = useState('default');
   const [loading, setLoading] = useState(false);
-
-  // let loading = 'default';
-  // const [activeScroll, setActiveScroll] = useState(false);
+  const [controller, setController] = useState(null);
 
   const handleSend = async (message) => {
-  setMessages(prev => [...prev, { message, sender: "user" }]);
-
-
-  
-  setMessages(prev => [...prev, {sender: "robot", loading: true}]);
-  const response = await fetchRes(message);
-  
-  setMessages(prev => {
-    const newMessages = [...prev];
-    newMessages[newMessages.length-1] = {sender: "robot", message: response, loading: false};
-    return newMessages;
+  setMessages(prev => [
+    ...prev,
+    { message, sender: "user" },
+    { sender: "robot", loading: true }
+  ]);
+    const response = await fetchRes(message);
+    
+    setMessages(prev => {
+      const newMessages = [...prev];
+      newMessages[newMessages.length-1] = {sender: "robot", message: response, loading: false};
+      return newMessages;
   });
 
   };
@@ -43,6 +38,8 @@ function App() {
   }, [messages]);
 
   const fetchRes = async (message) => {
+    const newController = new AbortController();
+    setController(newController);
     setLoading(true);
     try {
       const res = await fetch("http://localhost:11434/api/generate",{
@@ -51,8 +48,8 @@ function App() {
         body: JSON.stringify({
           model: "gemma:2b",
           prompt: message
-        }
-      )
+        }),
+        signal: newController.signal
     })
 
     const data = await res.text();
@@ -63,13 +60,14 @@ function App() {
         .join("");
     } catch (error) {
       console.log('error in fetching '+ error);
+      if(error.name === "AbortError"){
+        console.log("canceled fetch");
+      }
     } finally{
       setLoading(false);
+      setController(null);
     }
-
   }
-
-
 
   return (
     <>
@@ -78,7 +76,7 @@ function App() {
         <div className="flex flex-col items-center mx-20 flex-1 overflow-y-auto">
         {toUp === true &&           
         <div className=' w-full mb-5'>
-              <ChatInput onSend={handleSend} loading={loading} />
+              <ChatInput onSend={handleSend} loading={loading} controller={controller} />
           </div>}
         <div className='px-5 py-7 w-full flex flex-col overflow-y-auto h-173 bg-gray-50 rounded-2xl' ref={containerRef}>
         {messages.length > 0 ? 
@@ -96,17 +94,11 @@ function App() {
         ): 
         <div className={`text-gray-500 text-center w-full ${toUp || "mt-auto"}`}>Welcome to the chatbot project! Send a message using the textbox {toUp? "above": "below"}.</div>} 
 
-        {/* {loading && (
-          <div className="flex justify-start mt-3">
-            <ThreeDot variant="bounce" color="#6a8db0ff" size="small" text="" textColor="" />
-          </div>
-        )} */}
         </div>
         {toUp === false && (
           <div className='mt-auto w-full mb-5'>
-              <ChatInput onSend={handleSend} />
-          </div>
-              
+              <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
+          </div> 
         )}
         
         </div>
@@ -115,8 +107,6 @@ function App() {
         className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer">Move textbox to {toUp? "bottom": "top"}</button>
       </div>
     </section>
-
-      
     </>
   )
 }

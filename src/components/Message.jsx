@@ -18,7 +18,7 @@ const Message = forwardRef(({message, sender, loading}, ref) => {
             </div>
            
         ): 
-          <div className="px-4 py-2 bg-gray-200 text-start items-center rounded-xl shadow-md max-w-[70%] break-words">
+          <div className="px-4 py-2 bg-gray-200 text-start items-center rounded-xl shadow-md max-w-[60%] break-words">
             {message}
         </div>
         }
