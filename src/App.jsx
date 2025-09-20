@@ -7,15 +7,33 @@ import Message from './components/Message'
 function App() {
   // const [count, setCount] = useState(0)
   const [messages, setMessages] = useState([]);
-  const [toUp, setToUp] = useState(true);
+  const [toUp, setToUp] = useState(false);
   const messagesRef = useRef(null);
   const containerRef = useRef(null);
   // const [activeScroll, setActiveScroll] = useState(false);
 
-  const handleSend = (message) => {
+  const handleSend = async (message) => {
   setMessages(prev => [...prev, { message, sender: "user" }]);
 
-  setMessages(prev => [...prev, { message: "reply", sender: "robot" }]);
+  const res = await fetch("http://localhost:11434/api/generate",{
+    method: "POST",
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: "gemma:2b",
+      prompt: message
+    }
+    )
+  })
+
+  const data = await res.text();
+  const combinedResponse = data
+  .split("\n")
+  .filter(line => line.trim())          // remove empty lines
+  .map(line => JSON.parse(line).response) // parse each line
+  .join("");
+
+
+  setMessages(prev => [...prev, { message: combinedResponse, sender: "robot" }]);
 
   };
 
@@ -30,10 +48,13 @@ function App() {
   return (
     <>
     <section className="flex justify-center min-h-screen">
-      <div className="flex flex-col shadow-md container m-auto my-7 mx-10 bg-green-50 max-w-300 p-7 rounded-md">
+      <div className="flex flex-col shadow-md container m-auto my-7 mx-10 bg-green-100 max-w-300 p-7 rounded-md">
         <div className="flex flex-col items-center mx-20 flex-1 overflow-y-auto">
-        {toUp === true && <ChatInput onSend={handleSend}/>}
-        <div className='my-7 w-full flex flex-col overflow-y-auto h-150' ref={containerRef}>
+        {toUp === true &&           
+        <div className=' w-full mb-5'>
+              <ChatInput onSend={handleSend} />
+          </div>}
+        <div className='px-5 py-7 w-full flex flex-col overflow-y-auto h-173 bg-gray-50 rounded-2xl' ref={containerRef}>
         {messages.length > 0 ? 
         messages.map((msg, index) => {
           const isLast = index === messages.length - 1;
@@ -46,7 +67,7 @@ function App() {
         }
 
         ): 
-        <div className='text-gray-500 text-center w-full'>Welcome to the chatbot project! Send a message using the textbox {toUp? "above": "below"}.</div>} 
+        <div className={`text-gray-500 text-center w-full ${toUp || "mt-auto"}`}>Welcome to the chatbot project! Send a message using the textbox {toUp? "above": "below"}.</div>} 
 
         </div>
         {toUp === false && (
