@@ -1,40 +1,52 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import ChatInput from './components/ChatInput'
 import Message from './components/Message'
 
-// const clickSend = (text) => {
-//   return (
-//     <>
-//     <Message message={text} sender="user"/>
-//     </>
-//   )
-// }
-
 function App() {
   // const [count, setCount] = useState(0)
   const [messages, setMessages] = useState([]);
   const [toUp, setToUp] = useState(true);
+  const messagesRef = useRef(null);
+  const containerRef = useRef(null);
+  // const [activeScroll, setActiveScroll] = useState(false);
 
-    const handleSend = (message) => {
-    setMessages(prev => [...prev, { message, sender: "user" }]);
+  const handleSend = (message) => {
+  setMessages(prev => [...prev, { message, sender: "user" }]);
 
-    setMessages(prev => [...prev, { message: "reply", sender: "robot" }]);
+  setMessages(prev => [...prev, { message: "reply", sender: "robot" }]);
 
   };
+
+  useEffect(() => {
+    const div = containerRef.current;
+    if (div.scrollHeight > div.clientHeight) {
+       messagesRef.current?.scrollIntoView({behavior: "smooth"});
+    }
+
+  }, [messages]);
 
   return (
     <>
     <section className="flex justify-center min-h-screen">
-      <div className="flex flex-col shadow-md container m-auto my-7 mx-10 bg-green-50 max-w-300 p-10 rounded-md">
+      <div className="flex flex-col shadow-md container m-auto my-7 mx-10 bg-green-50 max-w-300 p-7 rounded-md">
         <div className="flex flex-col items-center mx-20 flex-1 overflow-y-auto">
         {toUp === true && <ChatInput onSend={handleSend}/>}
-        <div className='my-7 w-full flex flex-col justify-between '>
-          {/* <Message message="heeloo" sender="robot" />
-        <Message message="heeloo" sender="user" /> */}
-        {messages.map((msg, index) => (<Message key={index} message={msg.message} sender={msg.sender}/>)
-        )}
+        <div className='my-7 w-full flex flex-col overflow-y-auto h-150' ref={containerRef}>
+        {messages.length > 0 ? 
+        messages.map((msg, index) => {
+          const isLast = index === messages.length - 1;
+          return (
+            <Message key={index} 
+            message={msg.message} 
+            sender={msg.sender} 
+            ref = {isLast? messagesRef : null}/>
+          )
+        }
+
+        ): 
+        <div className='text-gray-500 text-center w-full'>Welcome to the chatbot project! Send a message using the textbox {toUp? "above": "below"}.</div>} 
 
         </div>
         {toUp === false && (

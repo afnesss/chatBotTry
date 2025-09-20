@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 
-
 const ChatInput = ({onSend}) => {
   const [inputText, setText] = useState('');
 
@@ -10,7 +9,6 @@ const ChatInput = ({onSend}) => {
     onSend(inputText);
     setText('');
   }
-
   return (
     <>
     <div className="flex flex-row w-full">
@@ -19,6 +17,7 @@ const ChatInput = ({onSend}) => {
         placeholder="Send a message to Chatbot"
         value={inputText}
         onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {if (e.key === 'Enter') clickSend()}}
       />
       <button onClick = {clickSend} className="hover:bg-green-700 shadow-md px-5 py-2 rounded-xl bg-green-600 text-white font-semibold mx-5">
         Send
