@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import ChatInput from './components/ChatInput'
 import Message from './components/Message'
+import { ThreeDot } from 'react-loading-indicators'
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -10,30 +11,19 @@ function App() {
   const [toUp, setToUp] = useState(false);
   const messagesRef = useRef(null);
   const containerRef = useRef(null);
+  // const [combinedResponse, setCombRes] = useState('default');
+  const [loading, setLoading] = useState(false);
+
+  let combRes = 'default';
   // const [activeScroll, setActiveScroll] = useState(false);
 
   const handleSend = async (message) => {
   setMessages(prev => [...prev, { message, sender: "user" }]);
 
-  const res = await fetch("http://localhost:11434/api/generate",{
-    method: "POST",
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      model: "gemma:2b",
-      prompt: message
-    }
-    )
-  })
 
-  const data = await res.text();
-  const combinedResponse = data
-  .split("\n")
-  .filter(line => line.trim())          // remove empty lines
-  .map(line => JSON.parse(line).response) // parse each line
-  .join("");
-
-
-  setMessages(prev => [...prev, { message: combinedResponse, sender: "robot" }]);
+  setLoading(true);
+  await fetchRes(message);
+  setMessages(prev => [...prev, { message: combRes, sender: "robot" }]);
 
   };
 
@@ -44,6 +34,34 @@ function App() {
     }
 
   }, [messages]);
+
+  const fetchRes = async (message) => {
+    try {
+      const res = await fetch("http://localhost:11434/api/generate",{
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          model: "gemma:2b",
+          prompt: message
+        }
+      )
+    })
+
+    const data = await res.text();
+    combRes = data
+        .split("\n")
+        .filter(line => line.trim())          // remove empty lines
+        .map(line => JSON.parse(line).response) // parse each line
+        .join("");
+    } catch (error) {
+      console.log('error in fetching '+ error);
+    } finally{
+      setLoading(false);
+    }
+
+  }
+
+
 
   return (
     <>
@@ -65,10 +83,15 @@ function App() {
             ref = {isLast? messagesRef : null}/>
           )
         }
-
+        
         ): 
         <div className={`text-gray-500 text-center w-full ${toUp || "mt-auto"}`}>Welcome to the chatbot project! Send a message using the textbox {toUp? "above": "below"}.</div>} 
 
+        {loading && (
+          <div className="flex justify-start mt-3">
+            <ThreeDot variant="bounce" color="#6a8db0ff" size="small" text="" textColor="" />
+          </div>
+        )}
         </div>
         {toUp === false && (
           <div className='mt-auto w-full mb-5'>
