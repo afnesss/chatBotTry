@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import ChatInput from './components/ChatInput'
 import Message from './components/Message'
+import {v4 as uuidv4} from 'uuid';
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -11,20 +12,41 @@ function App() {
   // const [combinedResponse, setCombRes] = useState('default');
   const [loading, setLoading] = useState(false);
   const [controller, setController] = useState(null);
+  const [botId, setBotId] = useState('');
 
   const handleSend = async (message) => {
-  setMessages(prev => [
-    ...prev,
-    { message, sender: "user" },
-    { sender: "robot", loading: true }
-  ]);
-    const response = await fetchRes(message);
-    
-    setMessages(prev => {
-      const newMessages = [...prev];
-      newMessages[newMessages.length-1] = {sender: "robot", message: response, loading: false};
-      return newMessages;
-  });
+    if (loading){
+
+      setMessages(prev => prev.filter(item => item.id !== botId));
+      setBotId(null);
+      controller?.abort();
+      return;
+    }
+
+    const curBodId = uuidv4();
+    setBotId(curBodId);
+    setMessages(prev => [
+      ...prev,
+      { message, sender: "user" },
+      { id: curBodId, sender: "robot", loading: true }
+    ]);
+
+    try {
+
+        const response = await fetchRes(message);
+        
+        setMessages(prev => {
+          const newMessages = [...prev];
+          if (newMessages[newMessages.length-1].sender === 'robot'){
+            newMessages[newMessages.length-1] = {sender: "robot", message: response, loading: false};
+          }
+
+          return newMessages;
+      });
+
+    } catch (error) {
+      console.log('error clicking:' + error)
+    }
 
   };
 
@@ -59,10 +81,12 @@ function App() {
         .map(line => JSON.parse(line).response) // parse each line
         .join("");
     } catch (error) {
-      console.log('error in fetching '+ error);
+      
       if(error.name === "AbortError"){
         console.log("canceled fetch");
+        return;
       }
+      console.log('error in fetching '+ error);
     } finally{
       setLoading(false);
       setController(null);

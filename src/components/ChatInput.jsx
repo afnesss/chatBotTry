@@ -5,7 +5,7 @@ const ChatInput = ({onSend, loading, controller}) => {
   const [inputText, setText] = useState('');
 
   const clickSend = () => {
-    if (inputText.trim() === '') return;
+    if (inputText.trim() === '' && !loading) return;
     onSend(inputText);
     setText('');
   }
@@ -19,7 +19,7 @@ const ChatInput = ({onSend, loading, controller}) => {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {if (e.key === 'Enter') clickSend()}}
       />
-      <button disabled = {!inputText.trim() && !loading} onClick = {loading? () => controller?.abort() : clickSend} className={`shadow-md px-5 py-2 rounded-xl bg-green-600 text-white font-semibold mx-5 ${!inputText.trim() && !loading ? "opacity-80 cursor-not-allowed" : "hover:bg-green-700"}`}>
+      <button disabled = {!inputText.trim() && !loading} onClick = {clickSend} className={`shadow-md px-5 py-2 rounded-xl bg-green-600 text-white font-semibold mx-5 ${!inputText.trim() && !loading ? "opacity-80 cursor-not-allowed" : "hover:bg-green-700"}`}>
         {loading? "Stop" : "Send"}
       </button>
     </div>
