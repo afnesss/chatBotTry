@@ -15,8 +15,8 @@ function App() {
   const [botId, setBotId] = useState('');
 
   const handleSend = async (message) => {
-    if (loading){
 
+    if (loading){
       setMessages(prev => prev.filter(item => item.id !== botId));
       setBotId(null);
       controller?.abort();
@@ -27,27 +27,15 @@ function App() {
     setBotId(curBodId);
     setMessages(prev => [
       ...prev,
-      { message, sender: "user" },
-      { id: curBodId, sender: "robot", loading: true }
+      { message, sender: "user"},
+      { id: curBodId, sender: "robot", loading: true}
     ]);
 
     try {
-
-        const response = await fetchRes(message);
-        
-        setMessages(prev => {
-          const newMessages = [...prev];
-          if (newMessages[newMessages.length-1].sender === 'robot'){
-            newMessages[newMessages.length-1] = {sender: "robot", message: response, loading: false};
-          }
-
-          return newMessages;
-      });
-
+        const response = await fetchRes(message, curBodId);
     } catch (error) {
       console.log('error clicking:' + error)
     }
-
   };
 
 
@@ -59,11 +47,12 @@ function App() {
 
   }, [messages]);
 
-  const fetchRes = async (message) => {
+  const fetchRes = async (message, curBodId) => {
     const newController = new AbortController();
     setController(newController);
     setLoading(true);
     try {
+
       const res = await fetch("http://localhost:11434/api/generate",{
         method: "POST",
         headers: {'Content-Type': 'application/json'},
@@ -74,12 +63,38 @@ function App() {
         signal: newController.signal
     })
 
-    const data = await res.text();
-    return data
-        .split("\n")
-        .filter(line => line.trim())          // remove empty lines
-        .map(line => JSON.parse(line).response) // parse each line
-        .join("");
+    // const data = await res.text();
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      let chunk = decoder.decode(value, { stream: true });
+
+      chunk = chunk
+      .split('\n')
+      .filter(line => line.trim())
+      .map(line => JSON.parse(line).response);
+
+      fullText += chunk;
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === curBodId?
+          {...msg, message: (msg.message || '') + chunk, loading: true}
+          : msg
+        )
+      )
+    }
+    // setMessages(prev => prev.map(msg => msg.id === curBodId
+    //   ? {...msg, message: fullText, loading: false, showAnim: false}
+    //   : msg
+    // ));
+
+    return fullText;
+
     } catch (error) {
       
       if(error.name === "AbortError"){
