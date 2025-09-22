@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import ChatInput from './components/ChatInput'
 import Message from './components/Message'
 import {v4 as uuidv4} from 'uuid';
+import sidePIcon from "./assets/sidePanel.png";
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -110,8 +111,13 @@ function App() {
 
   return (
     <>
-    <section className="flex justify-center min-h-screen">
-      <div className="flex flex-col shadow-md container m-auto my-7 mx-10 bg-green-100 max-w-300 p-7 rounded-md">
+    <section className="flex justify-center my-5 max-height: 100vh ">
+      {/* <div className='w-50 shadow-md bg-green-100'>
+      this is div
+      </div> */}
+
+      <div className="flex flex-col mx-auto shadow-md container mx-10 bg-green-100 max-w-300 p-7 rounded-md">
+        <img className=" w-10 h-10 absolute hover:bg-gray-600/30 rounded-lg p-1" src={sidePIcon} width='50'/>
         <div className="flex flex-col items-center mx-20 flex-1 overflow-y-auto">
         {toUp === true &&           
         <div className=' w-full mb-5'>
@@ -135,7 +141,7 @@ function App() {
 
         </div>
         {toUp === false && (
-          <div className='mt-auto w-full mb-5'>
+          <div className='mt-5 w-full mb-5'>
               <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
           </div> 
         )}
