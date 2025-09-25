@@ -7,8 +7,7 @@ import { useState } from "react";
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
 
-
-const LeftNav = () => {
+const LeftNav = ({makeNewChat}) => {
   const [sideBar, setSideBar] = useState(false);
 
   return (
@@ -35,11 +34,16 @@ const LeftNav = () => {
                </span>
             </div> */}
             <div className="mt-7">
-            <IconWithLabel text="New Chat" sideBar={sideBar} icon={RiChatNewLine}/>
+            <IconWithLabel text="New Chat" sideBar={sideBar} icon={RiChatNewLine} onClick={makeNewChat}/>
             <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch}/>
             </div>
 
+            <div className="mt-10">
+              <div className={`text-gray-600 ${sideBar? "opacity-100" : "opacity-0"} transition-opacity duration-300`}>Your Chats</div>
+            </div>
 
+
+            {/* <IconWithLabel icon={FiSettings}/> */}
           <FiSettings className={`${iconStyles} mt-auto`} size={40} color="green"/>
 
         </div>

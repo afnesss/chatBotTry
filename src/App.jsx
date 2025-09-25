@@ -40,6 +40,9 @@ function App() {
     }
   };
 
+  const makeNewChat = () => {
+    setMessages([]);
+  }
 
   useEffect(() => {
     const div = containerRef.current;
@@ -114,9 +117,9 @@ function App() {
     <>
     <section className="flex min-h-screen">
     
-      <LeftNav />
-      <div className="flex flex-col shadow-md container bg-green-100 items-center p-7 align-center">
-        <div className="flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250">
+    <LeftNav makeNewChat={makeNewChat}/>
+      <div className="flex flex-col shadow-md bg-green-100 w-full p-7">
+        <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
         {toUp === true &&           
         <div className='mt-5 w-full mb-5'>
               <ChatInput onSend={handleSend} loading={loading} controller={controller} />
@@ -144,10 +147,12 @@ function App() {
           </div> 
         )}
         
-        </div>
-        <button 
+
+                <button 
         onClick={() => setToUp(prev => !prev)} 
         className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer">Move textbox to {toUp? "bottom": "top"}</button>
+        </div>
+
 </div>
     </section>
     </>
