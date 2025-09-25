@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import ChatInput from './components/ChatInput'
 import Message from './components/Message'
 import {v4 as uuidv4} from 'uuid';
-import sidePIcon from "./assets/sidePanel.png";
+import LeftNav from './components/LeftNav';
+
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -33,7 +34,7 @@ function App() {
     ]);
 
     try {
-        const response = await fetchRes(message, curBodId);
+      await fetchRes(message, curBodId);
     } catch (error) {
       console.log('error clicking:' + error)
     }
@@ -111,19 +112,16 @@ function App() {
 
   return (
     <>
-    <section className="flex justify-center my-5 max-height: 100vh ">
-      {/* <div className='w-50 shadow-md bg-green-100'>
-      this is div
-      </div> */}
-
-      <div className="flex flex-col mx-auto shadow-md container mx-10 bg-green-100 max-w-300 p-7 rounded-md">
-        <img className=" w-10 h-10 absolute hover:bg-gray-600/30 rounded-lg p-1" src={sidePIcon} width='50'/>
-        <div className="flex flex-col items-center mx-20 flex-1 overflow-y-auto">
+    <section className="flex min-h-screen">
+    
+      <LeftNav />
+      <div className="flex flex-col shadow-md container bg-green-100 items-center p-7 align-center">
+        <div className="flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250">
         {toUp === true &&           
-        <div className=' w-full mb-5'>
+        <div className='mt-5 w-full mb-5'>
               <ChatInput onSend={handleSend} loading={loading} controller={controller} />
           </div>}
-        <div className='px-5 py-7 w-full flex flex-col overflow-y-auto h-173 bg-gray-50 rounded-2xl' ref={containerRef}>
+        <div className='px-5 py-7 w-full shadow-md flex flex-col overflow-y-auto h-173 bg-gray-50 rounded-2xl my-3' ref={containerRef}>
         {messages.length > 0 ? 
         messages.map((msg, index) => {
           const isLast = index === messages.length - 1;
@@ -150,7 +148,7 @@ function App() {
         <button 
         onClick={() => setToUp(prev => !prev)} 
         className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer">Move textbox to {toUp? "bottom": "top"}</button>
-      </div>
+</div>
     </section>
     </>
   )
