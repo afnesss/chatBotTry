@@ -3,28 +3,8 @@ import ChatInput from '../components/ChatInput'
 import Message from '../components/Message'
 import {v4 as uuidv4} from 'uuid';
 import { useParams } from 'react-router-dom';
+import { updateMsg, load } from '../utils/fetches';
 
-const updateMsg = async (messages, chatId) => {
-  await fetch(`/api/chats/${chatId}/messages`,{
-  method: "PUT",
-    headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(messages),
-})
-
-} 
-
-const load = async(chatId, setMessages) => {
-  try {
-    const res = await fetch(`/api/chats/${chatId}/messages`);
-    const data = await res.json();
-    setMessages(data);
-
-  } catch (error) {
-    console.log('error fetching messages with chatId ' + chatId + error)
-  }
-}
 
 const MainPage = () => {
   const [messages, setMessages] = useState([]);
@@ -47,8 +27,12 @@ const MainPage = () => {
   const handleSend = async (message) => {
 
     if (loading){
-      setMessages(prev => prev.filter(item => item.id !== botId));
-      setBotId(null);
+      // setMessages(prev => prev.filter(item => item.id !== botId));
+      // setBotId(null);
+      setMessages(prev => {
+        updateMsg(prev, chatId); // send latest
+        return prev;
+      });
       controller?.abort();
       return;
     }

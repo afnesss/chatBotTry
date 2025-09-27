@@ -23,6 +23,23 @@ app.get("/chats/titles", async (req, res) => {
   res.json(result.rows);
 });
 
+app.post("/chats", async (req, res) => {
+  try {
+    const {id, title, messages, created_at} = req.body;
+
+    const result = await pool.query(`INSERT INTO chats(id, title, messages, created_at) VALUES(
+        $1, $2, $3::jsonb, $4::timestamptz
+        ) RETURNING *`,  [id, title, JSON.stringify(messages), created_at]);
+
+    res.json(result.rows[0]);
+
+  } catch (error) {
+    console.error("Database error:", error.detail || error.message);
+    res.status(500).json({ error: "Database error" });
+  }
+
+})
+
 app.get("/chats/:id/messages", async (req, res) => {
   const {id} = req.params;
   const result = await pool.query("SELECT messages FROM chats where id= $1", [id]);

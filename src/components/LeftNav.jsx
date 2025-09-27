@@ -7,12 +7,19 @@ import { useState, useEffect } from "react";
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
 
+import { makeNewChat } from "../utils/fetches";
 
 
-const LeftNav = ({makeNewChat}) => {
+
+const LeftNav = () => {
   const [sideBar, setSideBar] = useState(false);
   const [chats, setChats] = useState([]); 
   // const [loading, set]
+
+  const handleNewChat = async () => {
+    const newChat = await makeNewChat();
+    setChats(prev => [newChat, ...prev]);
+  }
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -56,7 +63,7 @@ const LeftNav = ({makeNewChat}) => {
                </span>
             </div> */}
             <div className="mt-7">
-            <IconWithLabel text="New Chat" sideBar={sideBar} icon={RiChatNewLine} onClick={makeNewChat}/>
+            <IconWithLabel text="New Chat" sideBar={sideBar} icon={RiChatNewLine} onClick={handleNewChat}/>
             <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch}/>
             </div>
 
