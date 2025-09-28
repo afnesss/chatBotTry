@@ -40,6 +40,22 @@ app.post("/chats", async (req, res) => {
 
 })
 
+app.delete("/chats/:id", async (req, res) => {
+  try{
+    const {id} = req.params;
+    const result = await pool.query("DELETE FROM chats WHERE id=$1 RETURNING *", [id]);
+
+    if (result.rowCount === 0){
+      return res.status(404).json({ error: "Chat not found" });
+    }
+
+    res.json({ success: true, deleted: result.rows[0] });
+  } catch (err){
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+})
+
 app.get("/chats/:id/messages", async (req, res) => {
   const {id} = req.params;
   const result = await pool.query("SELECT messages FROM chats where id= $1", [id]);

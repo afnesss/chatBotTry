@@ -48,3 +48,24 @@ export const makeNewChat = async() => {
     console.log('error making new chat ' + error);
   }
 }
+
+export const deleteChat = async(chatId, setChats) => {
+  try {
+    const res = await fetch(`/api/chats/${chatId}`, {
+      method: "DELETE",
+
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+    throw new Error(errData.error || "Failed to delete chat");
+    }
+
+    setChats(prev => prev.filter(item => item.id !== chatId));
+
+    console.log("Chat deleted:", data.deleted);
+  } catch (error) {
+    console.error("Error deleting chat:", error.message);
+  }
+}

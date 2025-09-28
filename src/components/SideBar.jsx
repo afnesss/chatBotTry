@@ -5,12 +5,12 @@ import { FiSettings } from "react-icons/fi";
 import { MdMoreHoriz } from "react-icons/md";
 
 import { Link } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
 
-import { makeNewChat } from "../utils/fetches";
+import { makeNewChat} from "../utils/fetches";
 
 import EditChat from "./EditChat";
 
@@ -103,14 +103,18 @@ const SideBar = () => {
                 <div className="my-5 gap-5">
                 {chats.map((chat) => {
                   return (
-                    <Link key={chat.id} to={`/chats/${chat.id}`} className={`flex group justify-between items-center mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl ${popEditChat.open && popEditChat.chat === chat && "bg-gray-300/50"}` }>
-                      {chat.title}
-                      <MdMoreHoriz onClick={(e)=> openPopUp(e, chat)} className={`opacity-0 group-hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
-                    </Link>
+                    <React.Fragment key={chat.id}>
+                      <Link to={`/chats/${chat.id}`} className={`flex group justify-between items-center mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl ${popEditChat.open && popEditChat.chat === chat && "bg-gray-300/50"}` }>
+                        {chat.title}
+                        <MdMoreHoriz onClick={(e)=> openPopUp(e, chat)} className={`opacity-0 group-hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
+                      </Link>
+                    {popEditChat.open && popEditChat.chat === chat && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} chatId={chat.id} setChats={setChats}/>}
+                    </React.Fragment>
+
                   )
                 }
                 )}
-                {popEditChat.open && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y}/>}
+                
                 </div>
             </div>
 
