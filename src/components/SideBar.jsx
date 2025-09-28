@@ -2,19 +2,50 @@ import { TbLayoutSidebar } from "react-icons/tb";
 import { RiChatNewLine } from "react-icons/ri";     
 import { FiSearch } from "react-icons/fi";  
 import { FiSettings } from "react-icons/fi";   
+import { MdMoreHoriz } from "react-icons/md";
+
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
 
 import { makeNewChat } from "../utils/fetches";
 
+import EditChat from "./EditChat";
 
-
-const LeftNav = () => {
+const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
   const [chats, setChats] = useState([]); 
+  const [popEditChat, setPopEditChat] = useState({ open: false, x: 0, y: 0, chat: null });
+  const ref = useRef(null);
   // const [loading, set]
+
+  const openPopUp = (e, chat) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setPopEditChat (
+      {
+        open: true,
+        x: rect.right-20,
+        y: rect.top+20,
+        chat
+      }
+    )
+  }
+
+  const closePopUp = () => {setPopEditChat({open: false, x: 0, y: 0, chat: null})};
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (ref.current && !ref.current.contains(e.target)) {
+        console.log('clocked')
+        closePopUp();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   const handleNewChat = async () => {
     const newChat = await makeNewChat();
@@ -37,13 +68,13 @@ const LeftNav = () => {
 
 
   // const chats = fetchChats();
-  console.log(chats);
+  // console.log(chats);
 
   return (
     <div
       className={`
         flex flex-col bg-green-50 p-3 h-screen
-        ${sideBar ? "w-64" : "w-16"}
+        ${sideBar ? "w-60" : "w-16"}
         transition-[width] duration-300 ease-in-out
       `}
     >
@@ -72,15 +103,18 @@ const LeftNav = () => {
                 <div className="my-5 gap-5">
                 {chats.map((chat) => {
                   return (
-                    <Link key={chat.id} to={`/chats/${chat.id}`} className="flex flex-col mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl">
+                    <Link key={chat.id} to={`/chats/${chat.id}`} className={`flex group justify-between items-center mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl ${popEditChat.open && popEditChat.chat === chat && "bg-gray-300/50"}` }>
                       {chat.title}
+                      <MdMoreHoriz onClick={(e)=> openPopUp(e, chat)} className={`opacity-0 group-hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
                     </Link>
                   )
                 }
                 )}
+                {popEditChat.open && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y}/>}
                 </div>
             </div>
 
+          {/* <EditChat /> */}
 
             {/* <IconWithLabel icon={FiSettings}/> */}
           <FiSettings className={`${iconStyles} mt-auto`} size={40} color="green"/>
@@ -90,4 +124,4 @@ const LeftNav = () => {
   )
 }
 
-export default LeftNav
+export default SideBar
