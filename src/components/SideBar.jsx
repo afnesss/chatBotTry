@@ -19,6 +19,7 @@ const SideBar = () => {
   const [chats, setChats] = useState([]); 
   const [popEditChat, setPopEditChat] = useState({ open: false, x: 0, y: 0, chat: null });
   const ref = useRef(null);
+  const refInput = useRef(null);
 
   const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
   // const [loading, set]
@@ -43,6 +44,9 @@ const SideBar = () => {
         console.log('clocked')
         closePopUp();
       }
+      if(refInput.current && !refInput.current.contains(e.target)){
+        setEditChat({edit: false, chat: null, newTitle: ''});
+      }
     }
 
     document.addEventListener("mousedown", handleClick);
@@ -58,18 +62,6 @@ const SideBar = () => {
     await deleteChat(chatId);
     setChats(prev => prev.filter(item => item.id !== chatId));
   }
-  // const handleChangeChat = async (chatId, newTitle) => {
-  //   setEditChat({true});
-  //   // await changeChatTitle(chatId, newTitle);
-  //   // setChats(prevChats => prevChats.map(chat =>
-  //   // chat.id === chatId ? { ...chat, title: newTitle } : chat));
-  // }
-
-  //   const handleRename = () => {
-  //   if (!newTitle.trim()) return;
-  //   changeChatTitle(newTitle.trim());
-  //   setIsEditing(false);
-  // };
 
   const handleRename = async () => {
     if (!editChat.newTitle.trim()) return;
@@ -141,6 +133,7 @@ const SideBar = () => {
 
                         {editChat.edit && editChat.chat === chat ? 
                             <input
+                            ref = {refInput}
                             type="text"
                             value={editChat.newTitle}
                             onChange={(e) => setEditChat(prev => ({ ...prev, newTitle: e.target.value }))}
@@ -163,7 +156,6 @@ const SideBar = () => {
                           closePopUp();
                           }}/>}
                     </React.Fragment>
-
                   )
                 }
                 )}
