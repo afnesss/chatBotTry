@@ -30,7 +30,7 @@ export const makeNewChat = async() => {
     const created_at = new Date().toISOString();
     const response = await fetch('/api/chats',{
     method: "POST",
-      headers: {
+    headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
@@ -49,7 +49,7 @@ export const makeNewChat = async() => {
   }
 }
 
-export const deleteChat = async(chatId, setChats) => {
+export const deleteChat = async(chatId) => {
   try {
     const res = await fetch(`/api/chats/${chatId}`, {
       method: "DELETE",
@@ -62,10 +62,32 @@ export const deleteChat = async(chatId, setChats) => {
     throw new Error(errData.error || "Failed to delete chat");
     }
 
-    setChats(prev => prev.filter(item => item.id !== chatId));
-
     console.log("Chat deleted:", data.deleted);
   } catch (error) {
     console.error("Error deleting chat:", error.message);
+  }
+}
+
+export const changeChatTitle = async(chatId, newTitle) => {
+  try {
+    const res = await fetch(`/api/chats/${chatId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title: newTitle
+      })
+    })
+
+    const data = await res.json();
+
+    if (!res.ok) {
+    throw new Error(errData.error || "Failed to delete chat");
+    }
+
+    console.log("Chat name changed:", data);
+  } catch (error) {
+    console.error("Error editing chat:", error.message);
   }
 }

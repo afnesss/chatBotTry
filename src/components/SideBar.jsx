@@ -10,7 +10,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
 
-import { makeNewChat} from "../utils/fetches";
+import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
 
 import EditChat from "./EditChat";
 
@@ -19,6 +19,8 @@ const SideBar = () => {
   const [chats, setChats] = useState([]); 
   const [popEditChat, setPopEditChat] = useState({ open: false, x: 0, y: 0, chat: null });
   const ref = useRef(null);
+
+  const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
   // const [loading, set]
 
   const openPopUp = (e, chat) => {
@@ -51,6 +53,37 @@ const SideBar = () => {
     const newChat = await makeNewChat();
     setChats(prev => [newChat, ...prev]);
   }
+
+  const handleDeleteChat = async (chatId) => {
+    await deleteChat(chatId);
+    setChats(prev => prev.filter(item => item.id !== chatId));
+  }
+  // const handleChangeChat = async (chatId, newTitle) => {
+  //   setEditChat({true});
+  //   // await changeChatTitle(chatId, newTitle);
+  //   // setChats(prevChats => prevChats.map(chat =>
+  //   // chat.id === chatId ? { ...chat, title: newTitle } : chat));
+  // }
+
+  //   const handleRename = () => {
+  //   if (!newTitle.trim()) return;
+  //   changeChatTitle(newTitle.trim());
+  //   setIsEditing(false);
+  // };
+
+  const handleRename = async () => {
+    if (!editChat.newTitle.trim()) return;
+
+    await changeChatTitle(editChat.chat.id, editChat.newTitle.trim());
+
+    setChats(prevChats =>
+      prevChats.map(chat =>
+        chat.id === editChat.chat.id ? { ...chat, title: editChat.newTitle.trim() } : chat
+      )
+    );
+
+    setEditChat({ edit: false, chat: null, newTitle: "" });
+  };
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -85,7 +118,7 @@ const SideBar = () => {
               <RiChatNewLine className={iconStyles} size={40} color="green"/>
                 <span
                 className={`left-15 absolute
-                  ${sideBar ? "opacity-100" : "opacity-0"}
+                  ${sideBar ? "opacity-100" : "opacity-0"}n
                   transition-opacity duration-300
                   overflow-hidden
                   whitespace-nowrap text-sm text-gray-600`}
@@ -104,11 +137,31 @@ const SideBar = () => {
                 {chats.map((chat) => {
                   return (
                     <React.Fragment key={chat.id}>
-                      <Link to={`/chats/${chat.id}`} className={`flex group justify-between items-center mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl ${popEditChat.open && popEditChat.chat === chat && "bg-gray-300/50"}` }>
-                        {chat.title}
+                      <Link to={`/chats/${chat.id}`} className={`flex group justify-between items-center mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl ${popEditChat.open && popEditChat.chat === chat || editChat.edit && editChat.chat === chat && "bg-gray-300/50"}` }>
+
+                        {editChat.edit && editChat.chat === chat ? 
+                            <input
+                            type="text"
+                            value={editChat.newTitle}
+                            onChange={(e) => setEditChat(prev => ({ ...prev, newTitle: e.target.value }))}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleRename();
+                              if (e.key === "Escape") {
+                                // setNewTitle(chat.title);
+                                setEditChat({edit: false, chat: null, newTitle: ''});
+                              }
+                            }}
+                            autoFocus
+                            className="focus:outline-none rounded-lg px-2 py-1 text-sm w-full"
+                            />
+                        : chat.title}
+
                         <MdMoreHoriz onClick={(e)=> openPopUp(e, chat)} className={`opacity-0 group-hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
                       </Link>
-                    {popEditChat.open && popEditChat.chat === chat && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} chatId={chat.id} setChats={setChats}/>}
+                    {popEditChat.open && popEditChat.chat === chat && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} deleteChat={() => handleDeleteChat(chat.id)} changeChatTitle={() => 
+                          {setEditChat({ edit: true, chat, newTitle: chat.title });
+                          closePopUp();
+                          }}/>}
                     </React.Fragment>
 
                   )
@@ -118,9 +171,6 @@ const SideBar = () => {
                 </div>
             </div>
 
-          {/* <EditChat /> */}
-
-            {/* <IconWithLabel icon={FiSettings}/> */}
           <FiSettings className={`${iconStyles} mt-auto`} size={40} color="green"/>
 
         </div>

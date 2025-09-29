@@ -23,6 +23,25 @@ app.get("/chats/titles", async (req, res) => {
   res.json(result.rows);
 });
 
+app.put("/chats/:id", async (req, res) => {
+  try {
+    const {title} = req.body;
+    const {id} = req.params;
+
+    const result = await pool.query(`UPDATE chats SET title=$1 where id=$2 RETURNING *`,  [title, id]);
+
+    if (result.rowCount === 0){
+      return res.status(404).json({ error: "Chat not found" });
+    }
+    res.json(result.rows[0]);
+
+  } catch (error) {
+    console.error("Database error:", error.detail || error.message);
+    res.status(500).json({ error: "Database error" });
+  }
+
+})
+
 app.post("/chats", async (req, res) => {
   try {
     const {id, title, messages, created_at} = req.body;
@@ -55,6 +74,8 @@ app.delete("/chats/:id", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 })
+
+
 
 app.get("/chats/:id/messages", async (req, res) => {
   const {id} = req.params;
