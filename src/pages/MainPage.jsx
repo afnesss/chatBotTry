@@ -4,7 +4,7 @@ import Message from '../components/Message'
 import {v4 as uuidv4} from 'uuid';
 import { useParams } from 'react-router-dom';
 import { updateMsg, load } from '../utils/fetches';
-
+import SearchBox from '../components/SearchBox';
 
 const MainPage = () => {
   const [messages, setMessages] = useState([]);
@@ -133,6 +133,7 @@ const MainPage = () => {
     <>
     <section className="flex h-screen">
     
+    <SearchBox />
     {/* <LeftNav makeNewChat={makeNewChat}/> */}
       <div className="flex flex-col shadow-md bg-green-100 w-full p-7">
         <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
