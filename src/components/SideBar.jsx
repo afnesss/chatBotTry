@@ -4,8 +4,8 @@ import { FiSearch } from "react-icons/fi";
 import { FiSettings } from "react-icons/fi";   
 import { MdMoreHoriz } from "react-icons/md";
 
-import { Link } from "react-router-dom";
-import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef} from "react";
 
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
@@ -14,12 +14,19 @@ import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
 
 import EditChat from "./EditChat";
 
+import { FaRobot } from "react-icons/fa";
+import { MdOutlineSmartToy } from "react-icons/md";
+
 const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
   const [chats, setChats] = useState([]); 
   const [popEditChat, setPopEditChat] = useState({ open: false, x: 0, y: 0, chat: null });
+  const [hover, setHover] = useState(false);
+
   const ref = useRef(null);
   const refInput = useRef(null);
+  
+  const navigate = useNavigate();
 
   const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
   // const [loading, set]
@@ -55,6 +62,7 @@ const SideBar = () => {
 
   const handleNewChat = async () => {
     const newChat = await makeNewChat();
+    navigate(`/chats/${newChat.id}`)
     setChats(prev => [newChat, ...prev]);
   }
 
@@ -103,21 +111,15 @@ const SideBar = () => {
         transition-[width] duration-300 ease-in-out
       `}
     >
-          <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2">
-            <TbLayoutSidebar className={`hover:bg-gray-600/30 rounded-lg p-1 cursor-ew-resize`} size={35} color='green'/>
+          <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2"
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}>
+              {hover || sideBar ? 
+              <TbLayoutSidebar className={`hover:bg-gray-600/30 rounded-lg p-1 cursor-ew-resize`} size={35} color='green'/>
+            : <MdOutlineSmartToy className={`hover:bg-gray-600/30 rounded-lg p-1 cursor-ew-resize`} size={35} color='green'/>}
+            
           </button>
-            {/* <div className="flex flex-row items-center mb-3 mt-7">
-              <RiChatNewLine className={iconStyles} size={40} color="green"/>
-                <span
-                className={`left-15 absolute
-                  ${sideBar ? "opacity-100" : "opacity-0"}n
-                  transition-opacity duration-300
-                  overflow-hidden
-                  whitespace-nowrap text-sm text-gray-600`}
-              >
-                New Chat
-               </span>
-            </div> */}
+
             <div className="mt-7">
             <IconWithLabel text="New Chat" sideBar={sideBar} icon={RiChatNewLine} onClick={handleNewChat}/>
             <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch}/>
@@ -125,11 +127,11 @@ const SideBar = () => {
 
             <div className={`mt-10 ${sideBar? "opacity-100" : "opacity-0"}`}>
               <div className={`text-gray-600 transition-opacity duration-300`}>Your Chats</div>
-                <div className="my-5 gap-5">
+                <div className="flex-1 my-5 gap-5 overflow-y-auto h-[500px]">
                 {chats.map((chat) => {
                   return (
                     <React.Fragment key={chat.id}>
-                      <Link to={`/chats/${chat.id}`} className={`flex group justify-between items-center mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl ${popEditChat.open && popEditChat.chat === chat || editChat.edit && editChat.chat === chat && "bg-gray-300/50"}` }>
+                      <div className={`flex group justify-between items-center mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl ${popEditChat.open && popEditChat.chat === chat || editChat.edit && editChat.chat === chat && "bg-gray-300/50"}` }>
 
                         {editChat.edit && editChat.chat === chat ? 
                             <input
@@ -140,17 +142,16 @@ const SideBar = () => {
                             onKeyDown={(e) => {
                               if (e.key === "Enter") handleRename();
                               if (e.key === "Escape") {
-                                // setNewTitle(chat.title);
                                 setEditChat({edit: false, chat: null, newTitle: ''});
                               }
                             }}
                             autoFocus
                             className="focus:outline-none rounded-lg px-2 py-1 text-sm w-full"
                             />
-                        : chat.title}
+                        : <Link to={`/chats/${chat.id}`} className="w-full">{chat.title}</Link>}
 
-                        <MdMoreHoriz onClick={(e)=> openPopUp(e, chat)} className={`opacity-0 group-hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
-                      </Link>
+                        <MdMoreHoriz onClick={(e)=> openPopUp(e, chat)} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
+                      </div>
                     {popEditChat.open && popEditChat.chat === chat && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} deleteChat={() => handleDeleteChat(chat.id)} changeChatTitle={() => 
                           {setEditChat({ edit: true, chat, newTitle: chat.title });
                           closePopUp();
@@ -163,7 +164,10 @@ const SideBar = () => {
                 </div>
             </div>
 
-          <FiSettings className={`${iconStyles} mt-auto`} size={40} color="green"/>
+          <div className="mt-auto flex">
+            <FiSettings className={`${iconStyles} mt-auto`} size={40} color="green"/>
+          </div>
+          
 
         </div>
 
