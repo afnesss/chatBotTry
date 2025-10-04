@@ -4,7 +4,7 @@ import { ThreeDot } from "react-loading-indicators"
 import robotIcon from "../assets/robot.png";
 import userIcon from "../assets/user.png";
 
-const Message = forwardRef(({message, sender}, ref) => {
+const Message = ({message, sender}) => {
   return (
     <div  className={`flex flex-row w-full mb-5 ${sender === 'robot'? "justify-start" : "justify-end"}`}>
       {sender === 'robot' && (
@@ -16,7 +16,7 @@ const Message = forwardRef(({message, sender}, ref) => {
             </div>
  
         ):  */}
-        <div ref={ref} className="px-4 py-2 bg-gray-200 text-start items-center rounded-xl shadow-md max-w-[60%] break-words">
+        <div className="px-4 py-2 bg-gray-200 text-start items-center rounded-xl shadow-md max-w-[60%] break-words">
             {message}
         </div> 
          {/* } */}
@@ -25,6 +25,6 @@ const Message = forwardRef(({message, sender}, ref) => {
         )}
     </div>
   )
-})
+}
 
 export default Message

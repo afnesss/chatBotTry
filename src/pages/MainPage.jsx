@@ -1,17 +1,15 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import ChatInput from '../components/ChatInput'
-import Message from '../components/Message'
 import {v4 as uuidv4} from 'uuid';
 import { useParams} from 'react-router-dom';
 import { updateMsg, load } from '../utils/fetches';
-
-
+import MessagesCont from '../components/MessagesCont';
 
 const MainPage = () => {
   const [messages, setMessages] = useState([]);
   const [toUp, setToUp] = useState(false);
 
-  const messagesRef = useRef(null);
+  // const messagesRef = useRef(null);
   const containerRef = useRef(null);
 
   // const [combinedResponse, setCombRes] = useState('default');
@@ -27,16 +25,6 @@ const MainPage = () => {
     }
   }, [chatId])
 
-  // const scroll = () => {
-  //   containerRef.current?.scrollTo({
-  //     top: containerRef.current.scrollHeight,
-  //     behavior: 'smooth'
-  //   });
-  // }
-
-  // useEffect(() => {
-  //   scroll();
-  // }, messages)
   useLayoutEffect(() => {
   const container = containerRef.current;
   if (container) {
@@ -74,7 +62,6 @@ const MainPage = () => {
       console.log('error clicking:' + error)
     }
   };
-
 
 
   const fetchRes = async (message, curBodId) => {
@@ -121,14 +108,12 @@ const MainPage = () => {
       scroll();
 
     }
-    // setMessages(prev => prev.map(msg => msg.id === curBodId
-    //   ? {...msg, message: fullText, loading: false, showAnim: false}
-    //   : msg
-    // ));
+    
     setMessages(prev => {
       updateMsg(prev, chatId); // send latest
       return prev;
     });
+
     return fullText;
 
     } catch (error) {
@@ -148,7 +133,6 @@ const MainPage = () => {
     <>
     <section className="flex h-screen">
     
-    
     {/* <LeftNav makeNewChat={makeNewChat}/> */}
       <div className="flex flex-col shadow-md bg-green-100 w-full p-7">
         <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
@@ -156,25 +140,10 @@ const MainPage = () => {
         <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
       </div>
 
-        <div className='px-5 py-7 w-full shadow-md flex flex-col overflow-y-auto h-173 bg-gray-50 rounded-2xl my-3 h-full' ref={containerRef}>
-        {messages.length > 0 ? 
-        messages.map((msg, index) => {
-          const isLast = index === messages.length - 1;
-          return (
-            <Message key={index} 
-            message={msg.message} 
-            sender={msg.sender} 
-            loading={msg.loading}
-            ref = {isLast? messagesRef : null}/>
-          )
-        }
-        
-        ): 
-        <div className={`text-gray-500 text-center w-full ${toUp || "mt-auto"}`}>Welcome to the chatbot project! Send a message using the textbox {toUp? "above": "below"}.</div>} 
-        </div>
+        <MessagesCont messages={messages} toUp={toUp} ref={containerRef}/>
         <button 
         onClick={() => setToUp(prev => !prev)} 
-        className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer">Move textbox to {toUp? "bottom": "top"}</button>
+        className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer order-last">Move textbox to {toUp? "bottom": "top"}</button>
 
 
         </div>

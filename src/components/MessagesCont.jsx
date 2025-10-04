@@ -1,0 +1,23 @@
+import { forwardRef } from "react";
+import Message from "./Message";
+
+const MessagesCont = forwardRef(({messages, toUp}, containerRef) => {
+  return (
+    <div className='px-5 py-7 w-full shadow-md flex flex-col overflow-y-auto h-173 bg-gray-50 rounded-2xl my-3 h-full' ref={containerRef}>
+    {messages.length > 0 ? 
+    messages.map((msg, index) => {
+      return (
+        <Message key={index} 
+        message={msg.message} 
+        sender={msg.sender} 
+        loading={msg.loading}/>
+      )
+    }
+    
+    ): 
+    <div className={`text-gray-500 text-center w-full ${toUp || "mt-auto"}`}>Welcome to the chatbot project! Send a message using the textbox {toUp? "above": "below"}.</div>} 
+    </div>
+  )
+})
+
+export default MessagesCont
