@@ -108,7 +108,7 @@ const MainPage = () => {
       scroll();
 
     }
-    
+
     setMessages(prev => {
       updateMsg(prev, chatId); // send latest
       return prev;
@@ -136,19 +136,19 @@ const MainPage = () => {
     {/* <LeftNav makeNewChat={makeNewChat}/> */}
       <div className="flex flex-col shadow-md bg-green-100 w-full p-7">
         <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
-        <div className={`flex mt-5 w-full mb-5 ${toUp ? 'order-first' : 'order-last'}`}>
-        <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
-      </div>
+          <div className={`flex mt-5 w-full mb-5 ${toUp ? 'order-first' : 'order-last'}`}>
+            <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
+          </div>
 
-        <MessagesCont messages={messages} toUp={toUp} ref={containerRef}/>
-        <button 
-        onClick={() => setToUp(prev => !prev)} 
-        className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer order-last">Move textbox to {toUp? "bottom": "top"}</button>
-
+          <MessagesCont messages={messages} toUp={toUp} ref={containerRef}/>
+          <button 
+          onClick={() => setToUp(prev => !prev)} 
+          className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer order-last">Move textbox to {toUp? "bottom": "top"}
+          </button>
 
         </div>
 
-</div>
+      </div>
     </section>
     </>
   )

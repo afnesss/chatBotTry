@@ -4,25 +4,26 @@ import { AiOutlineClose } from "react-icons/ai";
 
 import FilteredChats from "./FilteredChats";
 
+import dayjs from "dayjs";
+
 const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
   const [lastChats, setLastChats] = useState([]);
 
   const [searchBox, setSearchBox] = useState(searchBoxPassed);
 
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
+  const today = dayjs();
+  const yesterday = dayjs().subtract(1, 'day');
+  // yesterday.setDate(today.getDate() - 1);
 
-  const lastWeekStart = new Date()
-  lastWeekStart.setDate(today.getDate() - 7);
+  const lastWeekStart = dayjs().subtract(7, 'day');
+  // lastWeekStart.setDate(today.getDate() - 7);
 
-  const lastWeekEnd = new Date();
-  lastWeekEnd.getDate(today.getDate() - 2);
+  const lastWeekEnd = dayjs().subtract(2, 'day');
 
-  const isSameDay = (d1, d2) =>
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate();
+  // const isSameDay = (d1, d2) =>
+  //   d1.getFullYear() === d2.getFullYear() &&
+  //   d1.getMonth() === d2.getMonth() &&
+  //   d1.getDate() === d2.getDate();
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -32,10 +33,14 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
     fetchChats();
   }, [searchBox])
 
-  const lastWeekChats = lastChats.filter((chat) => chat.created_at >= lastWeekStart && chat.created_at <= lastWeekEnd);
-  const todayChats = lastChats.filter((chat) => isSameDay(new Date(chat.created_at), today));
-  const yesterdayChats = lastChats.filter((chat) => isSameDay(new Date(chat.created_at), yesterday));
 
+  const todayChats = lastChats.filter((chat) => dayjs(chat.created_at).isSame(today, 'day'));
+  const yesterdayChats = lastChats.filter((chat) => dayjs(chat.created_at).isSame(yesterday, 'day'));
+  const lastWeekChats = lastChats.filter((chat) => {
+    const chatDate = dayjs(chat.created_at);
+    return chatDate.isAfter(lastWeekStart) && chatDate.isBefore(lastWeekEnd);
+  });
+  console.log(lastWeekChats)
   return (
     <div  className="fixed inset-0 flex items-center justify-center">
     <div ref={ref} className="shadow-[0_0_40px_rgba(0,0,0,0.25)] rounded-xl bg-gray-200 p-4 w-100">

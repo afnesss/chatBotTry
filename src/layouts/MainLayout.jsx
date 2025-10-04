@@ -6,9 +6,9 @@ import SideBar from "../components/SideBar";
 const MainLayout = () => {
   return (
     <>
-    <div className="flex min-h-screen">   {/* ✅ контейнер */}
-      <SideBar />                          {/* Ліворуч */}
-      <div className="flex-1">             {/* Праворуч – основний контент */}
+    <div className="flex min-h-screen">
+      <SideBar />
+      <div className="flex-1">
         <Outlet />
       </div>
     </div>
