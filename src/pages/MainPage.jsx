@@ -4,17 +4,19 @@ import Message from '../components/Message'
 import {v4 as uuidv4} from 'uuid';
 import { useParams } from 'react-router-dom';
 import { updateMsg, load } from '../utils/fetches';
-import SearchBox from '../components/SearchBox';
+
 
 const MainPage = () => {
   const [messages, setMessages] = useState([]);
   const [toUp, setToUp] = useState(false);
+
   const messagesRef = useRef(null);
   const containerRef = useRef(null);
+
   // const [combinedResponse, setCombRes] = useState('default');
   const [loading, setLoading] = useState(false);
   const [controller, setController] = useState(null);
-  const [botId, setBotId] = useState('');
+  // const [botId, setBotId] = useState('');
 
   const { id: chatId } = useParams();
 
@@ -38,7 +40,7 @@ const MainPage = () => {
     }
 
     const curBodId = uuidv4();
-    setBotId(curBodId);
+    // setBotId(curBodId);
     setMessages(prev => [
       ...prev,
       { chatId, id: uuidv4(), message, sender: "user"},
@@ -133,14 +135,10 @@ const MainPage = () => {
     <>
     <section className="flex h-screen">
     
-    <SearchBox />
+    
     {/* <LeftNav makeNewChat={makeNewChat}/> */}
       <div className="flex flex-col shadow-md bg-green-100 w-full p-7">
         <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
-        {/* {toUp === true &&           
-        <div className='mt-5 w-full mb-5'>
-              <ChatInput onSend={handleSend} loading={loading} controller={controller} />
-          </div>} */}
         <div className={`flex mt-5 w-full mb-5 ${toUp ? 'order-first' : 'order-last'}`}>
         <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
       </div>
@@ -161,13 +159,7 @@ const MainPage = () => {
         ): 
         <div className={`text-gray-500 text-center w-full ${toUp || "mt-auto"}`}>Welcome to the chatbot project! Send a message using the textbox {toUp? "above": "below"}.</div>} 
         </div>
-
-        {/* {toUp === false && (
-          <div className='flex mt-5 w-full mb-5'>
-              <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
-          </div> 
-        )} */}
-                        <button 
+        <button 
         onClick={() => setToUp(prev => !prev)} 
         className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer">Move textbox to {toUp? "bottom": "top"}</button>
 

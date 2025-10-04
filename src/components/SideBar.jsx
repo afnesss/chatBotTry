@@ -14,8 +14,9 @@ import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
 
 import EditChat from "./EditChat";
 
-import { FaRobot } from "react-icons/fa";
+// import { FaRobot } from "react-icons/fa";
 import { MdOutlineSmartToy } from "react-icons/md";
+import SearchBox from '../components/SearchBox';
 
 const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
@@ -25,9 +26,12 @@ const SideBar = () => {
 
   const ref = useRef(null);
   const refInput = useRef(null);
+  const searchRef = useRef(null);
+  
   
   const navigate = useNavigate();
 
+  const [searchBox, setSearchBox] = useState(false);
   const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
   // const [loading, set]
 
@@ -53,6 +57,9 @@ const SideBar = () => {
       }
       if(refInput.current && !refInput.current.contains(e.target)){
         setEditChat({edit: false, chat: null, newTitle: ''});
+      }
+      if(searchRef.current && !searchRef.current.contains(e.target)){
+        setSearchBox(false);
       }
     }
 
@@ -95,13 +102,9 @@ const SideBar = () => {
         console.log('error fetching chats ' + error);
       }
   }
-
     fetchChats();
   }, [])
 
-
-  // const chats = fetchChats();
-  // console.log(chats);
 
   return (
     <div
@@ -109,20 +112,21 @@ const SideBar = () => {
         flex flex-col bg-green-50 p-3 h-screen
         ${sideBar ? "w-60" : "w-16"}
         transition-[width] duration-300 ease-in-out
-      `}
-    >
+      `}>
+
+      {searchBox && <SearchBox ref={searchRef} onclick={() => setSearchBox(prev => !prev)}/>}
+        
           <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2"
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}>
               {hover || sideBar ? 
               <TbLayoutSidebar className={`hover:bg-gray-600/30 rounded-lg p-1 cursor-ew-resize`} size={35} color='green'/>
-            : <MdOutlineSmartToy className={`hover:bg-gray-600/30 rounded-lg p-1 cursor-ew-resize`} size={35} color='green'/>}
-            
+            : <MdOutlineSmartToy className={`hover:bg-gray-600/30 rounded-lg p-1 cursor-ew-resize`} size={35} color='green'/>}  
           </button>
 
             <div className="mt-7">
             <IconWithLabel text="New Chat" sideBar={sideBar} icon={RiChatNewLine} onClick={handleNewChat}/>
-            <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch}/>
+            <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch} onClick={() => setSearchBox(prev => !prev)}/>
             </div>
 
             <div className={`mt-10 ${sideBar? "opacity-100" : "opacity-0"}`}>
@@ -160,15 +164,12 @@ const SideBar = () => {
                   )
                 }
                 )}
-                
                 </div>
             </div>
 
           <div className="mt-auto flex">
             <FiSettings className={`${iconStyles} mt-auto`} size={40} color="green"/>
           </div>
-          
-
         </div>
 
   )
