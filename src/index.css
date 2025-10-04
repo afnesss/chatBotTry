@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+
+::-webkit-scrollbar {
+  width: 8px;      /* завжди видно */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 100, 100, 0.4) transparent;
+}

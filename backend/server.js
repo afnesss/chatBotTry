@@ -59,6 +59,20 @@ app.post("/chats", async (req, res) => {
 
 })
 
+app.get("/chats", async (req, res) => {
+  try {
+    const result = await pool.query(`SELECT * FROM chats
+    WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
+    ORDER BY created_at DESC;`);
+
+    res.json(result.rows);
+
+  } catch (error) {
+    console.error("Database error quering chats:", error.detail || error.message);
+    res.status(500).json({ error: "Database error" });
+  }
+})
+
 app.delete("/chats/:id", async (req, res) => {
   try{
     const {id} = req.params;

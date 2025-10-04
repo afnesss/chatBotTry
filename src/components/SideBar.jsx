@@ -115,7 +115,7 @@ const SideBar = () => {
       `}>
 
       {searchBox && <SearchBox ref={searchRef} onclick={() => setSearchBox(prev => !prev)}/>}
-        
+
           <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2"
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}>
@@ -152,7 +152,9 @@ const SideBar = () => {
                             autoFocus
                             className="focus:outline-none rounded-lg px-2 py-1 text-sm w-full"
                             />
-                        : <Link to={`/chats/${chat.id}`} className="w-full">{chat.title}</Link>}
+                        : <Link to={`/chats/${chat.id}`} className="w-full truncate block hover:overflow-visible hover:whitespace-normal  mr-2"> 
+                          {chat.title}
+                        </Link>}
 
                         <MdMoreHoriz onClick={(e)=> openPopUp(e, chat)} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
                       </div>

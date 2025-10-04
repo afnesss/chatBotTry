@@ -91,3 +91,21 @@ export const changeChatTitle = async(chatId, newTitle) => {
     console.error("Error editing chat:", error.message);
   }
 }
+
+export const getLastChats= async() => {
+  try {
+    const res = await fetch(`/api/chats`)
+
+    const data = await res.json();
+    // setLastChats(data);
+
+    if (!res.ok) {
+      throw new Error(errData.error || "Failed to delete chat");
+    }
+
+    return data;
+
+  } catch (error) {
+    console.error("Error getting chat(time):", error.message);
+  }
+}
