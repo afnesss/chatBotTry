@@ -10,3 +10,13 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(100, 100, 100, 0.4) transparent;
 }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* важливо — щоб не скролилась уся сторінка */
+}
+/* #root {
+  height: 100%;
+} */
