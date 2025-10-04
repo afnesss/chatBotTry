@@ -1,14 +1,29 @@
 import { forwardRef, useEffect, useState } from "react";
 import { getLastChats } from "../utils/fetches";
 import { AiOutlineClose } from "react-icons/ai"; 
-import { FiMessageCircle } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+
+import FilteredChats from "./FilteredChats";
 
 const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
   const [lastChats, setLastChats] = useState([]);
-  const navigate = useNavigate();
 
   const [searchBox, setSearchBox] = useState(searchBoxPassed);
+
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  const lastWeekStart = new Date()
+  lastWeekStart.setDate(today.getDate() - 7);
+
+  const lastWeekEnd = new Date();
+  lastWeekEnd.getDate(today.getDate() - 2);
+
+  const isSameDay = (d1, d2) =>
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate();
+
   useEffect(() => {
     const fetchChats = async () => {
       const chats = await getLastChats();
@@ -16,6 +31,10 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
     }
     fetchChats();
   }, [searchBox])
+
+  const lastWeekChats = lastChats.filter((chat) => chat.created_at >= lastWeekStart && chat.created_at <= lastWeekEnd);
+  const todayChats = lastChats.filter((chat) => isSameDay(new Date(chat.created_at), today));
+  const yesterdayChats = lastChats.filter((chat) => isSameDay(new Date(chat.created_at), yesterday));
 
   return (
     <div  className="fixed inset-0 flex items-center justify-center">
@@ -27,21 +46,9 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
       
       <hr className="border-gray-400 my-3 -mx-4"></hr>
       <div className="h-50 overflow-y-auto">
-        {lastChats.map((chat, index) => {
-          return (
-            <div key={index} 
-            onClick={() => {
-              navigate(`/chats/${chat.id}`);
-              onclick?.();
-            }}
-            className="flex flex-row items-center mt-2 hover:bg-gray-300/50 rounded-xl p-1 cursor-pointer">
-              <FiMessageCircle size={25} color="green" className="rounded-xl p-1 shrink-0"/>
-              {<p className="text-sm mx-2 truncate block hover:overflow-visible hover:whitespace-normal">{chat.title}</p>}
-            </div>
-          )
-        })
-
-        }
+        <FilteredChats array={todayChats} title="Today" onClick={onclick}/>
+        <FilteredChats array={yesterdayChats} title="Yesterday" onClick={onclick}/>
+        <FilteredChats array={lastWeekChats} title="Last Week" onClick={onclick}/>
       </div>
     </div>
     </div>

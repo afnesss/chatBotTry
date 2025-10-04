@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import ChatInput from '../components/ChatInput'
 import Message from '../components/Message'
 import {v4 as uuidv4} from 'uuid';
-import { useParams } from 'react-router-dom';
+import { useParams} from 'react-router-dom';
 import { updateMsg, load } from '../utils/fetches';
+
 
 
 const MainPage = () => {
@@ -26,6 +27,26 @@ const MainPage = () => {
     }
   }, [chatId])
 
+  // const scroll = () => {
+  //   containerRef.current?.scrollTo({
+  //     top: containerRef.current.scrollHeight,
+  //     behavior: 'smooth'
+  //   });
+  // }
+
+  // useEffect(() => {
+  //   scroll();
+  // }, messages)
+  useLayoutEffect(() => {
+  const container = containerRef.current;
+  if (container) {
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: 'smooth',
+    });
+  }
+  }, [messages]);
+
   const handleSend = async (message) => {
 
     if (loading){
@@ -46,7 +67,7 @@ const MainPage = () => {
       { chatId, id: uuidv4(), message, sender: "user"},
       { chatId, id: curBodId, sender: "robot", loading: true}
     ]);
-
+    // scroll();
     try {
       await fetchRes(message, curBodId);
     } catch (error) {
@@ -54,17 +75,7 @@ const MainPage = () => {
     }
   };
 
-  // const makeNewChat = () => {
-  //   setMessages([]);
-  // }
 
-  useEffect(() => {
-    const div = containerRef.current;
-    if (div.scrollHeight > div.clientHeight) {
-       messagesRef.current?.scrollIntoView({behavior: "smooth"});
-    }
-
-  }, [messages]);
 
   const fetchRes = async (message, curBodId) => {
     const newController = new AbortController();
@@ -107,6 +118,8 @@ const MainPage = () => {
           : msg
         )
       )
+      scroll();
+
     }
     // setMessages(prev => prev.map(msg => msg.id === curBodId
     //   ? {...msg, message: fullText, loading: false, showAnim: false}
