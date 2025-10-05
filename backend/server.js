@@ -91,8 +91,6 @@ app.delete("/chats/:id", async (req, res) => {
   }
 })
 
-
-
 app.get("/chats/:id/messages", async (req, res) => {
   const {id} = req.params;
     const result = await pool.query(

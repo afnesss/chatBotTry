@@ -2,7 +2,7 @@
 
 
 ::-webkit-scrollbar {
-  width: 8px;      /* завжди видно */
+  width: 8px;
 }
 
 /* Firefox */
@@ -15,8 +15,5 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* важливо — щоб не скролилась уся сторінка */
+  overflow: hidden;
 }
-/* #root {
-  height: 100%;
-} */

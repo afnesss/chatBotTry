@@ -4,7 +4,7 @@ import { FiSearch } from "react-icons/fi";
 import { FiSettings } from "react-icons/fi";   
 import { MdMoreHoriz } from "react-icons/md";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate} from "react-router-dom";
 import React, { useState, useEffect, useRef} from "react";
 
 import { iconStyles } from "./IconWithLabel";
@@ -136,7 +136,9 @@ const SideBar = () => {
                 {chats.map((chat) => {
                   return (
                     <React.Fragment key={chat.id}>
-                      <div className={`flex group justify-between items-center mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl ${popEditChat.open && popEditChat.chat === chat || editChat.edit && editChat.chat === chat && "bg-gray-300/50"}` }>
+                      <NavLink to={`/chats/${chat.id}`} className={({isActive}) => (`flex group justify-between items-center mt-2 hover:bg-gray-300/50 w-full p-2 rounded-xl 
+                        ${popEditChat.open && popEditChat.chat === chat || editChat.edit && editChat.chat === chat && "bg-gray-300/50"} 
+                        ${isActive && "bg-gray-300/30"}` )}>
 
                         {editChat.edit && editChat.chat === chat ? 
                             <input
@@ -149,16 +151,18 @@ const SideBar = () => {
                               if (e.key === "Escape") {
                                 setEditChat({edit: false, chat: null, newTitle: ''});
                               }
+
                             }}
+                            onClick={(e) => e.preventDefault()} 
                             autoFocus
                             className="focus:outline-none rounded-lg px-2 py-1 text-sm w-full"
                             />
-                        : <Link to={`/chats/${chat.id}`} className="w-full truncate block hover:overflow-visible hover:whitespace-normal  mr-2"> 
+                        : <span className="w-full truncate block hover:overflow-visible hover:whitespace-normal  mr-2"> 
                           {chat.title}
-                        </Link>}
+                        </span>}
 
-                        <MdMoreHoriz onClick={(e)=> openPopUp(e, chat)} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
-                      </div>
+                        <MdMoreHoriz onClick={(e)=> {e.preventDefault(); openPopUp(e, chat); }} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
+                      </NavLink>
                     {popEditChat.open && popEditChat.chat === chat && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} deleteChat={() => handleDeleteChat(chat.id)} changeChatTitle={() => 
                           {setEditChat({ edit: true, chat, newTitle: chat.title });
                           closePopUp();
