@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useState } from "react";
 import { getLastChats, findChat} from "../utils/fetches";
 import { AiOutlineClose } from "react-icons/ai"; 
+import { FiMessageCircle } from "react-icons/fi";
 
 import FilteredChats from "./FilteredChats";
 
@@ -65,9 +66,18 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
       
       <hr className="border-gray-400 my-3 -mx-4"></hr>
       <div className="h-50 overflow-y-auto">
-        <FilteredChats array={todayChats} title="Today" onClick={onclick}/>
-        <FilteredChats array={yesterdayChats} title="Yesterday" onClick={onclick}/>
-        <FilteredChats array={lastWeekChats} title="Last Week" onClick={onclick}/>
+        {todayChats.length === 0 && yesterdayChats.length === 0 && lastWeekChats.length === 0 
+        ? <>
+          <div className="w-full h-full flex items-center justify-center text-gray-400 font-semibold text-lg">
+            <FiMessageCircle size={24} className="mr-2"/>
+            No chat matches</div>
+        </>
+        : <>
+          <FilteredChats array={todayChats} title="Today" onClick={onclick}/>
+          <FilteredChats array={yesterdayChats} title="Yesterday" onClick={onclick}/>
+          <FilteredChats array={lastWeekChats} title="Last Week" onClick={onclick}/>
+        </>}
+
       </div>
     </div>
     </div>

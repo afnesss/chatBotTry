@@ -38,12 +38,7 @@ const MainPage = () => {
   const handleSend = async (message) => {
 
     if (loading){
-      // setMessages(prev => prev.filter(item => item.id !== botId));
-       
-      // setMessages(prev => {
-      //   updateMsg(prev, chatId); // send latest
-      //   return prev;
-      // });
+
       controller?.abort();
     const botMessage = messages.find(msg => msg.id === botId);
     
@@ -56,11 +51,6 @@ const MainPage = () => {
       );
       
     }
-    //   setMessages(prev =>
-    //   prev.map(msg =>
-    //     msg.id === botId ? { ...msg, loading: false } : msg
-    //   )
-    // );
       try {
         await addMessage(chatId, botMessage.sender, botMessage.message, botMessage.id, true);
       } catch (error) {
@@ -72,14 +62,6 @@ const MainPage = () => {
 
     const curBodId = uuidv4();
      setBotId(curBodId);
-
-    
-    // setMessages(prev => [
-    //   ...prev,
-    //   { chatId, id: uuidv4(), message, sender: "user"},
-    //   { chatId, id: curBodId, sender: "robot", loading: true}
-    // ]);
-    // scroll();
 
     const userMsg = { id: uuidv4(), chatId, sender: "user", message };
     const botMsg = { id: curBodId, chatId, sender: "robot", message: "", loading: true };
