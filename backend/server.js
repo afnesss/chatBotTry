@@ -44,11 +44,11 @@ app.put("/chats/:id", async (req, res) => {
 
 app.post("/chats", async (req, res) => {
   try {
-    const {id, title, messages, created_at} = req.body;
+    const {id, title, created_at} = req.body;
 
-    const result = await pool.query(`INSERT INTO chats(id, title, messages, created_at) VALUES(
-        $1, $2, $3::jsonb, $4::timestamptz
-        ) RETURNING *`,  [id, title, JSON.stringify(messages), created_at]);
+    const result = await pool.query(`INSERT INTO chats(id, title, created_at) VALUES(
+        $1, $2, $3::timestamptz
+        ) RETURNING *`,  [id, title, created_at]);
 
     res.json(result.rows[0]);
 
@@ -78,6 +78,8 @@ app.delete("/chats/:id", async (req, res) => {
     const {id} = req.params;
     const result = await pool.query("DELETE FROM chats WHERE id=$1 RETURNING *", [id]);
 
+    const resultMsg = await pool.query("DELETE FROM messagesTable WHERE chat_id=$1 RETURNING *", [id]);
+
     if (result.rowCount === 0){
       return res.status(404).json({ error: "Chat not found" });
     }
@@ -93,35 +95,33 @@ app.delete("/chats/:id", async (req, res) => {
 
 app.get("/chats/:id/messages", async (req, res) => {
   const {id} = req.params;
-  const result = await pool.query("SELECT messages FROM chats where id= $1", [id]);
-  if (result.rowCount === 0) {
-    return res.status(404).json({ error: "Chat not found" });
-  }
-
-  res.json(result.rows[0].messages);
-
-})
-
-app.put("/chats/:id/messages", async (req, res) => {
-  try {
-    const { id } = req.params;   
-    const messagesArray = req.body; 
     const result = await pool.query(
-      "UPDATE chats SET messages=$1 WHERE id=$2 RETURNING *",
-      [JSON.stringify(messagesArray), id]
+      "SELECT id, sender, message, loading FROM messagesTable WHERE chat_id = $1",
+      [id]
     );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Chat not found" });
-    }
-
-    res.json(result.rows[0]);                // повертаємо оновлений рядок
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  res.json(result.rows);
 
 })
+
+app.post("/chats/:id/messages", async (req, res) => {
+  try {
+    const { id } = req.params; // chat_id
+    const { sender, message, loading, } = req.body;
+
+    const result = await pool.query(
+      `INSERT INTO messagesTable (chat_id, sender, message, loading)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [id, sender, message, loading || false]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error inserting message:", error.message);
+    res.status(500).json({ error: "Database error" });
+  }
+});
 
 app.listen(PORT, () => {
   console.log("Backend running on http://localhost:" + PORT);

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import ChatInput from '../components/ChatInput'
 import {v4 as uuidv4} from 'uuid';
 import { useParams} from 'react-router-dom';
-import { updateMsg, load } from '../utils/fetches';
+import { addMessage, load } from '../utils/fetches';
 import MessagesCont from '../components/MessagesCont';
 
 const MainPage = () => {
@@ -15,7 +15,7 @@ const MainPage = () => {
   // const [combinedResponse, setCombRes] = useState('default');
   const [loading, setLoading] = useState(false);
   const [controller, setController] = useState(null);
-  // const [botId, setBotId] = useState('');
+  const [botId, setBotId] = useState('');
 
   const { id: chatId } = useParams();
 
@@ -39,23 +39,58 @@ const MainPage = () => {
 
     if (loading){
       // setMessages(prev => prev.filter(item => item.id !== botId));
-      // setBotId(null);
-      setMessages(prev => {
-        updateMsg(prev, chatId); // send latest
-        return prev;
-      });
+       
+      // setMessages(prev => {
+      //   updateMsg(prev, chatId); // send latest
+      //   return prev;
+      // });
       controller?.abort();
+    const botMessage = messages.find(msg => msg.id === botId);
+    
+    if (botMessage && botMessage.message) {
+      // Оновлюємо стан - прибираємо loading
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.id === botId ? { ...msg, loading: false } : msg
+        )
+      );
+      
+    }
+    //   setMessages(prev =>
+    //   prev.map(msg =>
+    //     msg.id === botId ? { ...msg, loading: false } : msg
+    //   )
+    // );
+      try {
+        await addMessage(chatId, botMessage.sender, botMessage.message, botMessage.id, true);
+      } catch (error) {
+        console.log('Error saving aborted message:', error);
+      }
+    setBotId(null);
       return;
     }
 
     const curBodId = uuidv4();
-    // setBotId(curBodId);
-    setMessages(prev => [
-      ...prev,
-      { chatId, id: uuidv4(), message, sender: "user"},
-      { chatId, id: curBodId, sender: "robot", loading: true}
-    ]);
+     setBotId(curBodId);
+
+    
+    // setMessages(prev => [
+    //   ...prev,
+    //   { chatId, id: uuidv4(), message, sender: "user"},
+    //   { chatId, id: curBodId, sender: "robot", loading: true}
+    // ]);
     // scroll();
+
+    const userMsg = { id: uuidv4(), chatId, sender: "user", message };
+    const botMsg = { id: curBodId, chatId, sender: "robot", message: "", loading: true };
+
+  // 🧠 Локально додаємо обидва
+    setMessages((prev) => [...prev, userMsg, botMsg]);
+
+  // 💾 Зберігаємо userMsg в базі
+
+    await addMessage(chatId, userMsg.sender, userMsg.message, userMsg.id);
+
     try {
       await fetchRes(message, curBodId);
     } catch (error) {
@@ -109,11 +144,15 @@ const MainPage = () => {
 
     }
 
-    setMessages(prev => {
-      updateMsg(prev, chatId); // send latest
-      return prev;
-    });
+    
 
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === curBodId ? { ...msg, message: fullText, loading: false } : msg
+      )
+    );
+
+    await addMessage(chatId, "robot", fullText, curBodId, true);
     return fullText;
 
     } catch (error) {

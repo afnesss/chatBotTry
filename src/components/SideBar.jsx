@@ -129,8 +129,9 @@ const SideBar = () => {
             <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch} onClick={() => setSearchBox(prev => !prev)}/>
             </div>
 
-            <div className={`mt-10 flex-1 min-h-0 overflow-y-auto ${sideBar? "opacity-100" : "opacity-0"}`}>
-              <div className={`text-gray-600 transition-opacity duration-300`}>Your Chats</div>
+            <div className={`mt-10 text-gray-600 transition-opacity duration-300 ${sideBar? "opacity-100" : "opacity-0"}`}>Your Chats</div>
+            <div className={`flex-1 min-h-0 overflow-y-auto ${sideBar? "opacity-100" : "opacity-0"}`}>
+              
                 <div className="space-y-1 pb-2">
                 {chats.map((chat) => {
                   return (

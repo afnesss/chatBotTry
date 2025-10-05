@@ -1,21 +1,25 @@
 import {v4 as uuidv4} from 'uuid';
 
-export const updateMsg = async (messages, chatId) => {
-  await fetch(`/api/chats/${chatId}/messages`,{
-  method: "PUT",
-    headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(messages),
-})
+export const addMessage = async (chatId, sender, message, id, loading = false,) => {
+  try {
+    const res = await fetch(`/api/chats/${chatId}/messages`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({id, sender, message, loading }),
+    });
 
-} 
+    if (!res.ok) throw new Error("Failed to add message");
+    return await res.json();
+  } catch (error) {
+    console.error("Error adding message:", error);
+  }
+};
 
 export const load = async(chatId, setMessages) => {
   try {
     const res = await fetch(`/api/chats/${chatId}/messages`);
     const data = await res.json();
-    setMessages(data);
+    setMessages(data || []);
 
   } catch (error) {
     console.log('error fetching messages with chatId ' + chatId + error)
@@ -26,7 +30,7 @@ export const makeNewChat = async() => {
   try {
     const id = uuidv4();
     const title = "My New Chat";
-    const messages = [];
+    // const messages = [];
     const created_at = new Date().toISOString();
     const response = await fetch('/api/chats',{
     method: "POST",
@@ -36,7 +40,7 @@ export const makeNewChat = async() => {
     body: JSON.stringify({
       id, 
       title,
-      messages,
+      // messages,
       created_at
     })
   })
@@ -59,7 +63,7 @@ export const deleteChat = async(chatId) => {
     const data = await res.json();
 
     if (!res.ok) {
-    throw new Error(errData.error || "Failed to delete chat");
+      throw new Error( "Failed to delete chat");
     }
 
     console.log("Chat deleted:", data.deleted);
