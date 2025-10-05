@@ -16,6 +16,13 @@ export const addMessage = async (chatId, sender, message, id, loading = false,) 
 };
 
 export const load = async(chatId, setMessages) => {
+
+    if (!chatId || chatId === 'undefined') {
+    console.warn('load is with bad chatId:', chatId);
+    setMessages([]);
+    return;
+  }
+
   try {
     const res = await fetch(`/api/chats/${chatId}/messages`);
     const data = await res.json();
@@ -111,5 +118,29 @@ export const getLastChats= async() => {
 
   } catch (error) {
     console.error("Error getting chat(time):", error.message);
+  }
+}
+
+export const findChat = async(search) => {
+  try {
+    const res = await fetch(`/api/chats/find`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({search})
+    })
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.log('res is not ok');
+      return [];
+    }
+
+    return data;
+
+  } catch (error) {
+    console.error("Error finding chat (in fetch): ", error.message);
   }
 }

@@ -4,7 +4,7 @@ import { FiSearch } from "react-icons/fi";
 import { FiSettings } from "react-icons/fi";   
 import { MdMoreHoriz } from "react-icons/md";
 
-import { Link, NavLink, useNavigate} from "react-router-dom";
+import { NavLink, useNavigate} from "react-router-dom";
 import React, { useState, useEffect, useRef} from "react";
 
 import { iconStyles } from "./IconWithLabel";
@@ -120,8 +120,8 @@ const SideBar = () => {
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}>
               {hover || sideBar ? 
-              <TbLayoutSidebar className={`hover:bg-gray-600/30 rounded-lg p-1 cursor-ew-resize`} size={35} color='green'/>
-            : <MdOutlineSmartToy className={`hover:bg-gray-600/30 rounded-lg p-1 cursor-ew-resize`} size={35} color='green'/>}  
+              <TbLayoutSidebar className={`hover:bg-gray-300/70 rounded-xl p-1 cursor-ew-resize`} size={35} color='green'/>
+            : <MdOutlineSmartToy className={`hover:bg-gray-300/70 rounded-xl p-1 cursor-ew-resize`} size={35} color='green'/>}  
           </button>
 
             <div className="mt-7">

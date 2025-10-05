@@ -1,15 +1,17 @@
 import { forwardRef, useEffect, useState } from "react";
-import { getLastChats } from "../utils/fetches";
+import { getLastChats, findChat} from "../utils/fetches";
 import { AiOutlineClose } from "react-icons/ai"; 
 
 import FilteredChats from "./FilteredChats";
 
 import dayjs from "dayjs";
 
+
 const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
   const [lastChats, setLastChats] = useState([]);
 
   const [searchBox, setSearchBox] = useState(searchBoxPassed);
+  const [searchInput, setSearchInput] = useState('');
 
   const today = dayjs();
   const yesterday = dayjs().subtract(1, 'day');
@@ -20,19 +22,31 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
 
   const lastWeekEnd = dayjs().subtract(2, 'day');
 
+
+
   // const isSameDay = (d1, d2) =>
   //   d1.getFullYear() === d2.getFullYear() &&
   //   d1.getMonth() === d2.getMonth() &&
   //   d1.getDate() === d2.getDate();
+  const fetchChats = async () => {
+    const chats = await getLastChats();
+    setLastChats(chats || []);
+  }
 
   useEffect(() => {
-    const fetchChats = async () => {
-      const chats = await getLastChats();
-      setLastChats(chats);
-    }
+
     fetchChats();
   }, [searchBox])
 
+  useEffect(() => {
+    const fetchChats = async (searchInput) => {
+      if(searchInput && searchInput.trim() === '') fetchChats();
+      const chats = await findChat(searchInput);
+      setLastChats(chats || []);
+    }
+    fetchChats(searchInput);
+
+  }, [searchInput])
 
   const todayChats = lastChats.filter((chat) => dayjs(chat.created_at).isSame(today, 'day'));
   const yesterdayChats = lastChats.filter((chat) => dayjs(chat.created_at).isSame(yesterday, 'day'));
@@ -40,12 +54,12 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
     const chatDate = dayjs(chat.created_at);
     return chatDate.isAfter(lastWeekStart) && chatDate.isBefore(lastWeekEnd);
   });
-  console.log(lastWeekChats)
+  // console.log(lastWeekChats)
   return (
     <div  className="fixed inset-0 flex items-center justify-center">
     <div ref={ref} className="shadow-[0_0_40px_rgba(0,0,0,0.25)] rounded-xl bg-gray-200 p-4 w-100">
       <div className="flex flex-row w-full justify-between items-center">
-        <input type="text" placeholder="Search in Chats..." className="focus:outline-none text-sm text-gray-800" ></input>
+        <input type="text" value={searchInput} placeholder="Search in Chats..." className="focus:outline-none text-sm text-gray-800" onChange={(e) => setSearchInput(e.target.value)}></input>
         <AiOutlineClose size={25} color="gray" className="hover:bg-gray-600/30 rounded-xl p-1" onClick={() => {onclick?.(); setSearchBox(false)}}/>
       </div>
       

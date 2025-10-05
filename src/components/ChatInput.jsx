@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 
-const ChatInput = ({onSend, loading, controller}) => {
+const ChatInput = ({onSend, loading}) => {
   const [inputText, setText] = useState('');
 
   const clickSend = () => {

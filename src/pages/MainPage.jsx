@@ -84,10 +84,8 @@ const MainPage = () => {
     const userMsg = { id: uuidv4(), chatId, sender: "user", message };
     const botMsg = { id: curBodId, chatId, sender: "robot", message: "", loading: true };
 
-  // 🧠 Локально додаємо обидва
     setMessages((prev) => [...prev, userMsg, botMsg]);
 
-  // 💾 Зберігаємо userMsg в базі
 
     await addMessage(chatId, userMsg.sender, userMsg.message, userMsg.id);
 
@@ -144,8 +142,7 @@ const MainPage = () => {
 
     }
 
-    
-
+  
     setMessages((prev) =>
       prev.map((msg) =>
         msg.id === curBodId ? { ...msg, message: fullText, loading: false } : msg

@@ -121,6 +121,21 @@ app.post("/chats/:id/messages", async (req, res) => {
   }
 });
 
+app.post("/chats/find", async (req, res) => {
+  try {
+    const { search } = req.body;
+
+    const result = await pool.query(`select chats.id, chats.title, chats.created_at from chats join messagesTable on chats.id=messagesTable.chat_id where chats.title ilike $1 or messagesTable.message ilike $1 GROUP BY chats.id, chats.title, chats.created_at
+       ORDER BY chats.created_at DESC`, [`%${search}%`]);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('error finding chat: ', error.message);
+    res.status(500).json({error: "Database error" });
+  }
+
+})
+
 app.listen(PORT, () => {
   console.log("Backend running on http://localhost:" + PORT);
 });

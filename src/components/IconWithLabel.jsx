@@ -1,10 +1,10 @@
 
-const iconStyles = 'hover:bg-gray-600/30 rounded-lg p-2 cursor-pointer';
+const iconStyles = 'hover:bg-gray-300/70 rounded-xl p-2 cursor-pointer';
 
 
 const IconWithLabel = ({icon: Icon, text, sideBar, onClick }) => {
   return (
-    <div onClick={onClick} className="flex flex-row items-center hover:bg-gray-600/30 rounded-lg cursor-pointer relative">
+    <div onClick={onClick} className="flex flex-row items-center hover:bg-gray-300/70 rounded-xl cursor-pointer relative">
       <Icon className="p-2" size={37} color="green"/>
         <span
         className={`left-15 absolute
