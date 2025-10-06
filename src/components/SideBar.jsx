@@ -17,23 +17,20 @@ import EditChat from "./EditChat";
 // import { FaRobot } from "react-icons/fa";
 import { MdOutlineSmartToy } from "react-icons/md";
 import SearchBox from '../components/SearchBox';
+import { useChatContext } from "../contexts/ChatContext";
 
 const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
-  const [chats, setChats] = useState([]); 
   const [popEditChat, setPopEditChat] = useState({ open: false, x: 0, y: 0, chat: null });
   const [hover, setHover] = useState(false);
+  const [searchBox, setSearchBox] = useState(false);
+  const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
 
   const ref = useRef(null);
   const refInput = useRef(null);
   const searchRef = useRef(null);
   
-  
-  const navigate = useNavigate();
-
-  const [searchBox, setSearchBox] = useState(false);
-  const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
-  // const [loading, set]
+  const {chats, handleNewChat, handleRename, handleDeleteChat} = useChatContext();
 
   const openPopUp = (e, chat) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -67,44 +64,10 @@ const SideBar = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const handleNewChat = async () => {
-    const newChat = await makeNewChat();
-    navigate(`/chats/${newChat.id}`)
-    setChats(prev => [newChat, ...prev]);
-  }
-
-  const handleDeleteChat = async (chatId) => {
-    await deleteChat(chatId);
-    setChats(prev => prev.filter(item => item.id !== chatId));
-  }
-
-  const handleRename = async () => {
-    if (!editChat.newTitle.trim()) return;
-
-    await changeChatTitle(editChat.chat.id, editChat.newTitle.trim());
-
-    setChats(prevChats =>
-      prevChats.map(chat =>
-        chat.id === editChat.chat.id ? { ...chat, title: editChat.newTitle.trim() } : chat
-      )
-    );
-
+  const onRename = async () => {
+    handleRename(editChat.chat.id, editChat.newTitle)
     setEditChat({ edit: false, chat: null, newTitle: "" });
   };
-
-  useEffect(() => {
-    const fetchChats = async () => {
-      try {
-        const res = await fetch("/api/chats/titles");
-        const data = await res.json();
-        setChats(data);
-      } catch (error) {
-        console.log('error fetching chats ' + error);
-      }
-  }
-    fetchChats();
-  }, [])
-
 
   return (
     <div
@@ -133,6 +96,7 @@ const SideBar = () => {
             <div className={`flex-1 min-h-0 overflow-y-auto ${sideBar? "opacity-100" : "opacity-0"}`}>
               
                 <div className="space-y-1 pb-2">
+                  {/* {console.log("Chats:", chats.map(c => ({ id: c.id, title: c.title })))}  */}
                 {chats.map((chat) => {
                   return (
                     <React.Fragment key={chat.id}>
@@ -147,7 +111,7 @@ const SideBar = () => {
                             value={editChat.newTitle}
                             onChange={(e) => setEditChat(prev => ({ ...prev, newTitle: e.target.value }))}
                             onKeyDown={(e) => {
-                              if (e.key === "Enter") handleRename();
+                              if (e.key === "Enter") onRename();
                               if (e.key === "Escape") {
                                 setEditChat({edit: false, chat: null, newTitle: ''});
                               }

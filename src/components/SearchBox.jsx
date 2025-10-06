@@ -15,20 +15,11 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
   const [searchInput, setSearchInput] = useState('');
 
   const today = dayjs();
+  
   const yesterday = dayjs().subtract(1, 'day');
-  // yesterday.setDate(today.getDate() - 1);
-
   const lastWeekStart = dayjs().subtract(7, 'day');
-  // lastWeekStart.setDate(today.getDate() - 7);
-
   const lastWeekEnd = dayjs().subtract(2, 'day');
 
-
-
-  // const isSameDay = (d1, d2) =>
-  //   d1.getFullYear() === d2.getFullYear() &&
-  //   d1.getMonth() === d2.getMonth() &&
-  //   d1.getDate() === d2.getDate();
   const fetchChats = async () => {
     const chats = await getLastChats();
     setLastChats(chats || []);

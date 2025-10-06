@@ -2,8 +2,10 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import ChatInput from '../components/ChatInput'
 import {v4 as uuidv4} from 'uuid';
 import { useParams} from 'react-router-dom';
-import { addMessage, load } from '../utils/fetches';
+import { addMessage, generateRes, load, makeNewChat } from '../utils/fetches';
 import MessagesCont from '../components/MessagesCont';
+// import { handleNewChat } from '../components/SideBar';
+import { useChatContext } from '../contexts/ChatContext';
 
 const MainPage = () => {
   const [messages, setMessages] = useState([]);
@@ -18,10 +20,20 @@ const MainPage = () => {
   const [botId, setBotId] = useState('');
 
   const { id: chatId } = useParams();
+  const { setChats, handleNewChat } = useChatContext();
+
+  // const [currentChatId, setCurrentChatId] = useState(paramChatId || null);
 
   useEffect(() => {
     if(chatId){
       load(chatId, setMessages);
+    }
+    else{
+      setMessages([]);
+      // setChatId(null);
+      setBotId(null);
+      setController(null);
+      setLoading(false);
     }
   }, [chatId])
 
@@ -43,7 +55,6 @@ const MainPage = () => {
     const botMessage = messages.find(msg => msg.id === botId);
     
     if (botMessage && botMessage.message) {
-      // Оновлюємо стан - прибираємо loading
       setMessages(prev =>
         prev.map(msg =>
           msg.id === botId ? { ...msg, loading: false } : msg
@@ -52,6 +63,7 @@ const MainPage = () => {
       
     }
       try {
+
         await addMessage(chatId, botMessage.sender, botMessage.message, botMessage.id, true);
       } catch (error) {
         console.log('Error saving aborted message:', error);
@@ -64,38 +76,38 @@ const MainPage = () => {
      setBotId(curBodId);
 
     const userMsg = { id: uuidv4(), chatId, sender: "user", message };
+    // console.log(currChatId);
     const botMsg = { id: curBodId, chatId, sender: "robot", message: "", loading: true };
-
+    // console.log("botmsg: "+botMsg)
+    // await new Promise(r => setTimeout(r, 50)); //костиль2
     setMessages((prev) => [...prev, userMsg, botMsg]);
 
 
-    await addMessage(chatId, userMsg.sender, userMsg.message, userMsg.id);
+    const response = await addMessage(chatId, userMsg.sender, userMsg.message, userMsg.id);
+    if(response.chatCreated){
+      // console.log('response: '+ response.chat)
+      setChats(prev => [...prev, response.chat]);
+    }
+    
 
     try {
-      await fetchRes(message, curBodId);
+      // if (isNewChat) {
+      //   await load(currChatId, setMessages);
+      // }
+      await fetchRes(message, curBodId, chatId);
+
+
     } catch (error) {
       console.log('error clicking:' + error)
     }
   };
 
-
-  const fetchRes = async (message, curBodId) => {
+  const fetchRes = async (message, curBodId, chatId) => {
     const newController = new AbortController();
     setController(newController);
     setLoading(true);
     try {
-
-      const res = await fetch("http://localhost:11434/api/generate",{
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          model: "gemma:2b",
-          prompt: message
-        }),
-        signal: newController.signal
-    })
-
-    // const data = await res.text();
+    const res = await generateRes(message, newController.signal);
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let fullText = '';
@@ -113,25 +125,31 @@ const MainPage = () => {
         .join('');
 
       fullText += chunk;
+      // console.log(fullText);
       setMessages(prev => 
-        prev.map(msg => 
-          msg.id === curBodId?
+        prev.map((msg) => {
+          // console.log(msg.id , curBodId);
+         return msg.id === curBodId?
           {...msg, message: (msg.message || '') + chunk, loading: true}
           : msg
+        }
+
         )
       )
-      scroll();
-
+      // console.log(messages, curBodId);
     }
 
-  
     setMessages((prev) =>
-      prev.map((msg) =>
-        msg.id === curBodId ? { ...msg, message: fullText, loading: false } : msg
+      prev.map((msg) =>{
+        // console.log(msg.id , curBodId);
+        return msg.id === curBodId ? { ...msg, message: fullText, loading: false } : msg
+      }
+        
       )
     );
 
     await addMessage(chatId, "robot", fullText, curBodId, true);
+    console.log('Bot повідомлення збережено для chatId:', chatId);
     return fullText;
 
     } catch (error) {

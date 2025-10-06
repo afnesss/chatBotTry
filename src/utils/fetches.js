@@ -9,7 +9,9 @@ export const addMessage = async (chatId, sender, message, id, loading = false,) 
     });
 
     if (!res.ok) throw new Error("Failed to add message");
-    return await res.json();
+    const data = await res.json();
+    // const { chatCreated, chat, message: newMessage} = data;
+    return data;
   } catch (error) {
     console.error("Error adding message:", error);
   }
@@ -33,9 +35,9 @@ export const load = async(chatId, setMessages) => {
   }
 }
 
-export const makeNewChat = async() => {
+export const makeNewChat = async(passedId=null) => {
   try {
-    const id = uuidv4();
+    const id = passedId || uuidv4();
     const title = "My New Chat";
     // const messages = [];
     const created_at = new Date().toISOString();
@@ -143,4 +145,17 @@ export const findChat = async(search) => {
   } catch (error) {
     console.error("Error finding chat (in fetch): ", error.message);
   }
+}
+
+export const generateRes = async (message, signal) => {
+  const res = await fetch("http://localhost:11434/api/generate",{
+  method: "POST",
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    model: "gemma:2b",
+    prompt: message
+  }),
+  signal
+})
+return res;
 }

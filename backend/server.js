@@ -104,17 +104,37 @@ app.get("/chats/:id/messages", async (req, res) => {
 
 app.post("/chats/:id/messages", async (req, res) => {
   try {
-    const { id } = req.params; // chat_id
-    const { sender, message, loading, } = req.body;
+    const { id: chatId } = req.params; // chat_id
+    const {id: messageId, sender, message, loading, } = req.body;
+
+    const chatCheck = await pool.query(
+      "SELECT * FROM chats WHERE id = $1",
+      [chatId]
+    );
+    let resChat = null;
+    if (chatCheck.rows.length === 0) {
+      const res = await pool.query(
+        "INSERT INTO chats (id, title, created_at) VALUES ($1, $2, NOW()) RETURNING *",
+        [chatId, "My New Chat"]
+      );
+      resChat = res.rows[0];
+
+      console.log(`Chat ${chatId} створено`);
+    }
 
     const result = await pool.query(
-      `INSERT INTO messagesTable (chat_id, sender, message, loading)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO messagesTable (id, chat_id, sender, message, loading)
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
-      [id, sender, message, loading || false]
+      [messageId, chatId, sender, message, loading || false]
     );
 
-    res.json(result.rows);
+    res.json({
+      success: true,
+      chatCreated: !!resChat,
+      chat: resChat,
+      message: result.rows
+    });
   } catch (error) {
     console.error("Error inserting message:", error.message);
     res.status(500).json({ error: "Database error" });
