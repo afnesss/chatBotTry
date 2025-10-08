@@ -14,6 +14,7 @@ export const addMessage = async (chatId, sender, message, id, loading = false,) 
     return data;
   } catch (error) {
     console.error("Error adding message:", error);
+    return { chatCreated: false, message: null };
   }
 };
 
