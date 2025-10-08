@@ -147,15 +147,20 @@ export const findChat = async(search) => {
   }
 }
 
-export const generateRes = async (message, signal) => {
-  const res = await fetch("http://localhost:11434/api/generate",{
-  method: "POST",
-  headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify({
-    model: "gemma:2b",
-    prompt: message
-  }),
-  signal
-})
-return res;
+export const chatExists = async(chatId) => {
+  try {
+    const res = await fetch(`/api/chats/${chatId}`);
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.log('res is not ok');
+      return [];
+    }
+
+    return data.exists;
+
+  } catch (error) {
+    console.error("Error checking chat (in fetch): ", error.message);
+  }
 }

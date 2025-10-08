@@ -28,7 +28,7 @@ export const ChatProvider = ({ children }) => {
 
   const openPopUp = (e, chatId, from, buttonRef = null) => {
     let rect = null;
-    buttonRef.current ? 
+    buttonRef && buttonRef.current ? 
      rect = buttonRef.current.getBoundingClientRect()
      : rect = e.currentTarget.getBoundingClientRect();
     let x;

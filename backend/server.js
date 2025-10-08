@@ -17,6 +17,14 @@ const pool = new Pool({
   port: 5454,
 });
 
+const chatExists = async (chatId) => {
+  const chatCheck = await pool.query(
+      "SELECT * FROM chats WHERE id = $1",
+      [chatId]
+    );
+  return chatCheck.rows.length > 0;;
+}
+
 app.get("/chats/titles", async (req, res) => {
   const result = await pool.query("SELECT id,title FROM chats");
   console.log(res.json(result.rows));
@@ -107,12 +115,9 @@ app.post("/chats/:id/messages", async (req, res) => {
     const { id: chatId } = req.params; // chat_id
     const {id: messageId, sender, message, loading, } = req.body;
 
-    const chatCheck = await pool.query(
-      "SELECT * FROM chats WHERE id = $1",
-      [chatId]
-    );
+    const chatCheck = chatExists(chatId);
     let resChat = null;
-    if (chatCheck.rows.length === 0) {
+    if (!chatCheck) {
       const res = await pool.query(
         "INSERT INTO chats (id, title, created_at) VALUES ($1, $2, NOW()) RETURNING *",
         [chatId, "My New Chat"]
@@ -159,6 +164,18 @@ app.post("/chats/find", async (req, res) => {
 
 })
 
+app.get("/chats/:id", async (req, res) => {
+  const { id: chatId } = req.params;
+  try {
+    const exists = await chatExists(chatId);
+    res.json({ exists });
+  } catch (error) {
+    console.error('error checking chat: ', error.message);
+    res.status(500).json({error: "Database error" });
+  }
+})
+
 app.listen(PORT, () => {
   console.log("Backend running on http://localhost:" + PORT);
 });
+
