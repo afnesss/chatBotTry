@@ -4,25 +4,26 @@ import {v4 as uuidv4} from 'uuid';
 import { useParams} from 'react-router-dom';
 import { addMessage, generateRes, load, makeNewChat } from '../utils/fetches';
 import MessagesCont from '../components/MessagesCont';
-// import { handleNewChat } from '../components/SideBar';
 import { useChatContext } from '../contexts/ChatContext';
+import { MdMoreHoriz } from 'react-icons/md';
+import EditChat from '../components/EditChat';
 
 const MainPage = () => {
   const [messages, setMessages] = useState([]);
   const [toUp, setToUp] = useState(false);
 
-  // const messagesRef = useRef(null);
   const containerRef = useRef(null);
 
-  // const [combinedResponse, setCombRes] = useState('default');
   const [loading, setLoading] = useState(false);
   const [controller, setController] = useState(null);
   const [botId, setBotId] = useState('');
+  const ref = useRef(null);
+  
 
   const { id: chatId } = useParams();
-  const { setChats, handleNewChat } = useChatContext();
+  const { setChats, openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat} = useChatContext();
+  const buttonRef = useRef(null);
 
-  // const [currentChatId, setCurrentChatId] = useState(paramChatId || null);
 
   useEffect(() => {
     if(chatId){
@@ -37,6 +38,18 @@ const MainPage = () => {
     }
   }, [chatId])
 
+  useEffect(() =>
+  {
+    function handleClick(e) {
+        if (ref.current && !ref.current.contains(e.target)) {
+        console.log('clocked')
+        closePopUp();
+      }
+    }
+
+      document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
   useLayoutEffect(() => {
   const container = containerRef.current;
   if (container) {
@@ -76,10 +89,8 @@ const MainPage = () => {
      setBotId(curBodId);
 
     const userMsg = { id: uuidv4(), chatId, sender: "user", message };
-    // console.log(currChatId);
     const botMsg = { id: curBodId, chatId, sender: "robot", message: "", loading: true };
-    // console.log("botmsg: "+botMsg)
-    // await new Promise(r => setTimeout(r, 50)); //костиль2
+
     setMessages((prev) => [...prev, userMsg, botMsg]);
 
 
@@ -91,9 +102,6 @@ const MainPage = () => {
     
 
     try {
-      // if (isNewChat) {
-      //   await load(currChatId, setMessages);
-      // }
       await fetchRes(message, curBodId, chatId);
 
 
@@ -125,10 +133,9 @@ const MainPage = () => {
         .join('');
 
       fullText += chunk;
-      // console.log(fullText);
       setMessages(prev => 
         prev.map((msg) => {
-          // console.log(msg.id , curBodId);
+
          return msg.id === curBodId?
           {...msg, message: (msg.message || '') + chunk, loading: true}
           : msg
@@ -136,17 +143,13 @@ const MainPage = () => {
 
         )
       )
-      // console.log(messages, curBodId);
     }
 
     setMessages((prev) =>
       prev.map((msg) =>{
-        // console.log(msg.id , curBodId);
+
         return msg.id === curBodId ? { ...msg, message: fullText, loading: false } : msg
-      }
-        
-      )
-    );
+      }));
 
     await addMessage(chatId, "robot", fullText, curBodId, true);
     console.log('Bot повідомлення збережено для chatId:', chatId);
@@ -165,12 +168,36 @@ const MainPage = () => {
     }
   }
 
+  useEffect(() => {
+  const handleResize = () => {
+    if (popEditChat.open && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const x = popEditChat.from === 'main' ? rect.left - 100 : rect.right - 20;
+      const y = rect.top + 20;
+
+      setPopEditChat(prev => ({
+        ...prev,
+        x,
+        y
+      }));
+    }
+  };
+
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, [popEditChat.open, popEditChat.from]);
+
   return (
     <>
     <section className="flex h-screen">
-    
-    {/* <LeftNav makeNewChat={makeNewChat}/> */}
+
       <div className="flex flex-col shadow-md bg-green-100 w-full p-7">
+        <div className='relative inline-block'>
+
+            <MdMoreHoriz  ref={buttonRef} size={40} className=' text-gray-600 hover:bg-gray-300/50 rounded-xl ml-auto p-2' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef)}}/>
+            {popEditChat.open && popEditChat.chatId === chatId && popEditChat.from === 'main' && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} isPersonal={true}  deleteChat={() => handleDeleteChat(chatId)}/>}
+        </div>
+
         <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
           <div className={`flex mt-5 w-full mb-5 ${toUp ? 'order-first' : 'order-last'}`}>
             <ChatInput onSend={handleSend} loading={loading} controller={controller}/>

@@ -8,6 +8,7 @@ const ChatContext = createContext();
 export const ChatProvider = ({ children }) => {
 
   const [chats, setChats] = useState([]);
+  const [popEditChat, setPopEditChat] = useState({ open: false, x: 0, y: 0, chatId: null, from: null });
   const navigate = useNavigate();
 
   const handleDeleteChat = async (chatId) => {
@@ -23,6 +24,27 @@ export const ChatProvider = ({ children }) => {
     setChats(prev => [newChat, ...prev]);
     return newChat;
   }
+
+
+  const openPopUp = (e, chatId, from, buttonRef = null) => {
+    let rect = null;
+    buttonRef.current ? 
+     rect = buttonRef.current.getBoundingClientRect()
+     : rect = e.currentTarget.getBoundingClientRect();
+    let x;
+    from === 'main' ? x= rect.left-100 : x = rect.right-20
+    setPopEditChat (
+      {
+        open: true,
+        x,
+        y: rect.top+20,
+        chatId,
+        from
+      }
+    )
+  }
+
+  const closePopUp = () => {setPopEditChat({open: false, x: 0, y: 0, chatId: null})};
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -54,10 +76,14 @@ export const ChatProvider = ({ children }) => {
   return (
     <ChatContext.Provider value = {{
       chats,
+      popEditChat,
       setChats,
+      setPopEditChat,
       handleNewChat,
       handleRename,
-      handleDeleteChat
+      handleDeleteChat,
+      openPopUp,
+      closePopUp
     }}>
       { children }
     </ChatContext.Provider>

@@ -10,7 +10,7 @@ import React, { useState, useEffect, useRef} from "react";
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
 
-import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
+// import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
 
 import EditChat from "./EditChat";
 
@@ -21,7 +21,7 @@ import { useChatContext } from "../contexts/ChatContext";
 
 const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
-  const [popEditChat, setPopEditChat] = useState({ open: false, x: 0, y: 0, chat: null });
+  
   const [hover, setHover] = useState(false);
   const [searchBox, setSearchBox] = useState(false);
   const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
@@ -30,21 +30,21 @@ const SideBar = () => {
   const refInput = useRef(null);
   const searchRef = useRef(null);
   
-  const {chats, handleNewChat, handleRename, handleDeleteChat} = useChatContext();
+  const {chats, handleNewChat, handleRename, handleDeleteChat, popEditChat, openPopUp, closePopUp} = useChatContext();
 
-  const openPopUp = (e, chat) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setPopEditChat (
-      {
-        open: true,
-        x: rect.right-20,
-        y: rect.top+20,
-        chat
-      }
-    )
-  }
+  // const openPopUp = (e, chat) => {
+  //   const rect = e.currentTarget.getBoundingClientRect();
+  //   setPopEditChat (
+  //     {
+  //       open: true,
+  //       x: rect.right-20,
+  //       y: rect.top+20,
+  //       chat
+  //     }
+  //   )
+  // }
 
-  const closePopUp = () => {setPopEditChat({open: false, x: 0, y: 0, chat: null})};
+  // const closePopUp = () => {setPopEditChat({open: false, x: 0, y: 0, chat: null})};
 
   useEffect(() => {
     function handleClick(e) {
@@ -125,9 +125,9 @@ const SideBar = () => {
                           {chat.title}
                         </span>}
 
-                        <MdMoreHoriz onClick={(e)=> {e.preventDefault(); openPopUp(e, chat); }} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chat === chat && "opacity-100"}`}/>
+                        <MdMoreHoriz onClick={(e)=> {e.preventDefault(); openPopUp(e, chat.id, 'sidebar'); }} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chatId === chat.id && "opacity-100"}`}/>
                       </NavLink>
-                    {popEditChat.open && popEditChat.chat === chat && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} deleteChat={() => handleDeleteChat(chat.id)} changeChatTitle={() => 
+                    {popEditChat.open && popEditChat.chatId === chat.id && popEditChat.from === 'sidebar' && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} deleteChat={() => handleDeleteChat(chat.id)} changeChatTitle={() => 
                           {setEditChat({ edit: true, chat, newTitle: chat.title });
                           closePopUp();
                           }}/>}
