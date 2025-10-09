@@ -5,7 +5,7 @@ import { chatExists } from "./chatController.js";
 export const insertMessage = async(req, res) => {
   try {
     const { id: chatId } = req.params; // chat_id
-    const {id: messageId, sender, message, loading, } = req.body;
+    const {id: messageId, sender, message} = req.body;
 
     const chatCheck = await chatExists(chatId);
     let resChat = null;
@@ -20,10 +20,10 @@ export const insertMessage = async(req, res) => {
     }
 
     const result = await pool.query(
-      `INSERT INTO messagesTable (id, chat_id, sender, message, loading)
-        VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO messagesTable (id, chat_id, sender, message)
+        VALUES ($1, $2, $3, $4)
         RETURNING *`,
-      [messageId, chatId, sender, message, loading || false]
+      [messageId, chatId, sender, message]
     );
 
     res.json({
@@ -41,7 +41,7 @@ export const insertMessage = async(req, res) => {
 export const getMessagesByChatId = async(req, res) => {
   const {id} = req.params;
     const result = await pool.query(
-      "SELECT id, sender, message, loading FROM messagesTable WHERE chat_id = $1",
+      "SELECT id, sender, message FROM messagesTable WHERE chat_id = $1 order by created_at asc",
       [id]
     );
 

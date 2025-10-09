@@ -13,8 +13,9 @@ const MainPage = () => {
 
   const ref = useRef(null);
 
-  const { setChats, openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat} = useChatContext();
+  const {openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat} = useChatContext();
   const {messages, handleSend, loading, controller, existingChat, openConfirm, setOpenConfirm, confirmDelRef, chatId, toUp, setToUp, containerRef} = useChatMessages();
+
   const buttonRef = useRef(null);
 
 
@@ -22,7 +23,6 @@ const MainPage = () => {
   {
     function handleClick(e) {
       if (ref.current && !ref.current.contains(e.target)) {
-        console.log('clocked')
         closePopUp();
       }
       if (confirmDelRef.current && !confirmDelRef.current.contains(e.target)) {
@@ -61,10 +61,11 @@ const MainPage = () => {
         {existingChat && 
           <div className='relative inline-block'>
 
-          <MdMoreHoriz  ref={buttonRef} size={40} className=' text-gray-600 hover:bg-gray-300/50 rounded-xl ml-auto p-2' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef)}}/>
+          <MdMoreHoriz  ref={buttonRef} size={35} className=' text-gray-600 hover:bg-gray-300/50 rounded-xl ml-auto p-2' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef)}}/>
           {popEditChat.open && popEditChat.chatId === chatId && popEditChat.from === 'main' && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} isPersonal={true}  deleteChat={() => /*handleDeleteChat(chatId)}*/ setOpenConfirm(true)}/>}
         </div>
         }
+
         {openConfirm && <ConfirmDelete title={existingChat} cancelDel={() => setOpenConfirm(false)} deleteChat={() => {handleDeleteChat(chatId); setOpenConfirm(false);}} ref={confirmDelRef}/>}
 
         <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>

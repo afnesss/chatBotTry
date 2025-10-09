@@ -27,7 +27,7 @@ import { addMessage } from "./fetches";
         prev.map((msg) => {
 
          return msg.id === curBodId?
-          {...msg, message: (msg.message || '') + chunk, loading: true}
+          {...msg, message: (msg.message || '') + chunk}
           : msg
         }))
     }
@@ -35,7 +35,7 @@ import { addMessage } from "./fetches";
     setMessages((prev) =>
       prev.map((msg) =>{
 
-        return msg.id === curBodId ? { ...msg, message: fullText, loading: false } : msg
+        return msg.id === curBodId ? { ...msg, message: fullText} : msg
       }));
 
     await addMessage(chatId, "robot", fullText, curBodId, true);

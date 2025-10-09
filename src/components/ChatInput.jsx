@@ -13,7 +13,7 @@ const ChatInput = ({onSend, loading}) => {
     <>
     <div className="flex flex-row w-full">
       <input
-        className="border border-gray-400 px-3 py-2 rounded-xl bg-white w-full ml-5"
+        className="border border-gray-400 px-3 py-2 rounded-xl bg-white w-full ml-5 text-sm lg:text-base"
         placeholder="Send a message to Chatbot"
         value={inputText}
         onChange={(e) => setText(e.target.value)}

@@ -27,7 +27,7 @@ export const useChatMessages = () => {
       const res = await chatExists(chatId)
       // setExistChat(res.title);
       
-          console.log("chatExists result:", res);
+          // console.log("chatExists result:", res);
     if (res && res.title) {
       setExistChat(res.title);
     } else {
@@ -59,14 +59,14 @@ export const useChatMessages = () => {
       controller?.abort();
     const botMessage = messages.find(msg => msg.id === botId);
     
-    if (botMessage && botMessage.message) {
-      setMessages(prev =>
-        prev.map(msg =>
-          msg.id === botId ? { ...msg, loading: false } : msg
-        )
-      );
+    // if (botMessage && botMessage.message) {
+    //   setMessages(prev =>
+    //     prev.map(msg =>
+    //       msg.id === botId ? { ...msg, loading: false } : msg
+    //     )
+    //   );
       
-    }
+    // }
       try {
 
         await addMessage(chatId, botMessage.sender, botMessage.message, botMessage.id, true);
@@ -81,7 +81,7 @@ export const useChatMessages = () => {
      setBotId(curBodId);
 
     const userMsg = { id: uuidv4(), chatId, sender: "user", message };
-    const botMsg = { id: curBodId, chatId, sender: "robot", message: "", loading: true };
+    const botMsg = { id: curBodId, chatId, sender: "robot", message: ""};
 
     setMessages((prev) => [...prev, userMsg, botMsg]);
 
@@ -128,7 +128,7 @@ export const useChatMessages = () => {
           prev.map((msg) => {
   
            return msg.id === curBodId?
-            {...msg, message: (msg.message || '') + chunk, loading: true}
+            {...msg, message: (msg.message || '') + chunk}
             : msg
           }
   
@@ -139,7 +139,7 @@ export const useChatMessages = () => {
       setMessages((prev) =>
         prev.map((msg) =>{
   
-          return msg.id === curBodId ? { ...msg, message: fullText, loading: false } : msg
+          return msg.id === curBodId ? { ...msg, message: fullText} : msg
         }));
   
       await addMessage(chatId, "robot", fullText, curBodId, true);
