@@ -69,7 +69,7 @@ const MainPage = () => {
         {openConfirm && <ConfirmDelete title={existingChat} cancelDel={() => setOpenConfirm(false)} deleteChat={() => {handleDeleteChat(chatId); setOpenConfirm(false);}} ref={confirmDelRef}/>}
 
         <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
-          <div className={`flex mt-5 w-full mb-5 ${toUp ? 'order-first' : 'order-last'}`}>
+          <div className={`flex my-3 w-full ${toUp ? 'order-first' : 'order-last'}`}>
             <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
           </div>
 

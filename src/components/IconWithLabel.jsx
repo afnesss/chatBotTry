@@ -11,7 +11,7 @@ const IconWithLabel = ({icon: Icon, text, sideBar, onClick }) => {
           ${sideBar ? "opacity-100" : "opacity-0"}
           transition-opacity duration-300
           overflow-hidden
-          whitespace-nowrap text-sm text-gray-600`}
+          whitespace-nowrap text-xs lg:text-sm text-gray-600`}
       >
         {text}
         </span>

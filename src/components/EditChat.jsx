@@ -7,7 +7,7 @@ import BtnPopUp from "./BtnPopUp";
 const EditChat = forwardRef(({x, y, changeChatTitle, deleteChat, isPersonal = false}, ref) => {
   // console.log(x, y);
   return (
-    <div ref={ref} className="fixed shadow-md rounded-xl bg-gray-200 p-2 gap-2" style={{ top: y, left: x }}>
+    <div ref={ref} className="fixed shadow-md rounded-xl bg-gray-200 p-2 gap-2 z-50" style={{ top: y, left: x }}>
       {!isPersonal && 
       <>
         <BtnPopUp onClick={changeChatTitle} bg="hover:bg-gray-400/30 rounded-lg w-full" title="Rename" icon={FiEdit3}/>

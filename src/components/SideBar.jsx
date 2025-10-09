@@ -32,20 +32,6 @@ const SideBar = () => {
   
   const {chats, handleNewChat, handleRename, handleDeleteChat, popEditChat, openPopUp, closePopUp} = useChatContext();
 
-  // const openPopUp = (e, chat) => {
-  //   const rect = e.currentTarget.getBoundingClientRect();
-  //   setPopEditChat (
-  //     {
-  //       open: true,
-  //       x: rect.right-20,
-  //       y: rect.top+20,
-  //       chat
-  //     }
-  //   )
-  // }
-
-  // const closePopUp = () => {setPopEditChat({open: false, x: 0, y: 0, chat: null})};
-
   useEffect(() => {
     function handleClick(e) {
       if (ref.current && !ref.current.contains(e.target)) {
@@ -73,7 +59,7 @@ const SideBar = () => {
     <div
       className={`
         flex flex-col bg-green-50 p-3 h-[100dvh] relative
-        ${sideBar ? "w-60" : "w-16"}
+        ${sideBar ? "w-40 lg:w-60" : "w-16"}
         transition-[width] duration-300 ease-in-out
       `}>
 
@@ -92,7 +78,7 @@ const SideBar = () => {
             <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch} onClick={() => setSearchBox(prev => !prev)}/>
             </div>
 
-            <div className={`mt-10 text-gray-600 transition-opacity duration-300 ${sideBar? "opacity-100" : "opacity-0"}`}>Your Chats</div>
+            <div className={`mt-10 text-gray-600 text-sm lg:text-base transition-opacity duration-300 ${sideBar? "opacity-100" : "opacity-0"}`}>Your Chats</div>
             <div className={`flex-1 min-h-0 overflow-y-auto ${sideBar? "opacity-100" : "opacity-0"}`}>
               
                 <div className="space-y-1 pb-2">
@@ -121,7 +107,7 @@ const SideBar = () => {
                             autoFocus
                             className="focus:outline-none rounded-lg px-2 py-1 text-sm w-full"
                             />
-                        : <span className="w-full truncate block hover:overflow-visible hover:whitespace-normal  mr-2"> 
+                        : <span className="w-full truncate block hover:overflow-visible hover:whitespace-normal text-sm lg:text-base mr-2"> 
                           {chat.title}
                         </span>}
 
