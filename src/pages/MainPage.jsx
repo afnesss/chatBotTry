@@ -8,6 +8,7 @@ import MessagesCont from '../components/MessagesCont';
 import { useChatContext } from '../contexts/ChatContext';
 import { MdMoreHoriz } from 'react-icons/md';
 import EditChat from '../components/EditChat';
+import ConfirmDelete from '../components/ConfirmDelete';
 
 const MainPage = () => {
   const [messages, setMessages] = useState([]);
@@ -19,18 +20,29 @@ const MainPage = () => {
   const [controller, setController] = useState(null);
   const [botId, setBotId] = useState('');
   const ref = useRef(null);
+  const confirmDelRef = useRef(null);
   
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const { id: chatId } = useParams();
   const { setChats, openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat} = useChatContext();
   const buttonRef = useRef(null);
 
-  const [existingChat, setExistChat] = useState(false);
+  const [existingChat, setExistChat] = useState(null);
 
   useEffect(() => {
     const handlecheck = async (chatId) => {
       const res = await chatExists(chatId)
-      setExistChat(res);
+      // setExistChat(res.title);
+      
+          console.log("chatExists result:", res);
+    if (res && res.title) {
+      setExistChat(res.title);
+    } else {
+      setExistChat(null);
+    }
+  
+
     }
     if(chatId){
       load(chatId, setMessages);
@@ -48,9 +60,12 @@ const MainPage = () => {
   useEffect(() =>
   {
     function handleClick(e) {
-        if (ref.current && !ref.current.contains(e.target)) {
+      if (ref.current && !ref.current.contains(e.target)) {
         console.log('clocked')
         closePopUp();
+      }
+      if (confirmDelRef.current && !confirmDelRef.current.contains(e.target)) {
+        setOpenConfirm(false);
       }
     }
 
@@ -204,10 +219,10 @@ const MainPage = () => {
           <div className='relative inline-block'>
 
           <MdMoreHoriz  ref={buttonRef} size={40} className=' text-gray-600 hover:bg-gray-300/50 rounded-xl ml-auto p-2' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef)}}/>
-          {popEditChat.open && popEditChat.chatId === chatId && popEditChat.from === 'main' && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} isPersonal={true}  deleteChat={() => handleDeleteChat(chatId)}/>}
+          {popEditChat.open && popEditChat.chatId === chatId && popEditChat.from === 'main' && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} isPersonal={true}  deleteChat={() => /*handleDeleteChat(chatId)}*/ setOpenConfirm(true)}/>}
         </div>
         }
-
+        {openConfirm && <ConfirmDelete title={existingChat} cancelDel={() => setOpenConfirm(false)} deleteChat={() => {handleDeleteChat(chatId); setOpenConfirm(false);}} ref={confirmDelRef}/>}
 
         <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
           <div className={`flex mt-5 w-full mb-5 ${toUp ? 'order-first' : 'order-last'}`}>

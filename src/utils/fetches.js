@@ -159,7 +159,7 @@ export const chatExists = async(chatId) => {
       return [];
     }
 
-    return data.exists;
+    return data;
 
   } catch (error) {
     console.error("Error checking chat (in fetch): ", error.message);

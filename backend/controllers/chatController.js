@@ -2,10 +2,21 @@ import { pool } from "../db.js";
 
 export const chatExists = async (chatId) => {
   const chatCheck = await pool.query(
-      "SELECT * FROM chats WHERE id = $1",
+      "SELECT title FROM chats WHERE id = $1",
       [chatId]
     );
-  return chatCheck.rows.length > 0;;
+
+  if (chatCheck.rows.length > 0) {
+    return {
+      exists: true,
+      title: chatCheck.rows[0].title
+    };
+  } else {
+    return {
+      exists: false,
+      title: null
+    };
+  }
 }
 
 export const getChatsTitles = async (req, res) => {
@@ -101,8 +112,8 @@ export const findChatBySearch = async(req, res) => {
 export const checkingChat = async(req, res) => {
     const { id: chatId } = req.params;
   try {
-    const exists = await chatExists(chatId);
-    return res.json({ exists });
+    const result = await chatExists(chatId);
+    return res.json(result);
   } catch (error) {
     console.error('error checking chat: ', error.message);
     res.status(500).json({error: "Database error" });
