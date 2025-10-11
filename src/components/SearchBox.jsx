@@ -48,7 +48,7 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
   });
   // console.log(lastWeekChats)
   return (
-    <div  className="fixed inset-0 flex items-center justify-center">
+    <div  className="center-box">
     <div ref={ref} className="pop-box w-100">
       <div className="flex flex-row w-full justify-between items-center">
         <input type="text" value={searchInput} placeholder="Search in Chats..." className="focus:outline-none text-sm text-gray-800" onChange={(e) => setSearchInput(e.target.value)}></input>

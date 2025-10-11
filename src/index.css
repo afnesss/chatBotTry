@@ -9,8 +9,24 @@
     @apply shadow-[0_0_40px_rgba(0,0,0,0.25)] rounded-xl bg-gray-200 p-4;
   }
 
+  .center-box{
+    @apply fixed inset-0 flex items-center justify-center;
+  }
+
   .btn-bg{
-    @apply hover:bg-gray-300/70 rounded-xl p-1 cursor-ew-resize
+    @apply hover:bg-gray-300/70 rounded-xl p-1
+  }
+
+  .input-style{
+    @apply bg-gray-300/70 rounded-xl px-2 py-1 text-sm w-full;
+  }
+
+  .btn-primary {
+    @apply shadow-md px-5 py-2 rounded-xl bg-green-600 text-white font-semibold mx-2 lg:mx-5 text-sm lg:text-base;
+  }
+
+  .link-primary{
+    @apply text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer;
   }
   
 }

@@ -8,6 +8,7 @@ import EditChat from '../components/EditChat';
 import ConfirmDelete from '../components/ConfirmDelete';
 
 import { useChatMessages } from '../contexts/MessagesContext';
+import RegisterForm from '../components/autenticationComp/RegisterForm';
 
 const MainPage = () => {
 
@@ -57,6 +58,7 @@ const MainPage = () => {
     <>
     <section className="flex h-screen">
 
+      <RegisterForm />
       <div className="flex flex-col shadow-md bg-green-100 w-full p-5 lg:p-7">
         {existingChat && 
           <div className='flex ml-auto absolute right-3 top-3'>
@@ -79,7 +81,7 @@ const MainPage = () => {
           <MessagesCont messages={messages} toUp={toUp} ref={containerRef}/>
           <button 
           onClick={() => setToUp(prev => !prev)} 
-          className="text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer order-last">Move textbox to {toUp? "bottom": "top"}
+          className="link-primary order-last">Move textbox to {toUp? "bottom": "top"}
           </button>
 
         </div>
