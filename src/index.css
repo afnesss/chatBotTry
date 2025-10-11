@@ -1,11 +1,30 @@
 @import "tailwindcss";
 
+@layer components {
+  .btn-delete {
+    @apply hover:bg-red-500/10 text-red-700 rounded-lg w-full;
+  }
+
+  .pop-box {
+    @apply shadow-[0_0_40px_rgba(0,0,0,0.25)] rounded-xl bg-gray-200 p-4;
+  }
+
+  .btn-bg{
+    @apply hover:bg-gray-300/70 rounded-xl p-1 cursor-ew-resize
+  }
+  
+}
 
 ::-webkit-scrollbar {
   width: 8px;
 }
 
-/* Firefox */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(100, 100, 100, 0.4) transparent;

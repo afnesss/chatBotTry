@@ -57,18 +57,21 @@ const MainPage = () => {
     <>
     <section className="flex h-screen">
 
-      <div className="flex flex-col shadow-md bg-green-100 w-full p-7">
+      <div className="flex flex-col shadow-md bg-green-100 w-full p-5 lg:p-7">
         {existingChat && 
-          <div className='relative inline-block'>
-
-          <MdMoreHoriz  ref={buttonRef} size={35} className=' text-gray-600 hover:bg-gray-300/50 rounded-xl ml-auto p-2' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef)}}/>
+          <div className='flex ml-auto absolute right-3 top-3'>
+            <div className='inline-block'>
+          <MdMoreHoriz  ref={buttonRef} size={35} className='lg:opacity-100 text-gray-600 btn-bg ml-auto p-2 max-sm:opacity-0 md:opacity-0 sm:opacity-0' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef)}}/>
           {popEditChat.open && popEditChat.chatId === chatId && popEditChat.from === 'main' && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} isPersonal={true}  deleteChat={() => /*handleDeleteChat(chatId)}*/ setOpenConfirm(true)}/>}
+
+            </div>
+          
         </div>
         }
 
         {openConfirm && <ConfirmDelete title={existingChat} cancelDel={() => setOpenConfirm(false)} deleteChat={() => {handleDeleteChat(chatId); setOpenConfirm(false);}} ref={confirmDelRef}/>}
 
-        <div className={`flex flex-col items-center mx-20 flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
+        <div className={`flex flex-col items-center flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
           <div className={`flex my-3 w-full ${toUp ? 'order-first' : 'order-last'}`}>
             <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
           </div>

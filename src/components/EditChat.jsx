@@ -14,7 +14,7 @@ const EditChat = forwardRef(({x, y, changeChatTitle, deleteChat, isPersonal = fa
         <hr className="mx-auto m-1 border-t border-gray-400 max-w-[70%]"></hr>
         
       </> }
-        <BtnPopUp onClick={deleteChat} bg="hover:bg-red-500/10 text-red-700 rounded-lg w-full" title="Delete" icon={FiTrash2}/>
+        <BtnPopUp onClick={deleteChat} bg="btn-delete" title="Delete" icon={FiTrash2}/>
 
     </div>
   )

@@ -49,10 +49,10 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
   // console.log(lastWeekChats)
   return (
     <div  className="fixed inset-0 flex items-center justify-center">
-    <div ref={ref} className="shadow-[0_0_40px_rgba(0,0,0,0.25)] rounded-xl bg-gray-200 p-4 w-100">
+    <div ref={ref} className="pop-box w-100">
       <div className="flex flex-row w-full justify-between items-center">
         <input type="text" value={searchInput} placeholder="Search in Chats..." className="focus:outline-none text-sm text-gray-800" onChange={(e) => setSearchInput(e.target.value)}></input>
-        <AiOutlineClose size={25} color="gray" className="hover:bg-gray-600/30 rounded-xl p-1" onClick={() => {onclick?.(); setSearchBox(false)}}/>
+        <AiOutlineClose size={25} color="gray" className="btn-bg p-1" onClick={() => {onclick?.(); setSearchBox(false)}}/>
       </div>
       
       <hr className="border-gray-400 my-3 -mx-4"></hr>

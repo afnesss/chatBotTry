@@ -60,7 +60,7 @@ const SideBar = () => {
       className={`
         flex flex-col bg-green-50 p-3 h-[100dvh] relative
         ${sideBar ? "w-40 lg:w-60" : "w-16"}
-        transition-[width] duration-300 ease-in-out
+        transition-[width] duration-300 ease-in-out max-sm:hidden
       `}>
 
       {searchBox && <SearchBox ref={searchRef} onclick={() => setSearchBox(prev => !prev)}/>}
@@ -69,8 +69,8 @@ const SideBar = () => {
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}>
               {hover || sideBar ? 
-              <TbLayoutSidebar className={`hover:bg-gray-300/70 rounded-xl p-1 cursor-ew-resize`} size={35} color='green'/>
-            : <MdOutlineSmartToy className={`hover:bg-gray-300/70 rounded-xl p-1 cursor-ew-resize`} size={35} color='green'/>}  
+              <TbLayoutSidebar className={`btn-bg`} size={35} color='green'/>
+            : <MdOutlineSmartToy className={`btn-bg`} size={35} color='green'/>}  
           </button>
 
             <div className="mt-7">
@@ -125,7 +125,7 @@ const SideBar = () => {
             </div>
 
           <div className="flex-shrink-0 pt-3">
-            <FiSettings className={`${iconStyles} mt-auto`} size={40} color="green"/>
+            <FiSettings className={`btn-bg p-2 mt-auto`} size={40} color="green"/>
           </div>
         </div>
 
