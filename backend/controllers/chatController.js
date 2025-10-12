@@ -20,9 +20,13 @@ export const chatExists = async (chatId) => {
 }
 
 export const getChatsTitles = async (req, res) => {
-  const result = await pool.query("SELECT id,title FROM chats");
-  // console.log(res.json(result.rows));
-  res.json(result.rows);
+  try {
+    const result = await pool.query("SELECT id, title FROM chats");
+    return res.json(result.rows);  // завжди повертає валідний JSON
+  } catch (error) {
+    console.error("Database error fetching chat titles:", error.message);
+    return res.status(500).json({ error: "Database error fetching chat titles" });
+  }
 }
 
 export const changeChatTitle = async(req, res) => {
@@ -113,6 +117,10 @@ export const checkingChat = async(req, res) => {
     const { id: chatId } = req.params;
   try {
     const result = await chatExists(chatId);
+
+    if (!result || typeof result !== "object") {
+      return res.status(500).json({ error: "Invalid result from chatExists" });
+    }
     return res.json(result);
   } catch (error) {
     console.error('error checking chat: ', error.message);

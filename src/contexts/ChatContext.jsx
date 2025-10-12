@@ -47,16 +47,31 @@ export const ChatProvider = ({ children }) => {
   const closePopUp = () => {setPopEditChat({open: false, x: 0, y: 0, chatId: null})};
 
   useEffect(() => {
-    const fetchChats = async () => {
-      try {
-        const res = await fetch("/api/chats/titles");
-        const data = await res.json();
-        setChats(data);
-      } catch (error) {
-        console.log('error fetching chats ' + error);
+  const fetchChats = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch('/api/chats/titles', {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `HTTP error ${res.status}`);
       }
-  }
+
+      const data = await res.json();
+      setChats(data);
+
+    } catch (error) {
+      console.error("Error fetching chats:", error.message);
+    }
+  };
+  const token = localStorage.getItem("token");
+  if (token) {
     fetchChats();
+  }
   }, [])
 
   const handleRename = async (chatId, newTitle) => {

@@ -2,8 +2,11 @@ import express from 'express';
 
 import { getChatsTitles, changeChatTitle, createChat, getLastChats, deleteChat, findChatBySearch, checkingChat} from '../controllers/chatController.js';
 import messageRouter from './messages.js';
+import authenticate from '../middleware/auth.js';
 
 const router = express.Router();
+
+router.use(authenticate);
 
 router.get("/titles", getChatsTitles);
 

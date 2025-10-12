@@ -1,15 +1,18 @@
 import {v4 as uuidv4} from 'uuid';
+import { authFetch } from './authFetches';
 
 export const addMessage = async (chatId, sender, message, id, loading = false,) => {
   try {
-    const res = await fetch(`/api/chats/${chatId}/messages`, {
+    const data = await authFetch(`/api/chats/${chatId}/messages`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({id, sender, message, loading }),
     });
 
-    if (!res.ok) throw new Error("Failed to add message");
-    const data = await res.json();
+    if (!data) {
+      console.log('No chats found or request failed, addmessage');
+      return [];
+    };
+    // const data = await res.json();
     // const { chatCreated, chat, message: newMessage} = data;
     return data;
   } catch (error) {
@@ -27,8 +30,12 @@ export const load = async(chatId, setMessages) => {
   }
 
   try {
-    const res = await fetch(`/api/chats/${chatId}/messages`);
-    const data = await res.json();
+    const data = await authFetch(`/api/chats/${chatId}/messages`);
+    if (!data){
+      console.log('No chats found or request failed, load');
+      return [];
+    };
+    // const data = await res.json();
     setMessages(data || []);
 
   } catch (error) {
@@ -42,11 +49,8 @@ export const makeNewChat = async(passedId=null) => {
     const title = "My New Chat";
     // const messages = [];
     const created_at = new Date().toISOString();
-    const response = await fetch('/api/chats',{
+    const data = await authFetch('/api/chats',{
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
     body: JSON.stringify({
       id, 
       title,
@@ -54,8 +58,11 @@ export const makeNewChat = async(passedId=null) => {
       created_at
     })
   })
-    if (!response.ok) throw new Error("Failed to create chat");
-    const data = await response.json();
+    if (!data){
+      console.log('No chats found or request failed, making new chat');
+      return [];
+    };
+    // const data = await response.json();
     console.log("New chat created:", data);
     return data;
   } catch (error) {
@@ -65,15 +72,16 @@ export const makeNewChat = async(passedId=null) => {
 
 export const deleteChat = async(chatId) => {
   try {
-    const res = await fetch(`/api/chats/${chatId}`, {
+    const data = await authFetch(`/api/chats/${chatId}`, {
       method: "DELETE",
 
     });
 
-    const data = await res.json();
+    // const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error( "Failed to delete chat");
+    if (!data) {
+      console.log('No chats found or request failed, deleting chat');
+      return [];
     }
 
     console.log("Chat deleted:", data.deleted);
@@ -84,20 +92,18 @@ export const deleteChat = async(chatId) => {
 
 export const changeChatTitle = async(chatId, newTitle) => {
   try {
-    const res = await fetch(`/api/chats/${chatId}`, {
+    const data = await authFetch(`/api/chats/${chatId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
       body: JSON.stringify({
         title: newTitle
       })
     })
 
-    const data = await res.json();
+    // const data = await res.json();
 
-    if (!res.ok) {
-    throw new Error(errData.error || "Failed to delete chat");
+    if (!data) {
+      console.log('No chats found or request failed, changechattitle');
+      return [];
     }
 
     console.log("Chat name changed:", data);
@@ -108,13 +114,14 @@ export const changeChatTitle = async(chatId, newTitle) => {
 
 export const getLastChats= async() => {
   try {
-    const res = await fetch(`/api/chats`)
+    const data = await authFetch(`/api/chats`)
 
-    const data = await res.json();
+    // const data = await res.json();
     // setLastChats(data);
 
-    if (!res.ok) {
-      throw new Error(errData.error || "Failed to delete chat");
+    if (!data) {
+      console.log('No chats found or request failed, getlastchats');
+      return [];
     }
 
     return data;
@@ -126,18 +133,22 @@ export const getLastChats= async() => {
 
 export const findChat = async(search) => {
   try {
-    const res = await fetch(`/api/chats/find`, {
+    // const res = await fetch(`/api/chats/find`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify({search})
+    // })
+
+    const data = await authFetch(`/api/chats/find`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
       body: JSON.stringify({search})
-    })
+    });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.log('res is not ok');
+    // const data = await res.json();
+    if (!data) {
+      console.log('No chats found or request failed');
       return [];
     }
 
@@ -150,11 +161,12 @@ export const findChat = async(search) => {
 
 export const chatExists = async(chatId) => {
   try {
-    const res = await fetch(`/api/chats/${chatId}`);
 
-    const data = await res.json();
+  const data = await authFetch(`/api/chats/${chatId}`);
 
-    if (!res.ok) {
+    // const data = await res.json();
+
+    if (!data) {
       console.log('res is not ok');
       return [];
     }

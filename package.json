@@ -8,13 +8,19 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "dev:server": "nodemon backend/server.js"
+    "dev:server": "nodemon --env-file=.env backend/server.js"
+    
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dayjs": "^1.11.18",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.10",
     "pg": "^8.16.3",
     "react": "^19.1.1",

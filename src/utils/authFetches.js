@@ -1,0 +1,77 @@
+export const IfUserExists = async (email, password) => {
+  try {
+    const res = await fetch('/api/auth/login', {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify({email, password})
+  }) 
+
+    const data = await res.json();
+
+    if(!res.ok){
+      throw new Error(data.error || "Login failed");
+    }
+
+    localStorage.setItem("token",data.token);
+    return data;
+
+  } catch (error) {
+    console.error("error in fetching login user " + error.message);
+    return null
+  }
+
+}
+
+export const fetchRegisterUser = async (name, email, password) => {
+  try {
+    const res = await fetch('/api/auth/register', {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify({name, email, password})
+  })     
+
+    const data = await res.json();
+
+    if(!res.ok){
+      throw new Error(data.error || "Login failed");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("error in fetching register user " + error.message);
+    return null
+  }
+}
+
+export const authFetch = async(url, options = {})=> {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found!");
+    return null;
+  }
+
+  const headers = {
+    "Content-type": "application/json",
+    ...(options.headers || {}),
+    "Authorization": `Bearer ${token}`,
+  }
+
+  try {
+    const res = await fetch(url,{...options, headers});
+    const data = await res.json();
+
+    if(!res.ok){
+      throw new Error(data.error || "Login failed");
+    }
+
+    return data;
+
+  } catch (error) {
+    console.error("error in authfetch " + error.message);
+    return null;
+  }
+}

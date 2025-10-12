@@ -15,6 +15,7 @@ export const useChatMessages = () => {
   const [existingChat, setExistChat] = useState(null);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [toUp, setToUp] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const confirmDelRef = useRef(null);
   const containerRef = useRef(null);
@@ -22,6 +23,15 @@ export const useChatMessages = () => {
 
     const { setChats} = useChatContext();
 
+  const resetChatState = () => {
+  setMessages([]);
+  setExistChat(null);
+  setBotId('');
+  setLoading(false);
+  setController(null);
+  setToUp(false);
+  setOpenConfirm(false);
+};
   useEffect(() => {
     const handlecheck = async (chatId) => {
       const res = await chatExists(chatId)
@@ -36,11 +46,14 @@ export const useChatMessages = () => {
   
 
     }
-    if(chatId){
-      load(chatId, setMessages);
-      handlecheck(chatId);
-    }
-  }, [chatId])
+  if (chatId && currentUser) { // ⚠️ тільки якщо є залогінений користувач
+    load(chatId, setMessages);
+    handlecheck(chatId);
+  } else {
+    setMessages([]);       // очищаємо старі повідомлення
+    setExistChat(null);    // очищаємо existingChat
+  }
+  }, [chatId, currentUser])
 
   useLayoutEffect(() => {
   const container = containerRef.current;
@@ -161,6 +174,8 @@ export const useChatMessages = () => {
 
     return {
       messages,
+      setCurrentUser,
+      resetChatState,
       handleSend,
       loading,
       controller,
