@@ -41,6 +41,7 @@ export const fetchRegisterUser = async (name, email, password) => {
       throw new Error(data.error || "Login failed");
     }
 
+    localStorage.setItem("user", JSON.stringify(data.user));
     return data;
   } catch (error) {
     console.error("error in fetching register user " + error.message);

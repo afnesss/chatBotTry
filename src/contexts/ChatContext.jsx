@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
 import {v4 as uuidv4} from "uuid";
+import { useAuthContext } from "./AuthContext";
 
 const ChatContext = createContext();
 
@@ -10,6 +11,7 @@ export const ChatProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [popEditChat, setPopEditChat] = useState({ open: false, x: 0, y: 0, chatId: null, from: null });
   const navigate = useNavigate();
+  const {popAuth, currentUser} = useAuthContext();
 
   const handleDeleteChat = async (chatId) => {
     await deleteChat(chatId);
@@ -46,6 +48,7 @@ export const ChatProvider = ({ children }) => {
 
   const closePopUp = () => {setPopEditChat({open: false, x: 0, y: 0, chatId: null})};
 
+  
   useEffect(() => {
   const fetchChats = async () => {
     try {
@@ -71,8 +74,11 @@ export const ChatProvider = ({ children }) => {
   const token = localStorage.getItem("token");
   if (token) {
     fetchChats();
+  } else{
+    setChats([]);
   }
-  }, [])
+  // console.log(currentUser);
+  }, [currentUser])
 
   const handleRename = async (chatId, newTitle) => {
     if (!newTitle.trim()) return;

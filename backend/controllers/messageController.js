@@ -6,8 +6,9 @@ export const insertMessage = async(req, res) => {
   try {
     const { id: chatId } = req.params; // chat_id
     const {id: messageId, sender, message} = req.body;
+    const userId = req.userId;
 
-    const chatCheck = await chatExists(chatId);
+    const chatCheck = await chatExists(chatId, userId);
     let resChat = null;
     if (!chatCheck) {
       const res = await pool.query(

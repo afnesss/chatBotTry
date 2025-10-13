@@ -2,15 +2,16 @@ import { TbLayoutSidebar } from "react-icons/tb";
 import { RiChatNewLine } from "react-icons/ri";     
 import { FiSearch } from "react-icons/fi";  
 import { FiSettings } from "react-icons/fi";   
+import { FiLogIn } from "react-icons/fi";
 import { MdMoreHoriz } from "react-icons/md";
 import userIcon from "../assets/user.png";
 import { NavLink, useNavigate} from "react-router-dom";
 import React, { useState, useEffect, useRef} from "react";
-
+import UserPopUp from "./autenticationComp/UserPopUp";
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
 
-import { useChatMessages } from "../contexts/MessagesContext";
+import { useChatMessages } from "../contexts/MessagesCnxtProvider";
 // import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
 
 import EditChat from "./EditChat";
@@ -19,20 +20,23 @@ import EditChat from "./EditChat";
 import { MdOutlineSmartToy } from "react-icons/md";
 import SearchBox from '../components/SearchBox';
 import { useChatContext } from "../contexts/ChatContext";
+import { useAuthContext } from "../contexts/AuthContext";
 
 const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
   
   const [hover, setHover] = useState(false);
   const [searchBox, setSearchBox] = useState(false);
+  const [userBox, setUserBox] = useState(false);
   const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
 
   const ref = useRef(null);
   const refInput = useRef(null);
   const searchRef = useRef(null);
+  const userPopRef = useRef(null);
   
   const {chats, handleNewChat, handleRename, handleDeleteChat, popEditChat, openPopUp, closePopUp} = useChatContext();
-  const { currentUser, setCurrentUser } = useChatMessages();
+  const { currentUser, setPopAuth} = useAuthContext();
 
   useEffect(() => {
     function handleClick(e) {
@@ -46,11 +50,18 @@ const SideBar = () => {
       if(searchRef.current && !searchRef.current.contains(e.target)){
         setSearchBox(false);
       }
+      if(userPopRef.current && !userPopRef.current.contains(e.target)){
+        setUserBox(false);
+      }
     }
 
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  // useEffect(() => {
+
+  // }, [popAuth])
 
   const onRename = async () => {
     handleRename(editChat.chat.id, editChat.newTitle)
@@ -66,6 +77,7 @@ const SideBar = () => {
       `}>
 
       {searchBox && <SearchBox ref={searchRef} onclick={() => setSearchBox(prev => !prev)}/>}
+        {userBox && <UserPopUp ref={userPopRef}/>}
 
           <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2 "
             onMouseEnter={() => setHover(true)}
@@ -127,13 +139,16 @@ const SideBar = () => {
             </div>
 
         <hr className={`border-t border-gray-200 my-2`}></hr>
-          <div className={`flex p-2 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}>
-            
-            {/* <FiSettings className={`btn-bg p-2 mt-auto cursor-pointer`} size={40} color="green"/> */}
-            <img className={`w-7 rounded-full flex-shrink-0`} src={userIcon}/>
-            {/* {console.log(currentUser)} */}
-            <span className= {`mx-3 ${sideBar? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-hidden whitespace-nowrap`} >{currentUser?.name}</span>
-          </div>
+            {currentUser 
+            ?   <div className={`flex p-1 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}
+            onClick={() => setUserBox(p => !p)}>
+              <img className={`w-7 h-7 rounded-full flex-shrink-0`} src={userIcon}/>
+              {/* {console.log(currentUser)} */}
+              <span className= {`mx-3 ${sideBar? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-hidden whitespace-nowrap truncate block hover:overflow-visible hover:whitespace-normal`} >{currentUser?.name}</span>
+            </div>
+            : 
+              <button className="btn-primary ml-2 cursor-pointer px-2 hover:bg-green-700" onClick={() =>{setPopAuth(true); setUserBox(false)}}>{sideBar? "Log in" : <FiLogIn size={15} className="text-white"/>}</button>
+            }
         </div>
 
   )

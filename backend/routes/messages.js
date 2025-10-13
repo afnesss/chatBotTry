@@ -4,6 +4,8 @@ import { insertMessage, getMessagesByChatId } from '../controllers/messageContro
 
 const router = express.Router({ mergeParams: true }); 
 
+// router.use(authenticate);
+
 router.get("/messages", getMessagesByChatId);
 router.post("/messages", insertMessage);
 

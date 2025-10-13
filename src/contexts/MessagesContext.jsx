@@ -6,6 +6,7 @@ import { useChatContext } from "./ChatContext";
 import { v4 as uuidv4 } from "uuid";
 
 import { useParams} from 'react-router-dom';
+import { useAuthContext } from './AuthContext';
 
 export const useChatMessages = () => {
   const [messages, setMessages] = useState([]);
@@ -15,7 +16,10 @@ export const useChatMessages = () => {
   const [existingChat, setExistChat] = useState(null);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [toUp, setToUp] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+
+  // const [popAuth, setPopAuth] = useState(false);
+  // const [currentUser, setCurrentUser] = useState(null);
+  const {popAuth, currentUser, setCurrentUser, setPopAuth} = useAuthContext();
 
   const confirmDelRef = useRef(null);
   const containerRef = useRef(null);
@@ -29,8 +33,9 @@ export const useChatMessages = () => {
   setBotId('');
   setLoading(false);
   setController(null);
-  setToUp(false);
+  // setToUp(false);
   setOpenConfirm(false);
+  // setPopAuth(true);
 };
   useEffect(() => {
     const handlecheck = async (chatId) => {
@@ -49,22 +54,27 @@ export const useChatMessages = () => {
   if (chatId && currentUser) { // ⚠️ тільки якщо є залогінений користувач
     load(chatId, setMessages);
     handlecheck(chatId);
+    console.log('here')
+    console.log(popAuth)
   } else {
     setMessages([]);       // очищаємо старі повідомлення
-    setExistChat(null);    // очищаємо existingChat
+    setExistChat(null); 
+    // setPopAuth(true);
+       // очищаємо existingChat
   }
   }, [chatId, currentUser])
 
-    useEffect(() => {
+  useEffect(() => {
     const initUser = () => {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         try {
           const parsed = JSON.parse(storedUser);
           setCurrentUser(parsed);
-          console.log("✅ Ініціалізований користувач:", parsed);
+          // console.log("✅ Ініціалізований користувач:", parsed);
         } catch (err) {
-          console.error("❌ Помилка при парсі користувача:", err);
+          // console.error("❌ Помилка при парсі користувача:", err);
+          setPopAuth(true);
           localStorage.removeItem("user");
         }
       }
@@ -72,7 +82,9 @@ export const useChatMessages = () => {
 
     initUser();
   }, []);
-  
+
+
+
   useLayoutEffect(() => {
   const container = containerRef.current;
   if (container) {
@@ -83,6 +95,11 @@ export const useChatMessages = () => {
   }
   }, [messages]);
 
+//   useEffect(() => {
+//   console.log("currentUser or popAuth changed");
+//   // тут можеш зробити будь-яку дію (напр. отримати нові дані)
+// }, [currentUser, popAuth]);
+
   const handleSend = async (message) => {
 
     if (loading){
@@ -90,14 +107,6 @@ export const useChatMessages = () => {
       controller?.abort();
     const botMessage = messages.find(msg => msg.id === botId);
     
-    // if (botMessage && botMessage.message) {
-    //   setMessages(prev =>
-    //     prev.map(msg =>
-    //       msg.id === botId ? { ...msg, loading: false } : msg
-    //     )
-    //   );
-      
-    // }
       try {
 
         await addMessage(chatId, botMessage.sender, botMessage.message, botMessage.id, true);
@@ -192,8 +201,6 @@ export const useChatMessages = () => {
 
     return {
       messages,
-      currentUser,
-      setCurrentUser,
       resetChatState,
       handleSend,
       loading,

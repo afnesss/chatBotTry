@@ -45,7 +45,7 @@ export const registerUser = async(req, res) => {
       [id, name, email, hashedPassword]
     )
 
-    res.status(201).json(result.rows[0]);
+    res.status(201).json({ user: result.rows[0] });
 
   } catch (error) {
     console.error(error);

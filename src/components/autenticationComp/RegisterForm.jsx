@@ -2,13 +2,17 @@ import { FiUser, FiMail, FiLock, FiKey } from "react-icons/fi";
 import InputRegBox from "./InputRegBox";
 import { useState, useEffect } from "react";
 import { IfUserExists, fetchRegisterUser } from "../../utils/authFetches";
-import { useChatMessages } from "../../contexts/MessagesContext";
+import { useChatMessages } from "../../contexts/MessagesCnxtProvider";
+import { AiOutlineClose } from "react-icons/ai";
+import { useAuthContext } from "../../contexts/AuthContext";
 
-const RegisterForm = ({isFormLogin}) => {
+const RegisterForm = ({isFormLogin, setPopAuth}) => {
   const [form, setForm] = useState({name: '', email: '', password: '', password2: ''});
   const [isLogin, setIsLogin] = useState(isFormLogin || true);
-  const { setCurrentUser, resetChatState } = useChatMessages();
+  const {resetChatState} = useChatMessages();
   const handleSet = (e) => setForm(prev => ({...prev, [e.target.name]: e.target.value}))
+  const {setCurrentUser} = useAuthContext();
+
   useEffect(() => {
   console.log("Form state:", form);
 }, [form]);
@@ -21,7 +25,8 @@ const RegisterForm = ({isFormLogin}) => {
         return;
       }
   console.log("Logged in user:", data.user);
-      setCurrentUser(JSON.parse(data.user));
+      setCurrentUser(data.user);
+      setPopAuth(false)
       resetChatState();
     } else {
       if(form.password !== form.password2){
@@ -35,14 +40,17 @@ const RegisterForm = ({isFormLogin}) => {
       }
       console.log("signed up user:", data.user);
       setCurrentUser(data.user);
+      setIsLogin(true);
       resetChatState();
     }
     
   }
 
   return (
+    <div className="absolute inset-0 bg-black/10 backdrop-blur-xs z-40">
     <div className="center-box">
-    <div className="pop-box text-center py-4 px-3">
+    <div className="pop-box text-center py-4 px-3 absolute">
+      <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => setPopAuth(false)}/>
       <form method="POST" className="w-90 px-5" onSubmit={(e) => {e.preventDefault(); sendForm()}}>
         <h2 className="font-bold text-2xl text-green-800 py-5">{!isLogin? "Sign Up" : "Log In"}</h2>
         <div className={` flex flex-col gap-3`}>
@@ -59,6 +67,7 @@ const RegisterForm = ({isFormLogin}) => {
           <button className="link-primary ml-2" onClick={() => setIsLogin (p => !p)}>{isLogin? "Sign Up" : "Log In"}</button>
         </div>
       </div>
+    </div>
     </div>
   )
 }

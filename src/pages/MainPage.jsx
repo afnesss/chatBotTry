@@ -1,4 +1,4 @@
-import {useRef, useEffect} from 'react'
+import {useRef, useEffect, useState} from 'react'
 import ChatInput from '../components/ChatInput'
 
 import MessagesCont from '../components/MessagesCont';
@@ -7,17 +7,20 @@ import { MdMoreHoriz } from 'react-icons/md';
 import EditChat from '../components/EditChat';
 import ConfirmDelete from '../components/ConfirmDelete';
 
-import { useChatMessages } from '../contexts/MessagesContext';
+import { useChatMessages } from '../contexts/MessagesCnxtProvider';
 import RegisterForm from '../components/autenticationComp/RegisterForm';
 import { authFetch } from '../utils/authFetches';
+import { useAuthContext } from '../contexts/AuthContext';
+// import UserPopUp from '../components/autenticationComp/UserPopUp';
 
 
 const MainPage = () => {
 
   const ref = useRef(null);
-
+  
   const {openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat} = useChatContext();
-  const {messages, handleSend, loading, controller, existingChat, openConfirm, setOpenConfirm, confirmDelRef, chatId, toUp, setToUp, containerRef, setCurrentUser, currentUser} = useChatMessages();
+  const {messages, handleSend, loading, controller, existingChat, openConfirm, setOpenConfirm, confirmDelRef, chatId, toUp, setToUp, containerRef} = useChatMessages();
+  const {currentUser, setPopAuth, setCurrentUser, popAuth} = useAuthContext();
 
   const buttonRef = useRef(null);
 
@@ -37,33 +40,6 @@ const MainPage = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // useEffect(() => {
-  //   // const init = async() => {
-  //   //   try {
-  //   //     const token = localStorage.getItem("token");
-  //   //     if (!token) return;
-  //   //     const data = authFetch('/api/auth/me');
-  //   //     if (data) {
-  //   //       setCurrentUser(data.user);
-  //   //     } else {
-  //   //     // токен відсутній або invalid -> редірект на логін або очистити localStorage
-  //   //     localStorage.removeItem("token");
-  //   //     setCurrentUser(null);
-  //   //   }
-  //   //   } catch (error) {
-  //   //     console.log("init error " + error)
-  //   //   }
-  //   // }
-  //   // init();
-  //   const user = JSON.parse(localStorage.getItem("user"));
-  //   if (user){
-  //     setCurrentUser(user);
-  //     console.log(currentUser);
-  //     console.log(user)
-  //     console.log('set')
-  //   }
-    
-  // }, [])
   
   useEffect(() => {
   const handleResize = () => {
@@ -83,12 +59,11 @@ const MainPage = () => {
   window.addEventListener("resize", handleResize);
   return () => window.removeEventListener("resize", handleResize);
 }, [popEditChat.open, popEditChat.from]);
-
   return (
     <>
-    <section className="flex h-screen">
+    <section className="flex h-screen relative">
 
-      {/* <RegisterForm /> */}
+      {(!currentUser || popAuth) && <RegisterForm setPopAuth={setPopAuth}/>}
       <div className="flex flex-col shadow-md bg-green-100 w-full p-5 lg:p-7">
         {existingChat && 
           <div className='flex ml-auto absolute right-3 top-3'>

@@ -22,7 +22,7 @@
   }
 
   .btn-primary {
-    @apply shadow-md px-5 py-2 rounded-xl bg-green-600 text-white font-semibold mx-2 lg:mx-5 text-sm lg:text-base;
+    @apply shadow-md px-5 py-2 rounded-xl bg-green-600 text-white font-semibold text-sm lg:text-base;
   }
 
   .link-primary{

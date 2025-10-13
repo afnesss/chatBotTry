@@ -19,7 +19,7 @@ const ChatInput = ({onSend, loading}) => {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {if (e.key === 'Enter') clickSend()}}
       />
-      <button disabled = {!inputText.trim() && !loading} onClick = {clickSend} className={`btn-primary ${!inputText.trim() && !loading ? "opacity-80 cursor-not-allowed" : "hover:bg-green-700"}`}>
+      <button disabled = {!inputText.trim() && !loading} onClick = {clickSend} className={`btn-primary lg:mx-5 mx-2 ${!inputText.trim() && !loading ? "opacity-80 cursor-not-allowed" : "hover:bg-green-700"}`}>
         {loading? "Stop" : "Send"}
       </button>
     </div>
