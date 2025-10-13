@@ -55,6 +55,24 @@ export const useChatMessages = () => {
   }
   }, [chatId, currentUser])
 
+    useEffect(() => {
+    const initUser = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          setCurrentUser(parsed);
+          console.log("✅ Ініціалізований користувач:", parsed);
+        } catch (err) {
+          console.error("❌ Помилка при парсі користувача:", err);
+          localStorage.removeItem("user");
+        }
+      }
+    };
+
+    initUser();
+  }, []);
+  
   useLayoutEffect(() => {
   const container = containerRef.current;
   if (container) {
@@ -174,6 +192,7 @@ export const useChatMessages = () => {
 
     return {
       messages,
+      currentUser,
       setCurrentUser,
       resetChatState,
       handleSend,

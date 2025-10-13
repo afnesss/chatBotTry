@@ -6,7 +6,7 @@ import { useChatMessages } from "../../contexts/MessagesContext";
 
 const RegisterForm = ({isFormLogin}) => {
   const [form, setForm] = useState({name: '', email: '', password: '', password2: ''});
-  const [isLogin, setIsLogin] = useState(isFormLogin || false);
+  const [isLogin, setIsLogin] = useState(isFormLogin || true);
   const { setCurrentUser, resetChatState } = useChatMessages();
   const handleSet = (e) => setForm(prev => ({...prev, [e.target.name]: e.target.value}))
   useEffect(() => {
@@ -21,7 +21,7 @@ const RegisterForm = ({isFormLogin}) => {
         return;
       }
   console.log("Logged in user:", data.user);
-      setCurrentUser(data.user);
+      setCurrentUser(JSON.parse(data.user));
       resetChatState();
     } else {
       if(form.password !== form.password2){
@@ -43,7 +43,7 @@ const RegisterForm = ({isFormLogin}) => {
   return (
     <div className="center-box">
     <div className="pop-box text-center py-4 px-3">
-      <form className="w-90 px-5" onSubmit={(e) => {e.preventDefault(); sendForm()}}>
+      <form method="POST" className="w-90 px-5" onSubmit={(e) => {e.preventDefault(); sendForm()}}>
         <h2 className="font-bold text-2xl text-green-800 py-5">{!isLogin? "Sign Up" : "Log In"}</h2>
         <div className={` flex flex-col gap-3`}>
         {!isLogin && <InputRegBox name='name' value={form.name} type={'text'} icon={FiUser} placeHolder={'Your Name'} onChange={handleSet}/>}

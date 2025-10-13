@@ -10,15 +10,13 @@ import dayjs from "dayjs";
 
 const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
   const [lastChats, setLastChats] = useState([]);
-
+  const [searchInput, setSearchInput] = useState("");
   const [searchBox, setSearchBox] = useState(searchBoxPassed);
-  const [searchInput, setSearchInput] = useState('');
 
   const today = dayjs();
-  
-  const yesterday = dayjs().subtract(1, 'day');
-  const lastWeekStart = dayjs().subtract(7, 'day');
-  const lastWeekEnd = dayjs().subtract(2, 'day');
+  const yesterday = dayjs().subtract(1, "day");
+  const lastWeekStart = dayjs().subtract(7, "day");
+  const lastWeekEnd = dayjs().subtract(2, "day");
 
   const fetchChats = async () => {
     const chats = await getLastChats();
@@ -26,19 +24,22 @@ const SearchBox = forwardRef(({onclick, searchBoxPassed}, ref) => {
   }
 
   useEffect(() => {
-
     fetchChats();
   }, [searchBox])
 
-  useEffect(() => {
-    const fetchChats = async (searchInput) => {
-      if(searchInput && searchInput.trim() === '') fetchChats();
-      const chats = await findChat(searchInput);
+useEffect(() => {
+  const loadFilteredChats = async () => {
+    if (!searchInput.trim()) {
+      const chats = await getLastChats();
       setLastChats(chats || []);
+      return;
     }
-    fetchChats(searchInput);
+    const chats = await findChat(searchInput);
+    setLastChats(chats || []);
+  };
 
-  }, [searchInput])
+  loadFilteredChats();
+}, [searchInput]);
 
   const todayChats = lastChats.filter((chat) => dayjs(chat.created_at).isSame(today, 'day'));
   const yesterdayChats = lastChats.filter((chat) => dayjs(chat.created_at).isSame(yesterday, 'day'));

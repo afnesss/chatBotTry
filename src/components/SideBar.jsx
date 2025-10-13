@@ -3,13 +3,14 @@ import { RiChatNewLine } from "react-icons/ri";
 import { FiSearch } from "react-icons/fi";  
 import { FiSettings } from "react-icons/fi";   
 import { MdMoreHoriz } from "react-icons/md";
-
+import userIcon from "../assets/user.png";
 import { NavLink, useNavigate} from "react-router-dom";
 import React, { useState, useEffect, useRef} from "react";
 
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
 
+import { useChatMessages } from "../contexts/MessagesContext";
 // import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
 
 import EditChat from "./EditChat";
@@ -31,6 +32,7 @@ const SideBar = () => {
   const searchRef = useRef(null);
   
   const {chats, handleNewChat, handleRename, handleDeleteChat, popEditChat, openPopUp, closePopUp} = useChatContext();
+  const { currentUser, setCurrentUser } = useChatMessages();
 
   useEffect(() => {
     function handleClick(e) {
@@ -124,8 +126,13 @@ const SideBar = () => {
                 </div>
             </div>
 
-          <div className="flex-shrink-0 pt-3">
-            <FiSettings className={`btn-bg p-2 mt-auto cursor-pointer`} size={40} color="green"/>
+        <hr className={`border-t border-gray-200 my-2`}></hr>
+          <div className={`flex p-2 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}>
+            
+            {/* <FiSettings className={`btn-bg p-2 mt-auto cursor-pointer`} size={40} color="green"/> */}
+            <img className={`w-7 rounded-full flex-shrink-0`} src={userIcon}/>
+            {/* {console.log(currentUser)} */}
+            <span className= {`mx-3 ${sideBar? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-hidden whitespace-nowrap`} >{currentUser?.name}</span>
           </div>
         </div>
 

@@ -5,7 +5,7 @@ import {v4 as uuidv4} from "uuid"
 
 export const loginUser = async(req, res) => {
   const {email, password} = req.body;
-
+  console.log("req.body:", req.body); 
   try {
     const result = await pool.query("select * from users where email=$1", [email]);
     if (result.rowCount === 0){
@@ -13,7 +13,8 @@ export const loginUser = async(req, res) => {
     }
 
     const user = result.rows[0];
-
+    // const hash = await bcrypt.hash("12345678", 10);
+    // console.log(hash);
     const valid = await bcrypt.compare(password, user.user_password);
     if(!valid){
       return res.status(401).json({ error: "Invalid credentials" });
@@ -51,3 +52,15 @@ export const registerUser = async(req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 }
+
+export const getCurrentUser = async (req, res) => {
+  try {
+    const userId = req.userId; // authenticate middleware вже встановив
+    const result = await pool.query("SELECT id, name, email FROM users WHERE id = $1", [userId]);
+    if (result.rowCount === 0) return res.status(404).json({ error: "User not found" });
+    return res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+};

@@ -9,13 +9,15 @@ import ConfirmDelete from '../components/ConfirmDelete';
 
 import { useChatMessages } from '../contexts/MessagesContext';
 import RegisterForm from '../components/autenticationComp/RegisterForm';
+import { authFetch } from '../utils/authFetches';
+
 
 const MainPage = () => {
 
   const ref = useRef(null);
 
   const {openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat} = useChatContext();
-  const {messages, handleSend, loading, controller, existingChat, openConfirm, setOpenConfirm, confirmDelRef, chatId, toUp, setToUp, containerRef} = useChatMessages();
+  const {messages, handleSend, loading, controller, existingChat, openConfirm, setOpenConfirm, confirmDelRef, chatId, toUp, setToUp, containerRef, setCurrentUser, currentUser} = useChatMessages();
 
   const buttonRef = useRef(null);
 
@@ -35,6 +37,34 @@ const MainPage = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  // useEffect(() => {
+  //   // const init = async() => {
+  //   //   try {
+  //   //     const token = localStorage.getItem("token");
+  //   //     if (!token) return;
+  //   //     const data = authFetch('/api/auth/me');
+  //   //     if (data) {
+  //   //       setCurrentUser(data.user);
+  //   //     } else {
+  //   //     // токен відсутній або invalid -> редірект на логін або очистити localStorage
+  //   //     localStorage.removeItem("token");
+  //   //     setCurrentUser(null);
+  //   //   }
+  //   //   } catch (error) {
+  //   //     console.log("init error " + error)
+  //   //   }
+  //   // }
+  //   // init();
+  //   const user = JSON.parse(localStorage.getItem("user"));
+  //   if (user){
+  //     setCurrentUser(user);
+  //     console.log(currentUser);
+  //     console.log(user)
+  //     console.log('set')
+  //   }
+    
+  // }, [])
+  
   useEffect(() => {
   const handleResize = () => {
     if (popEditChat.open && buttonRef.current) {
@@ -58,7 +88,7 @@ const MainPage = () => {
     <>
     <section className="flex h-screen">
 
-      <RegisterForm />
+      {/* <RegisterForm /> */}
       <div className="flex flex-col shadow-md bg-green-100 w-full p-5 lg:p-7">
         {existingChat && 
           <div className='flex ml-auto absolute right-3 top-3'>
