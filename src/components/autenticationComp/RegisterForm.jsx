@@ -15,34 +15,62 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
   const handleSet = (e) => setForm(prev => ({...prev, [e.target.name]: e.target.value}))
   const {setCurrentUser} = useAuthContext();
   const navigate = useNavigate();
+  const [passwdError, setpasswdError] = useState('');
 
   useEffect(() => {
   console.log("Form state:", form);
 }, [form]);
+  useEffect(() => {
+    setpasswdError('');
+  }, [isLogin])
   // console.log(form);
   const sendForm = async () => {
     if (isLogin){
+      if (!form.email){
+        setpasswdError('Email is required');
+        return;
+      } else if (!form.password){
+        setpasswdError('Password is required');
+        return;
+      }
       const data = await IfUserExists(form.email, form.password);
+      if(data.error){
+        setpasswdError(data.error);
+        return;
+      }
       if (!data) {
         console.log("Login failed");
         return;
       }
-  console.log("Logged in user:", data.user);
+
+      console.log("Logged in user:", data.user);
       setCurrentUser(data.user);
       setPopAuth(false)
       resetChatState();
       const newChatId = uuidv4();
       navigate(`/chats/${newChatId}`);
+
     } else {
-      if(form.password !== form.password2){
-        console.log('passwords are not the same!!!');
+      if (Object.values(form).some(v => !v)) {
+        setpasswdError('Please fill in all fields');
         return;
       }
-      const data = await fetchRegisterUser(form.name, form.email, form.password)
+      if(form.password !== form.password2){
+        console.log('passwords are not the same!!!');
+        setpasswdError('Passwords are not the same')
+        return;
+      }
+      const data = await fetchRegisterUser(form.name, form.email, form.password);
+      if (data.error){
+        setpasswdError(data.error); 
+        return;
+      } 
+      
       if (!data) {
         console.log("sign up failed");
         return;
       }
+      
       console.log("signed up user:", data.user);
       setCurrentUser(data.user);
       setIsLogin(true);
@@ -63,11 +91,12 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
         <div className={` flex flex-col gap-3`}>
         {!isLogin && <InputRegBox name='name' value={form.name} type={'text'} icon={FiUser} placeHolder={'Your Name'} onChange={handleSet}/>}
         <InputRegBox name='email' type={'email'} value={form.email} icon={FiMail} placeHolder={'Email Address'} onChange={handleSet} />
-        <InputRegBox name='password' type={'password'} value={form.password} icon={FiLock} placeHolder={'Password'} onChange={handleSet} />
-        {!isLogin && <InputRegBox name='password2' value={form.password2} type={'password'} icon={FiKey} placeHolder={'Repeat your password'} onChange={handleSet} />}
+        <InputRegBox name='password' type={'password'} value={form.password} icon={FiLock} placeHolder={'Password'} onChange={(e) => {handleSet(e); setpasswdError('')}} />
+        {!isLogin && <InputRegBox name='password2' value={form.password2} type={'password'} icon={FiKey} placeHolder={'Repeat your password'} onChange={(e) => {handleSet(e); setpasswdError('')}} />}
         {isLogin && <button className="link-primary justify-start text-sm">Forgot Password?</button>}
+        {passwdError !== '' && <span className="text-sm text-red-500">{passwdError}</span>}
       </div>
-        <button type='submit' className="w-full shadow-md px-3 mt-7 mb-2 py-1 rounded-xl hover:bg-green-700 cursor-pointer bg-green-600 text-white font-semibold text-sm lg:text-base">{isLogin? "Sign In" : "Register"}</button>
+        <button type='submit' className="w-full shadow-md px-3 mt-6 mb-2 py-1 rounded-xl hover:bg-green-700 cursor-pointer bg-green-600 text-white font-semibold text-sm lg:text-base">{isLogin? "Sign In" : "Register"}</button>
       </form>
         <div className="flex flex-row justify-center text-sm text-gray-500 mb-3">
           {isLogin? "Don't have an account? " : "Already have an account? "}

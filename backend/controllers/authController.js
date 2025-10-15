@@ -38,6 +38,10 @@ export const registerUser = async(req, res) => {
   const {name, email, password} = req.body;
 
   try {
+    const check = await pool.query("select * from users where email=$1", [email]);
+    if (check.rowCount > 0){
+      return res.status(401).json({ error: "Email already in use" });
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
     const id = uuidv4();
 

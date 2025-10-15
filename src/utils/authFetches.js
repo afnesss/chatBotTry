@@ -20,7 +20,7 @@ export const IfUserExists = async (email, password) => {
 
   } catch (error) {
     console.error("error in fetching login user " + error.message);
-    return null
+    return { error: error.message || "register error" };
   }
 
 }
@@ -45,7 +45,7 @@ export const fetchRegisterUser = async (name, email, password) => {
     return data;
   } catch (error) {
     console.error("error in fetching register user " + error.message);
-    return null
+    return { error: error.message || "register error" };
   }
 }
 
