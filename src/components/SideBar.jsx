@@ -76,8 +76,8 @@ const SideBar = () => {
         transition-[width] duration-300 ease-in-out max-sm:hidden
       `}>
 
-      {searchBox && <SearchBox ref={searchRef} onclick={() => setSearchBox(prev => !prev)}/>}
-        {userBox && <UserPopUp ref={userPopRef}/>}
+      {searchBox && <SearchBox ref={searchRef} searchBox={searchBox} setSearchBox={setSearchBox}/>}
+        {userBox && <UserPopUp close={() => setUserBox(false)} ref={userPopRef}/>}
 
           <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2 "
             onMouseEnter={() => setHover(true)}
@@ -89,7 +89,7 @@ const SideBar = () => {
 
             <div className="mt-7">
             <IconWithLabel text="New Chat" sideBar={sideBar} icon={RiChatNewLine} onClick={handleNewChat}/>
-            <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch} onClick={() => setSearchBox(prev => !prev)}/>
+            <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch} onClick={() => {setSearchBox(prev => !prev)}}/>
             </div>
 
             <div className={`mt-10 text-gray-600 text-sm lg:text-base transition-opacity duration-300 ${sideBar? "opacity-100" : "opacity-0"}`}>Your Chats</div>

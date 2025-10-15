@@ -33,6 +33,7 @@ export const load = async(chatId, setMessages) => {
     const data = await authFetch(`/api/chats/${chatId}/messages`);
     if (!data){
       console.log('No chats found or request failed, load');
+      setMessages([]);
       return [];
     };
     // const data = await res.json();
@@ -159,21 +160,21 @@ export const findChat = async(search) => {
   }
 }
 
-export const chatExists = async(chatId) => {
-  try {
+// export const chatExists = async(chatId) => {
+//   try {
 
-  const data = await authFetch(`/api/chats/${chatId}`);
+//   const data = await authFetch(`/api/chats/${chatId}`);
 
-    // const data = await res.json();
+//     // const data = await res.json();
 
-    if (!data) {
-      console.log('res is not ok');
-      return [];
-    }
+//     if (!data) {
+//       console.log('res is not ok');
+//       return [];
+//     }
 
-    return data;
+//     return data;
 
-  } catch (error) {
-    console.error("Error checking chat (in fetch): ", error.message);
-  }
-}
+//   } catch (error) {
+//     console.error("Error checking chat (in fetch): ", error.message);
+//   }
+// }

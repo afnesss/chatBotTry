@@ -5,6 +5,8 @@ import { IfUserExists, fetchRegisterUser } from "../../utils/authFetches";
 import { useChatMessages } from "../../contexts/MessagesCnxtProvider";
 import { AiOutlineClose } from "react-icons/ai";
 import { useAuthContext } from "../../contexts/AuthContext";
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = ({isFormLogin, setPopAuth}) => {
   const [form, setForm] = useState({name: '', email: '', password: '', password2: ''});
@@ -12,6 +14,7 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
   const {resetChatState} = useChatMessages();
   const handleSet = (e) => setForm(prev => ({...prev, [e.target.name]: e.target.value}))
   const {setCurrentUser} = useAuthContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
   console.log("Form state:", form);
@@ -28,6 +31,8 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
       setCurrentUser(data.user);
       setPopAuth(false)
       resetChatState();
+      const newChatId = uuidv4();
+      navigate(`/chats/${newChatId}`);
     } else {
       if(form.password !== form.password2){
         console.log('passwords are not the same!!!');
@@ -42,6 +47,8 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
       setCurrentUser(data.user);
       setIsLogin(true);
       resetChatState();
+      const newChatId = uuidv4();
+      navigate(`/chats/${newChatId}`);
     }
     
   }
@@ -50,7 +57,7 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
     <div className="absolute inset-0 bg-black/10 backdrop-blur-xs z-40">
     <div className="center-box">
     <div className="pop-box text-center py-4 px-3 absolute">
-      <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => setPopAuth(false)}/>
+      {/* <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => setPopAuth(false)}/> */}
       <form method="POST" className="w-90 px-5" onSubmit={(e) => {e.preventDefault(); sendForm()}}>
         <h2 className="font-bold text-2xl text-green-800 py-5">{!isLogin? "Sign Up" : "Log In"}</h2>
         <div className={` flex flex-col gap-3`}>

@@ -10,10 +10,10 @@ export const insertMessage = async(req, res) => {
 
     const chatCheck = await chatExists(chatId, userId);
     let resChat = null;
-    if (!chatCheck) {
+    if (!chatCheck.exists) {
       const res = await pool.query(
-        "INSERT INTO chats (id, title, created_at) VALUES ($1, $2, NOW()) RETURNING *",
-        [chatId, "My New Chat"]
+        "INSERT INTO chats (id, title, created_at, user_id) VALUES ($1, $2, NOW(), $3) RETURNING *",
+        [chatId, "My New Chat", userId]
       );
       resChat = res.rows[0];
 
@@ -31,7 +31,7 @@ export const insertMessage = async(req, res) => {
       success: true,
       chatCreated: !!resChat,
       chat: resChat,
-      message: result.rows
+      message: result.rows[0]
     });
   } catch (error) {
     console.error("Error inserting message:", error.message);
@@ -41,6 +41,12 @@ export const insertMessage = async(req, res) => {
 
 export const getMessagesByChatId = async(req, res) => {
   const {id} = req.params;
+   const userId = req.userId;
+
+    const chatCheck = await chatExists(id, userId);
+    if (!chatCheck.exists) {
+      return res.status(403).json({ error: "Unauthorized access to chat" });
+    }
     const result = await pool.query(
       "SELECT id, sender, message FROM messagesTable WHERE chat_id = $1 order by created_at asc",
       [id]

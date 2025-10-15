@@ -28,13 +28,14 @@ export const useChatMessages = () => {
     const { setChats} = useChatContext();
 
   const resetChatState = () => {
-  setMessages([]);
-  setExistChat(null);
-  setBotId('');
-  setLoading(false);
-  setController(null);
-  // setToUp(false);
-  setOpenConfirm(false);
+    controller && controller.abort(); 
+    setMessages([]);
+    setExistChat(null);
+    setBotId('');
+    setLoading(false);
+    setController(null);
+    setOpenConfirm(false);
+  
   // setPopAuth(true);
 };
   useEffect(() => {
