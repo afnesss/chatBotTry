@@ -19,7 +19,7 @@ export const useChatMessages = () => {
 
   // const [popAuth, setPopAuth] = useState(false);
   // const [currentUser, setCurrentUser] = useState(null);
-  const {popAuth, currentUser, setCurrentUser, setPopAuth} = useAuthContext();
+  const {popAuth, currentUser} = useAuthContext();
 
   const confirmDelRef = useRef(null);
   const containerRef = useRef(null);
@@ -55,8 +55,6 @@ export const useChatMessages = () => {
   if (chatId && currentUser) { // ⚠️ тільки якщо є залогінений користувач
     load(chatId, setMessages);
     handlecheck(chatId);
-    console.log('here')
-    console.log(popAuth)
   } else {
     setMessages([]);       // очищаємо старі повідомлення
     setExistChat(null); 
@@ -64,25 +62,6 @@ export const useChatMessages = () => {
        // очищаємо existingChat
   }
   }, [chatId, currentUser])
-
-  useEffect(() => {
-    const initUser = () => {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser);
-          setCurrentUser(parsed);
-          // console.log("✅ Ініціалізований користувач:", parsed);
-        } catch (err) {
-          // console.error("❌ Помилка при парсі користувача:", err);
-          setPopAuth(true);
-          localStorage.removeItem("user");
-        }
-      }
-    };
-
-    initUser();
-  }, []);
 
 
 
@@ -96,10 +75,6 @@ export const useChatMessages = () => {
   }
   }, [messages]);
 
-//   useEffect(() => {
-//   console.log("currentUser or popAuth changed");
-//   // тут можеш зробити будь-яку дію (напр. отримати нові дані)
-// }, [currentUser, popAuth]);
 
   const handleSend = async (message) => {
 
@@ -151,20 +126,34 @@ export const useChatMessages = () => {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let fullText = '';
+      let boldChunk = false;
       
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
   
         let chunk = decoder.decode(value, { stream: true });
+        
   
         chunk = chunk
           .split('\n')
           .filter(line => line.trim())
           .map(line => JSON.parse(line).response)
           .join('');
-  
+
+        
+        chunk = chunk.replace(/ \* /g, '\n');
+        // chunk = chunk.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        if (chunk.includes('**')){
+          boldChunk = !boldChunk;
+          chunk = chunk.replace(/\*\*/g, '');
+        }
+        if (boldChunk) {
+          chunk = `<b>${chunk}</b>`;
+        }
+
         fullText += chunk;
+        // fullText = fullText.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
         setMessages(prev => 
           prev.map((msg) => {
   

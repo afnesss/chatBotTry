@@ -18,12 +18,9 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
   const [passwdError, setpasswdError] = useState('');
 
   useEffect(() => {
-  console.log("Form state:", form);
-}, [form]);
-  useEffect(() => {
     setpasswdError('');
   }, [isLogin])
-  // console.log(form);
+
   const sendForm = async () => {
     if (isLogin){
       if (!form.email){
@@ -56,7 +53,6 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
         return;
       }
       if(form.password !== form.password2){
-        console.log('passwords are not the same!!!');
         setpasswdError('Passwords are not the same')
         return;
       }
@@ -70,7 +66,7 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
         console.log("sign up failed");
         return;
       }
-      
+
       console.log("signed up user:", data.user);
       setCurrentUser(data.user);
       setIsLogin(true);

@@ -20,7 +20,7 @@ const MainPage = () => {
   
   const {openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat} = useChatContext();
   const {messages, handleSend, loading, controller, existingChat, openConfirm, setOpenConfirm, confirmDelRef, chatId, toUp, setToUp, containerRef} = useChatMessages();
-  const {currentUser, setPopAuth, setCurrentUser, popAuth} = useAuthContext();
+  const {currentUser, setPopAuth, popAuth} = useAuthContext();
 
   const buttonRef = useRef(null);
 

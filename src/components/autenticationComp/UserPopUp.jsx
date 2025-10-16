@@ -23,7 +23,7 @@ const UserPopUp = forwardRef(({close}, ref) => {
   }
   
   return (
-    <div ref={ref} className="pop-box absolute z-50 p-3" style={{bottom: 60, left: 10 }}>
+    <div ref={ref} className="pop-box shadow-md absolute z-50 p-3" style={{bottom: 60, left: 10 }}>
       <div className="flex flex-row gap-2 p-1">
         <FiUser size={15} className="text-gray-500"/>
         <span className="text-xs text-gray-500">{currentUser?.email}</span>

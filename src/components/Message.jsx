@@ -18,9 +18,8 @@ const Message = ({message, sender}) => {
             </div>
  
         ):  */}
-        <div className="px-4 py-2 bg-gray-200 text-start items-center rounded-xl shadow-md max-w-[70%] text-sm lg:text-base lg:max-w-[60%] break-words">
-            {message}
-        </div> 
+            
+        <div dangerouslySetInnerHTML={{ __html: message }} style={{ whiteSpace: 'pre-wrap' }} className="px-4 py-2 bg-gray-200 text-start items-center rounded-xl shadow-md max-w-[70%] text-sm lg:text-base lg:max-w-[60%] break-words"/> 
          {/* } */}
       {sender === 'user' && (
         <img className={iconStyle} src={userIcon}/>
