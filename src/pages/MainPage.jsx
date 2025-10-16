@@ -63,7 +63,7 @@ const MainPage = () => {
     <>
     <section className="flex h-screen relative">
 
-      {(!currentUser || popAuth) && <RegisterForm setPopAuth={setPopAuth}/>}
+      {popAuth && <RegisterForm setPopAuth={setPopAuth}/>}
       <div className="flex flex-col shadow-md bg-green-100 w-full p-5 lg:p-7">
         {existingChat && 
           <div className='flex ml-auto absolute right-3 top-3'>

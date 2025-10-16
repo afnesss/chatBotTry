@@ -81,7 +81,7 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
     <div className="absolute inset-0 bg-black/10 backdrop-blur-xs z-40">
     <div className="center-box">
     <div className="pop-box text-center py-4 px-3 absolute">
-      {/* <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => setPopAuth(false)}/> */}
+      <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => setPopAuth(false)}/>
       <form method="POST" className="w-90 px-5" onSubmit={(e) => {e.preventDefault(); sendForm()}}>
         <h2 className="font-bold text-2xl text-green-800 py-5">{!isLogin? "Sign Up" : "Log In"}</h2>
         <div className={` flex flex-col gap-3`}>
@@ -96,7 +96,7 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
       </form>
         <div className="flex flex-row justify-center text-sm text-gray-500 mb-3">
           {isLogin? "Don't have an account? " : "Already have an account? "}
-          <button className="link-primary ml-2" onClick={() => setIsLogin (p => !p)}>{isLogin? "Sign Up" : "Log In"}</button>
+          <button className="link-primary ml-2" onClick={() => {setIsLogin (p => !p); setForm({ name: '', email: '', password: '', password2: '' });}}>{isLogin? "Sign Up" : "Log In"}</button>
         </div>
       </div>
     </div>

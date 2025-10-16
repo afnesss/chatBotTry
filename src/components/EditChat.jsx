@@ -10,7 +10,7 @@ const EditChat = forwardRef(({x, y, changeChatTitle, deleteChat, isPersonal = fa
     <div ref={ref} className="fixed shadow-md rounded-xl bg-gray-200 p-2 gap-2 z-50" style={{ top: y, left: x }}>
       {!isPersonal && 
       <>
-        <BtnPopUp onClick={changeChatTitle} bg="hover:bg-gray-400/30 rounded-lg w-full" title="Rename" icon={FiEdit3}/>
+        <BtnPopUp onClick={changeChatTitle} bg="hover:bg-gray-300/70 rounded-lg w-full" title="Rename" icon={FiEdit3}/>
         <hr className="mx-auto m-1 border-t border-gray-400 max-w-[70%]"></hr>
         
       </> }
