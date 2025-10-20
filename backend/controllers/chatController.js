@@ -65,13 +65,13 @@ export const createChat = async(req, res) => {
   }
 }
 
-export const getLastChats = async(req, res) => {
+export const getChats = async(req, res) => {
   try {
     const userId = req.userId;
     const result = await pool.query(`SELECT * FROM chats
-    WHERE created_at >= CURRENT_DATE - INTERVAL '7 days' and user_id=$1
+    where user_id=$1
     ORDER BY created_at DESC;`, [userId]);
-
+//WHERE created_at >= CURRENT_DATE - INTERVAL '7 days' 
     return res.json(result.rows);
 
   } catch (error) {

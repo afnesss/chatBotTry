@@ -28,6 +28,11 @@
   .link-primary{
     @apply text-center mt-auto text-green-600 underline hover:text-green-800 cursor-pointer;
   }
+
+  .bg-main {
+    @apply bg-green-100;
+  }
+
   
 }
 

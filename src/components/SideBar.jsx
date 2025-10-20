@@ -10,7 +10,8 @@ import React, { useState, useEffect, useRef} from "react";
 import UserPopUp from "./autenticationComp/UserPopUp";
 import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
-
+// import EditProfile from "./autenticationComp/EditProfile";
+import EditProfile from "./autenticationComp/EditProfile";
 import { useChatMessages } from "../contexts/MessagesCnxtProvider";
 // import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
 
@@ -21,47 +22,16 @@ import { MdOutlineSmartToy } from "react-icons/md";
 import SearchBox from '../components/SearchBox';
 import { useChatContext } from "../contexts/ChatContext";
 import { useAuthContext } from "../contexts/AuthContext";
+import { useBoxContext } from "../contexts/BoxesContext";
 
 const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
   
   const [hover, setHover] = useState(false);
-  const [searchBox, setSearchBox] = useState(false);
-  const [userBox, setUserBox] = useState(false);
-  const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
-
-  const ref = useRef(null);
-  const refInput = useRef(null);
-  const searchRef = useRef(null);
-  const userPopRef = useRef(null);
+  const {editChat, setEditChat, boxes, toggleBox, refs, closeBox} = useBoxContext();
   
   const {chats, handleNewChat, handleRename, handleDeleteChat, popEditChat, openPopUp, closePopUp} = useChatContext();
   const { currentUser, setPopAuth} = useAuthContext();
-
-  useEffect(() => {
-    function handleClick(e) {
-      if (ref.current && !ref.current.contains(e.target)) {
-        console.log('clocked')
-        closePopUp();
-      }
-      if(refInput.current && !refInput.current.contains(e.target)){
-        setEditChat({edit: false, chat: null, newTitle: ''});
-      }
-      if(searchRef.current && !searchRef.current.contains(e.target)){
-        setSearchBox(false);
-      }
-      if(userPopRef.current && !userPopRef.current.contains(e.target)){
-        setUserBox(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  // useEffect(() => {
-
-  // }, [popAuth])
 
   const onRename = async () => {
     handleRename(editChat.chat.id, editChat.newTitle)
@@ -76,8 +46,10 @@ const SideBar = () => {
         transition-[width] duration-300 ease-in-out max-sm:hidden
       `}>
 
-      {searchBox && <SearchBox ref={searchRef} searchBox={searchBox} setSearchBox={setSearchBox}/>}
-        {userBox && <UserPopUp close={() => setUserBox(false)} ref={userPopRef}/>}
+      {boxes.search && <SearchBox ref={refs.search} searchBox={boxes.search} setSearchBox={() => toggleBox('search')}/>}
+        {boxes.user && <UserPopUp close={() => closeBox('user')} ref={refs.user}/>}
+          {boxes.editProf && <EditProfile ref={refs.editProf} set={() => {toggleBox('editProf');}}/>}
+          
 
           <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2 "
             onMouseEnter={() => setHover(true)}
@@ -89,7 +61,7 @@ const SideBar = () => {
 
             <div className="mt-7">
             <IconWithLabel text="New Chat" sideBar={sideBar} icon={RiChatNewLine} onClick={handleNewChat}/>
-            <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch} onClick={() => {setSearchBox(prev => !prev)}}/>
+            <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch} onClick={() => {toggleBox('search')}}/>
             </div>
 
             <div className={`mt-10 text-gray-600 text-sm lg:text-base transition-opacity duration-300 ${sideBar? "opacity-100" : "opacity-0"}`}>Your Chats</div>
@@ -106,7 +78,7 @@ const SideBar = () => {
 
                         {editChat.edit && editChat.chat === chat ? 
                             <input
-                            ref = {refInput}
+                            ref = {refs.input}
                             type="text"
                             value={editChat.newTitle}
                             onChange={(e) => setEditChat(prev => ({ ...prev, newTitle: e.target.value }))}
@@ -127,7 +99,7 @@ const SideBar = () => {
 
                         <MdMoreHoriz onClick={(e)=> {e.preventDefault(); openPopUp(e, chat.id, 'sidebar'); }} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chatId === chat.id && "opacity-100"}`}/>
                       </NavLink>
-                    {popEditChat.open && popEditChat.chatId === chat.id && popEditChat.from === 'sidebar' && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} deleteChat={() => handleDeleteChat(chat.id)} changeChatTitle={() => 
+                    {popEditChat.open && popEditChat.chatId === chat.id && popEditChat.from === 'sidebar' && <EditChat ref={refs.editChat} x={popEditChat.x} y={popEditChat.y} deleteChat={() => handleDeleteChat(chat.id)} changeChatTitle={() => 
                           {setEditChat({ edit: true, chat, newTitle: chat.title });
                           closePopUp();
                           }}/>}
@@ -140,14 +112,19 @@ const SideBar = () => {
 
         <hr className={`border-t border-gray-200 my-2`}></hr>
             {currentUser 
-            ?   <div className={`flex p-1 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}
-            onClick={() => setUserBox(p => !p)}>
+            ?   <div 
+
+            className={`flex p-1 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}
+            onClick={() => toggleBox('user')}>
               <img className={`w-7 h-7 rounded-full flex-shrink-0`} src={userIcon}/>
               {/* {console.log(currentUser)} */}
-              <span className= {`mx-3 ${sideBar? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-hidden whitespace-nowrap truncate block hover:overflow-visible hover:whitespace-normal`} >{currentUser?.name}</span>
+              <span 
+              // contentEditable
+              // suppressContentEditableWarning={true}
+              className= {`mx-3 ${sideBar? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-hidden whitespace-nowrap truncate block hover:overflow-visible hover:whitespace-normal`} >{currentUser?.name}</span>
             </div>
             : 
-              <button className="btn-primary ml-2 cursor-pointer px-2 hover:bg-green-700" onClick={() =>{setPopAuth(true); setUserBox(false)}}>{sideBar? "Log in" : <FiLogIn size={15} className="text-white"/>}</button>
+              <button className="btn-primary ml-2 cursor-pointer px-2 hover:bg-green-700" onClick={() =>{setPopAuth(true); closeBox('user')}}>{sideBar? "Log in" : <FiLogIn size={15} className="text-white"/>}</button>
             }
         </div>
 

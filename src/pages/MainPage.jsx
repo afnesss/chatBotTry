@@ -11,6 +11,7 @@ import { useChatMessages } from '../contexts/MessagesCnxtProvider';
 import RegisterForm from '../components/autenticationComp/RegisterForm';
 import { authFetch } from '../utils/authFetches';
 import { useAuthContext } from '../contexts/AuthContext';
+import EditProfile from '../components/autenticationComp/EditProfile';
 // import UserPopUp from '../components/autenticationComp/UserPopUp';
 
 
@@ -63,8 +64,9 @@ const MainPage = () => {
     <>
     <section className="flex h-screen relative">
 
+      {/* <EditProfile /> */}
       {popAuth && <RegisterForm setPopAuth={setPopAuth}/>}
-      <div className="flex flex-col shadow-md bg-green-100 w-full p-5 lg:p-7">
+      <div className="flex flex-col shadow-md bg-main w-full p-5 lg:p-7">
         {existingChat && 
           <div className='flex ml-auto absolute right-3 top-3'>
             <div className='inline-block'>

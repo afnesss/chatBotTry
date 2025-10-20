@@ -5,11 +5,9 @@ const InputRegBox = ({icon: Icon, placeHolder, type, value, onChange, name}) => 
   const isPassword = type === 'password';
   const [show, setShow] = useState(false);
 
-
-
   return (
     <div className=" items-center ">
-       <div className="relative w-full flex flex-row gap-5"> 
+       <div className="relative w-full flex flex-row gap-5 items-center"> 
         <Icon size={20}/>
         <input
         name ={name}

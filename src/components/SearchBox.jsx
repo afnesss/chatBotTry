@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useState } from "react";
-import { getLastChats, findChat} from "../utils/fetches";
+import { getChats, findChat} from "../utils/fetches";
 import { AiOutlineClose } from "react-icons/ai"; 
 import { FiMessageCircle } from "react-icons/fi";
 
@@ -19,7 +19,7 @@ const SearchBox = forwardRef(({searchBox, setSearchBox}, ref) => {
   const lastWeekEnd = dayjs().subtract(2, "day");
 
   const fetchChats = async () => {
-    const chats = await getLastChats();
+    const chats = await getChats();
     setLastChats(chats || []);
   }
 
@@ -30,7 +30,7 @@ const SearchBox = forwardRef(({searchBox, setSearchBox}, ref) => {
   useEffect(() => {
     const loadFilteredChats = async () => {
       if (!searchInput.trim()) {
-        const chats = await getLastChats();
+        const chats = await getChats();
         setLastChats(chats || []);
         return;
       }
@@ -51,6 +51,10 @@ const SearchBox = forwardRef(({searchBox, setSearchBox}, ref) => {
     const chatDate = dayjs(chat.created_at);
     return chatDate.isAfter(lastWeekStart) && chatDate.isBefore(lastWeekEnd);
   });
+  const olderChats = lastChats.filter((chat) => {
+    const chatDate = dayjs(chat.created_at);
+    return chatDate.isBefore(lastWeekStart);
+  })
   // console.log(lastWeekChats)
   return (
     <div  className="center-box z-[100]">
@@ -62,7 +66,7 @@ const SearchBox = forwardRef(({searchBox, setSearchBox}, ref) => {
       
       <hr className="border-gray-400 my-3 -mx-4"></hr>
       <div className="h-50 overflow-y-auto">
-        {todayChats.length === 0 && yesterdayChats.length === 0 && lastWeekChats.length === 0 
+        {todayChats.length === 0 && yesterdayChats.length === 0 && lastWeekChats.length === 0 && olderChats.length === 0
         ? <>
           <div className="w-full h-full flex items-center justify-center text-gray-400 font-semibold text-lg">
             <FiMessageCircle size={24} className="mr-2"/>
@@ -72,6 +76,7 @@ const SearchBox = forwardRef(({searchBox, setSearchBox}, ref) => {
           <FilteredChats array={todayChats} title="Today" onClick={() => {setSearchBox(false)}}/>
           <FilteredChats array={yesterdayChats} title="Yesterday" onClick={() => {setSearchBox(false)}}/>
           <FilteredChats array={lastWeekChats} title="Last Week" onClick={() => {setSearchBox(false)}}/>
+          {searchInput.trim() && olderChats.length > 0 && <FilteredChats array={olderChats} title="Older" onClick={() => {setSearchBox(false)}}/>}
         </>}
 
       </div>

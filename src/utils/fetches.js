@@ -47,7 +47,7 @@ export const load = async(chatId, setMessages) => {
 export const makeNewChat = async(passedId=null) => {
   try {
     const id = passedId || uuidv4();
-    const title = "My New Chat";
+    const title = "New Chat";
     // const messages = [];
     const created_at = new Date().toISOString();
     const data = await authFetch('/api/chats',{
@@ -113,7 +113,7 @@ export const changeChatTitle = async(chatId, newTitle) => {
   }
 }
 
-export const getLastChats= async() => {
+export const getChats= async() => {
   try {
     const data = await authFetch(`/api/chats`)
 

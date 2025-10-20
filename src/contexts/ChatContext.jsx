@@ -16,15 +16,12 @@ export const ChatProvider = ({ children }) => {
   const handleDeleteChat = async (chatId) => {
     await deleteChat(chatId);
     setChats(prev => prev.filter(item => item.id !== chatId));
-    const newChatId = uuidv4();
-    navigate(`/chats/${newChatId}`);
+    handleNewChat();
   }
 
   const handleNewChat = async () => {
-    const newChat = await makeNewChat();
-    navigate(`/chats/${newChat.id}`)
-    setChats(prev => [newChat, ...prev]);
-    return newChat;
+    const newChatId = uuidv4();
+    navigate(`/chats/${newChatId}`)
   }
 
 
