@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { addMessage, chatExists, load} from '../utils/fetches';
 
-import { generateRes } from "../utils/aiFetches";
+import { generateRes, generateAiRes } from "../utils/aiFetches.js";
 import { useChatContext } from "./ChatContext";
 import { v4 as uuidv4 } from "uuid";
 
