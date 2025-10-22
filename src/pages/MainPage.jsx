@@ -12,34 +12,36 @@ import RegisterForm from '../components/autenticationComp/RegisterForm';
 import { authFetch } from '../utils/authFetches';
 import { useAuthContext } from '../contexts/AuthContext';
 import EditProfile from '../components/autenticationComp/EditProfile';
+import { useBoxContext } from '../contexts/BoxesContext';
 // import UserPopUp from '../components/autenticationComp/UserPopUp';
 
 
 const MainPage = () => {
 
-  const ref = useRef(null);
+  // const ref = useRef(null);
   
   const {openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat} = useChatContext();
-  const {messages, handleSend, loading, controller, existingChat, openConfirm, setOpenConfirm, confirmDelRef, chatId, toUp, setToUp, containerRef} = useChatMessages();
+  const {messages, handleSend, loading, controller, existingChat, chatId, toUp, setToUp, containerRef} = useChatMessages();
+  const {boxes, refs, toggleBox, closeBox, openBox} = useBoxContext();
   const {currentUser, setPopAuth, popAuth} = useAuthContext();
 
   const buttonRef = useRef(null);
 
 
-  useEffect(() =>
-  {
-    function handleClick(e) {
-      if (ref.current && !ref.current.contains(e.target)) {
-        closePopUp();
-      }
-      if (confirmDelRef.current && !confirmDelRef.current.contains(e.target)) {
-        setOpenConfirm(false);
-      }
-    }
+  // useEffect(() =>
+  // {
+  //   function handleClick(e) {
+  //     // if (ref.current && !ref.current.contains(e.target)) {
+  //     //   closePopUp();
+  //     // }
+  //     // if (confirmDelRef.current && !confirmDelRef.current.contains(e.target)) {
+  //     //   setOpenConfirm(false);
+  //     // }
+  //   }
 
-      document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
+  //     document.addEventListener("mousedown", handleClick);
+  //   return () => document.removeEventListener("mousedown", handleClick);
+  // }, []);
 
   
   useEffect(() => {
@@ -71,14 +73,14 @@ const MainPage = () => {
           <div className='flex ml-auto absolute right-3 top-3'>
             <div className='inline-block'>
           <MdMoreHoriz  ref={buttonRef} size={35} className='lg:opacity-100 text-gray-600 btn-bg ml-auto p-2 max-sm:opacity-0 md:opacity-0 sm:opacity-0' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef)}}/>
-          {popEditChat.open && popEditChat.chatId === chatId && popEditChat.from === 'main' && <EditChat ref={ref} x={popEditChat.x} y={popEditChat.y} isPersonal={true}  deleteChat={() => /*handleDeleteChat(chatId)}*/ setOpenConfirm(true)}/>}
+          {popEditChat.open && popEditChat.chatId === chatId && popEditChat.from === 'main' && <EditChat ref={refs.editChat} x={popEditChat.x} y={popEditChat.y} isPersonal={true}  deleteChat={() => /*handleDeleteChat(chatId)}*/ openBox('confirm')}/>}
 
             </div>
           
         </div>
         }
 
-        {openConfirm && <ConfirmDelete title={existingChat} cancelDel={() => setOpenConfirm(false)} deleteChat={() => {handleDeleteChat(chatId); setOpenConfirm(false);}} ref={confirmDelRef}/>}
+        {boxes.confirm && <ConfirmDelete title={existingChat} cancelDel={() => closeBox('confirm')} deleteChat={() => {handleDeleteChat(chatId); closeBox('confirm');}} ref={refs.confirm}/>}
 
         <div className={`flex flex-col items-center flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
           <div className={`flex my-3 w-full ${toUp ? 'order-first' : 'order-last'}`}>

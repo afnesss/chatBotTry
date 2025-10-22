@@ -57,14 +57,33 @@ export const registerUser = async(req, res) => {
   }
 }
 
-export const getCurrentUser = async (req, res) => {
+// export const getCurrentUser = async (req, res) => {
+//   try {
+//     const userId = req.userId; // authenticate middleware вже встановив
+//     const result = await pool.query("SELECT id, name, email FROM users WHERE id = $1", [userId]);
+//     if (result.rowCount === 0) return res.status(404).json({ error: "User not found" });
+//     return res.json(result.rows[0]);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Database error" });
+//   }
+// };
+
+export const updateUserData = async(req, res) => {
   try {
-    const userId = req.userId; // authenticate middleware вже встановив
-    const result = await pool.query("SELECT id, name, email FROM users WHERE id = $1", [userId]);
+    console.log('found')
+    const userId = req.userId;
+    const {column, value} = req.body;
+    const result = await pool.query(
+      `UPDATE users SET ${column} = $1 WHERE id = $2 RETURNING *`,
+      [value, userId]
+    );
+
     if (result.rowCount === 0) return res.status(404).json({ error: "User not found" });
-    return res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
+    res.status(200).json({ user: result.rows[0] });
+
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Database error" });
   }
-};
+}

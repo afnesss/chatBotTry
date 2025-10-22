@@ -134,14 +134,6 @@ export const getChats= async() => {
 
 export const findChat = async(search) => {
   try {
-    // const res = await fetch(`/api/chats/find`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify({search})
-    // })
-
     const data = await authFetch(`/api/chats/find`, {
       method: "POST",
       body: JSON.stringify({search})
@@ -177,4 +169,25 @@ export const chatExists = async(chatId) => {
   } catch (error) {
     console.error("Error checking chat (in fetch): ", error.message);
   }
+}
+
+export const changeUserData = async(dataToUpdate) => {
+  try {
+    // Use the Vite proxy path so requests go through the dev server (/api -> backend)
+    const data = await authFetch('/api/auth/update', {
+      method: 'PUT',
+      body: JSON.stringify(dataToUpdate)
+    })
+
+    if(!data) {
+      console.error('error in changing name, fetch');
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+
 }

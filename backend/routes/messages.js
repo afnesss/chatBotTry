@@ -6,7 +6,7 @@ const router = express.Router({ mergeParams: true });
 
 // router.use(authenticate);
 
-router.get("/messages", getMessagesByChatId);
-router.post("/messages", insertMessage);
+router.get("/", getMessagesByChatId);
+router.post("/", insertMessage);
 
 export default router;

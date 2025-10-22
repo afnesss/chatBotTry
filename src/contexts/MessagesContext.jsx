@@ -14,7 +14,6 @@ export const useChatMessages = () => {
   const [loading, setLoading] = useState(false);
   const [botId, setBotId] = useState('');
   const [existingChat, setExistChat] = useState(null);
-  const [openConfirm, setOpenConfirm] = useState(false);
   const [toUp, setToUp] = useState(false);
 
   // const [popAuth, setPopAuth] = useState(false);
@@ -34,7 +33,7 @@ export const useChatMessages = () => {
     setBotId('');
     setLoading(false);
     setController(null);
-    setOpenConfirm(false);
+    // setOpenConfirm(false);
   
   // setPopAuth(true);
 };
@@ -196,8 +195,8 @@ export const useChatMessages = () => {
       loading,
       controller,
       existingChat,
-      openConfirm,
-      setOpenConfirm,
+      // openConfirm,
+      // setOpenConfirm,
       confirmDelRef,
       chatId,
       toUp,

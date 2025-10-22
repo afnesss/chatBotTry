@@ -19,6 +19,6 @@ router.put("/:id", changeChatTitle);
 router.delete("/:id", deleteChat);
 router.get("/:id", checkingChat);
 
-router.use("/:id", messageRouter)
+router.use("/:id/messages", messageRouter)
 
 export default router;

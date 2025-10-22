@@ -5,6 +5,7 @@ import { HiCamera } from "react-icons/hi2";
 import { AiOutlineClose } from "react-icons/ai";
 import { forwardRef, useState } from "react";
 import InputRegBox from "./InputRegBox";
+import { changeUserData } from "../../utils/fetches";
 // import { SunIcon, MoonIcon, SwatchIcon } from "@heroicons/react/24/solid";
 
 
@@ -13,6 +14,16 @@ const EditProfile = forwardRef(({set}, ref) => {
   const [updatedForm, setUpdatedForm] = useState({name: currentUser.name || ''});
 
   const handleSet = (e) => {setUpdatedForm(prev => ({...prev, [e.target.name]: e.target.value}))};
+  const handleUpdate = (updatedForm) => {
+    if (Object.values(updatedForm).every(v => v === '')) {
+      return;
+    }
+Object.entries(updatedForm).forEach(async ([key, value]) => {
+  if (value !== '') {
+    const res = await changeUserData({ column: key, value });
+  }
+});
+  }
 
   return (
     <div ref={ref} className="center-box z-50 ">
@@ -23,9 +34,8 @@ const EditProfile = forwardRef(({set}, ref) => {
         <HiCamera className="hover:bg-[#396849] bg-green-900 rounded-full text-white p-1 absolute bottom-0 right-0 outline-3 outline-gray-200" size={30}/>
       </div>
 
-      <form className="flex flex-col gap-3 my-5 w-80 px-5">
+      <form onSubmit={(e) => {e.preventDefault(); handleUpdate(updatedForm);}} className="flex flex-col gap-3 my-5 w-80 px-5">
         <InputRegBox 
-          
         type='text' icon={FiUser} value={updatedForm.name} placeHolder={'Your name'} name='name' onChange={handleSet}/>
 
         <button type="submit" className="btn-primary mt-3 hover:bg-green-700 py-1 cursor-pointer w-full">

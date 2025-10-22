@@ -18,7 +18,8 @@ export const BoxesProvider = ({children}) => {
     refInput: false,
     search: false,
     user: false,
-    editProf: false
+    editProf: false,
+    confirm: false
   })
 
   const toggleBox = (name) => setBoxes(prev => ({ ...prev, [name]: !prev[name] }));
@@ -30,16 +31,16 @@ export const BoxesProvider = ({children}) => {
     input: useRef(null),
     search: useRef(null),
     user: useRef(null),
-    editProf: useRef(null)
+    editProf: useRef(null),
+    confirm: useRef(null)
   }
 
   useEffect(() => {
     function handleClick(e) {
-      if (refs.editProf.current && !refs.editProf.current.contains(e.target)) {
-          setBoxes(prev => ({ ...prev, ['editProf']: false }));
-          closePopUp();
-          return;
-      }
+    if (refs.editChat.current && !refs.editChat.current.contains(e.target)) {
+      setEditChat({ edit: false, chat: null, newTitle: '' });
+      closePopUp();
+    }
       Object.entries(refs).forEach(([name, ref]) => {
         if (ref.current && !ref.current.contains(e.target)) {
           setBoxes(prev => ({ ...prev, [name]: false }));
