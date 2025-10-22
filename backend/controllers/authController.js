@@ -36,6 +36,7 @@ export const loginUser = async(req, res) => {
 
 export const registerUser = async(req, res) => {
   const {name, email, password} = req.body;
+  console.log('registring...')
 
   try {
     const check = await pool.query("select * from users where email=$1", [email]);
@@ -71,7 +72,12 @@ export const registerUser = async(req, res) => {
 
 export const updateUserData = async(req, res) => {
   try {
-    console.log('found')
+    console.log('[Update User]', {
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      userId: req.userId
+    });
     const userId = req.userId;
     const {column, value} = req.body;
     const result = await pool.query(

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 const authenticate = (req, res, next) => {
   //зберігаєм токен з хеадерс
+  console.log('middleware')
   const token = req.headers.authorization?.split(" ")[1];
   //якщо не токен то статус 401 неавторизовано
   if(!token) {return res.status(401).json({ error: "Unauthorized" })};

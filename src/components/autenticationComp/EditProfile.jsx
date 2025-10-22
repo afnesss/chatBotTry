@@ -6,13 +6,15 @@ import { AiOutlineClose } from "react-icons/ai";
 import { forwardRef, useState } from "react";
 import InputRegBox from "./InputRegBox";
 import { changeUserData } from "../../utils/fetches";
+import { useBoxContext } from "../../contexts/BoxesContext";
 // import { SunIcon, MoonIcon, SwatchIcon } from "@heroicons/react/24/solid";
 
 
 const EditProfile = forwardRef(({set}, ref) => {
-  const {currentUser} = useAuthContext();
+  const {currentUser, setCurrentUser} = useAuthContext();
   const [updatedForm, setUpdatedForm] = useState({name: currentUser.name || ''});
 
+  const {toggleBox} = useBoxContext();
   const handleSet = (e) => {setUpdatedForm(prev => ({...prev, [e.target.name]: e.target.value}))};
   const handleUpdate = (updatedForm) => {
     if (Object.values(updatedForm).every(v => v === '')) {
@@ -20,7 +22,11 @@ const EditProfile = forwardRef(({set}, ref) => {
     }
 Object.entries(updatedForm).forEach(async ([key, value]) => {
   if (value !== '') {
-    const res = await changeUserData({ column: key, value });
+    const data = await changeUserData({ column: key, value });
+    if (!data) {
+      throw new Error('res changing name is not ok');
+    }
+    setCurrentUser(data.user)
   }
 });
   }
@@ -34,7 +40,7 @@ Object.entries(updatedForm).forEach(async ([key, value]) => {
         <HiCamera className="hover:bg-[#396849] bg-green-900 rounded-full text-white p-1 absolute bottom-0 right-0 outline-3 outline-gray-200" size={30}/>
       </div>
 
-      <form onSubmit={(e) => {e.preventDefault(); handleUpdate(updatedForm);}} className="flex flex-col gap-3 my-5 w-80 px-5">
+      <form onSubmit={(e) => {e.preventDefault(); handleUpdate(updatedForm); toggleBox('editProf')}} className="flex flex-col gap-3 my-5 w-80 px-5">
         <InputRegBox 
         type='text' icon={FiUser} value={updatedForm.name} placeHolder={'Your name'} name='name' onChange={handleSet}/>
 

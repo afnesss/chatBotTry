@@ -25,8 +25,23 @@ app.use('/chats', chatsRouter);
 // app.use('/ai', aiRouter);
 
 
+// app.listen(PORT, () => {
+//   console.log("Backend running on http://localhost:" + PORT);
+// });
+
 app.listen(PORT, () => {
   console.log("Backend running on http://localhost:" + PORT);
+  console.log("\nRegistered /auth routes:");
+  authRouter.stack.forEach(layer => {
+    if (layer.route) {
+      console.log(`  ${Object.keys(layer.route.methods)[0].toUpperCase()} /auth${layer.route.path}`);
+    }
+  });
+  console.log("\nRegistered /chats routes:");
+  chatsRouter.stack.forEach(layer => {
+    if (layer.route) {
+      console.log(`  ${Object.keys(layer.route.methods)[0].toUpperCase()} /chats${layer.route.path}`);
+    }
+  });
 });
-
 
