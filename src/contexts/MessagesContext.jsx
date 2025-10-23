@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react'
-import { addMessage, chatExists, load} from '../utils/fetches';
+import { addMessage, changeChatTitle, chatExists, load} from '../utils/fetches';
 
 import { generateRes, generateAiRes } from "../utils/aiFetches.js";
 import { useChatContext } from "./ChatContext";
@@ -23,8 +23,9 @@ export const useChatMessages = () => {
   const confirmDelRef = useRef(null);
   const containerRef = useRef(null);
   const { id: chatId } = useParams();
+  const firstMsg = useRef(true);
 
-    const { setChats} = useChatContext();
+    const { setChats, handleRename} = useChatContext();
 
   const resetChatState = () => {
     controller && controller.abort(); 
@@ -109,19 +110,20 @@ export const useChatMessages = () => {
     
 
     try {
+
       await fetchRes(message, curBodId, chatId);
 
     } catch (error) {
       console.log('error clicking:' + error)
     }
   };
-
+  
   const fetchRes = async (message, curBodId, chatId) => {
       const newController = new AbortController();
       setController(newController);
       setLoading(true);
       try {
-      const res = await generateRes(message, newController.signal);
+      const res = await generateRes(message, newController.signal, true);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let fullText = '';
@@ -170,7 +172,19 @@ export const useChatMessages = () => {
   
           return msg.id === curBodId ? { ...msg, message: fullText} : msg
         }));
-  
+      
+      
+
+      
+      if (firstMsg.current){
+        const resName = await generateRes(`what is the topic (1-3 words): ${message}`, newController.signal, false);
+        if (chatId && resName?.response) {
+          // console.log(resName.json().response)
+          // await changeChatTitle(chatId, resName.response);
+          await handleRename(chatId, resName.response);
+        }
+        firstMsg.current = false;
+      }
       await addMessage(chatId, "robot", fullText, curBodId, true);
       console.log('Bot повідомлення збережено для chatId:', chatId);
       return fullText;

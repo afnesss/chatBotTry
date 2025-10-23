@@ -45,8 +45,12 @@ export const getMessagesByChatId = async(req, res) => {
 
     const chatCheck = await chatExists(id, userId);
     if (!chatCheck.exists) {
-      return res.status(403).json({ error: "Unauthorized access to chat" });
+      return res.status(404).json({ error: "chat was not found when get msgs" });
     }
+
+      // if (chatCheck.chat.userId !== req.user.id) {
+      //   return res.status(403).json({ error: "Unauthorized access to chat" });
+      // }
     const result = await pool.query(
       "SELECT id, sender, message FROM messagesTable WHERE chat_id = $1 order by created_at asc",
       [id]

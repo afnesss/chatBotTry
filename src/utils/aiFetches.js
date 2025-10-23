@@ -1,17 +1,30 @@
 // import { addMessage } from "./fetches"
 import OpenAI from 'openai';
 
-export const generateRes = async (message, signal) => {
+export const generateRes = async (message, signal, stream) => {
   const res = await fetch("http://localhost:11434/api/generate",{
   method: "POST",
   headers: {'Content-Type': 'application/json'},
   body: JSON.stringify({
-    model: "gemma:2b",
-    prompt: message
+    model: "gpt-oss:120b-cloud",
+    prompt: message,
+    stream
   }),
   signal
 })
-return res;
+  if (stream) {
+    // Якщо хочемо потокову відповідь, просто повертаємо res
+    return res;
+  } else {
+    const data = await res.json().catch(err => ({error: err.message}));
+    if (!res.ok) {
+      console.error("Server error:", data);
+    }
+    return data;
+  }
+
+ 
+  
 }
 
 // const openai = new OpenAI({
