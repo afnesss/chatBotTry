@@ -75,11 +75,19 @@ export const generateAiName = async (req, res) => {
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: [{ role: 'user', parts: [{ text: message }] }],
+      contents: message,
     });
 
-    const text = response.output_text || response.output?.[0]?.content || "";
+    const candidate = response.candidates?.[0];
+    console.log('candidate log: ', candidate.content.parts.text);
+    // const text = candidate?.content?.map(c => c.text).join('') || "";
+    let text = "";
 
+    if (candidate?.content?.parts?.length) {
+      text = candidate.content.parts.map(p => p.text).join("");
+    }
+    
+    console.log('Gemini raw response:', response);
     res.json({ response: text });
   } catch (error) {
     console.error("ai name error:", error);

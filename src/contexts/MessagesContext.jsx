@@ -122,8 +122,10 @@ export const useChatMessages = () => {
       try {
         console.log(firstMsg.current)
       if (messages.length < 2){
-        const resName = await generateRes(`what is the topic (1-3 words): ${message}`, newController.signal, false);
+        const resName = await generateAiName(message, newController.signal);
         console.log('my log: '+chatId, resName?.response)
+        if (!resName || !resName.response) {
+        console.warn("AI name generation failed:", resName);}
         if (chatId && resName?.response) {
           await handleRename(chatId, resName.response);
         }
