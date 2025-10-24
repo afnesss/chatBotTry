@@ -7,6 +7,7 @@ export const BoxesProvider = ({children}) => {
 
   // const [editProfBox, setEditProfBox] = useState(false);
   const [editChat, setEditChat] = useState({edit: false, chat: null, newTitle: ''});
+  const [chatIdToDelete, setIdToDelete] = useState();
   const {closePopUp} = useChatContext();
 
   // const ref = useRef(null);
@@ -55,7 +56,7 @@ export const BoxesProvider = ({children}) => {
 
       return (
     <BoxesContext.Provider value = {{
-      boxes, toggleBox, refs, editChat, setEditChat, closeBox, openBox
+      boxes, toggleBox, refs, editChat, setEditChat, closeBox, openBox, chatIdToDelete, setIdToDelete
     }}>
       { children }
     </BoxesContext.Provider>

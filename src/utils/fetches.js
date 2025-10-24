@@ -37,7 +37,13 @@ export const load = async(chatId, setMessages) => {
       return [];
     };
     // const data = await res.json();
-    setMessages(data || []);
+    if (!Array.isArray(data)) {
+      console.warn('Fetched messages is not an array, resetting messages:', data);
+      setMessages([]);
+      return;
+    }
+
+    setMessages(data);
 
   } catch (error) {
     console.log('error fetching messages with chatId ' + chatId + error)

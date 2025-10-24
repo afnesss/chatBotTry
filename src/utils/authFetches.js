@@ -49,7 +49,7 @@ export const fetchRegisterUser = async (name, email, password) => {
   }
 }
 
-export const authFetch = async(url, options = {})=> {
+export const authFetch = async(url, options = {}, stream=false)=> {
   const token = localStorage.getItem("token");
   if (!token) {
     console.error("No token found!");
@@ -64,13 +64,16 @@ export const authFetch = async(url, options = {})=> {
 
   try {
     const res = await fetch(url,{...options, headers});
-    const data = await res.json();
+    // 
+     if (stream) return res;
+    const text = await res.text();
 
     if(!res.ok){
-      throw new Error(data.error || "Login failed");
+      console.error("authfetch failed");
+      if (!text) return null;
     }
 
-    return data;
+    return text ? JSON.parse(text) : null;
 
   } catch (error) {
     console.error("error in authfetch " + error.message);

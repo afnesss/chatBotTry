@@ -28,7 +28,7 @@ const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
   
   const [hover, setHover] = useState(false);
-  const {editChat, setEditChat, boxes, toggleBox, refs, closeBox, openBox} = useBoxContext();
+  const {editChat, setEditChat, boxes, toggleBox, refs, closeBox, openBox, chatIdToDelete, setIdToDelete} = useBoxContext();
   
   const {chats, handleNewChat, handleRename, handleDeleteChat, popEditChat, openPopUp, closePopUp} = useChatContext();
   const { currentUser, setPopAuth} = useAuthContext();
@@ -99,7 +99,7 @@ const SideBar = () => {
 
                         <MdMoreHoriz onClick={(e)=> {e.preventDefault(); openPopUp(e, chat.id, 'sidebar'); }} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chatId === chat.id && "opacity-100"}`}/>
                       </NavLink>
-                    {popEditChat.open && popEditChat.chatId === chat.id && popEditChat.from === 'sidebar' && <EditChat ref={refs.editChat} x={popEditChat.x} y={popEditChat.y} deleteChat={() => openBox('confirm')} changeChatTitle={() => 
+                    {popEditChat.open && popEditChat.chatId === chat.id && popEditChat.from === 'sidebar' && <EditChat ref={refs.editChat} x={popEditChat.x} y={popEditChat.y} deleteChat={() => {setIdToDelete(chat.id); openBox('confirm')}} changeChatTitle={() => 
                           {setEditChat({ edit: true, chat, newTitle: chat.title });
                           closePopUp();
                           }}/>}

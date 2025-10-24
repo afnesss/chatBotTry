@@ -13,10 +13,13 @@ export const ChatProvider = ({ children }) => {
   const navigate = useNavigate();
   const {popAuth, currentUser} = useAuthContext();
 
-  const handleDeleteChat = async (chatId) => {
+  const handleDeleteChat = async (chatId, currentChatId) => {
     await deleteChat(chatId);
     setChats(prev => prev.filter(item => item.id !== chatId));
-    handleNewChat();
+    if(chatId === currentChatId){
+      handleNewChat();
+    }
+
   }
 
   const handleNewChat = async () => {

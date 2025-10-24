@@ -22,7 +22,7 @@ app.use(express.json());
 
 app.use('/auth',authRouter);
 app.use('/chats', chatsRouter);
-// app.use('/ai', aiRouter);
+app.use('/ai', aiRouter);
 
 
 // app.listen(PORT, () => {

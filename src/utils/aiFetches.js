@@ -1,5 +1,5 @@
 // import { addMessage } from "./fetches"
-import OpenAI from 'openai';
+import { authFetch } from './authFetches';
 
 export const generateRes = async (message, signal, stream) => {
   const res = await fetch("http://localhost:11434/api/generate",{
@@ -32,17 +32,28 @@ export const generateRes = async (message, signal, stream) => {
 // });
 // export const generateAiRes = async (message) => {
 //   const res = await openai.responses.create({
-//     model: "gpt-4.1-mini",
+//     model: "gemini-2.5-flash",
 //     input: message,
 //   })
 //   console.log(res.output[0].content[0].text)
 //   return res.output[0].content[0].text;
 // }
 
-export async function generateAiRes(message, signal) {
-  const res = await fetch('/api/ai', {
+export async function generateAiClientStream(message, signal) {
+  const res = await authFetch('/api/ai/stream', {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message }),
+    signal
+  }, true);
+// const text = await res.text(); // temporarily get raw text
+// console.log(text);
+return res;
+}
+
+export async function generateAiName(input, signal) {
+  const message = `what is the topic (1-3 words): ${input}`;
+  const res = await authFetch('/api/ai/chatname', {
+    method: "POST",
     body: JSON.stringify({ message }),
     signal
   });

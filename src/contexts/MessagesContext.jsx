@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { addMessage, changeChatTitle, chatExists, load} from '../utils/fetches';
 
-import { generateRes, generateAiRes } from "../utils/aiFetches.js";
+import {generateAiClientStream, generateAiName, generateRes } from "../utils/aiFetches.js";
 import { useChatContext } from "./ChatContext";
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,14 +16,13 @@ export const useChatMessages = () => {
   const [existingChat, setExistChat] = useState(null);
   const [toUp, setToUp] = useState(false);
 
-  // const [popAuth, setPopAuth] = useState(false);
-  // const [currentUser, setCurrentUser] = useState(null);
   const {popAuth, currentUser} = useAuthContext();
 
   const confirmDelRef = useRef(null);
   const containerRef = useRef(null);
   const { id: chatId } = useParams();
   const firstMsg = useRef(true);
+  // const [moreMsgs, setFirstMessages] = useState({});
 
     const { setChats, handleRename} = useChatContext();
 
@@ -34,16 +33,12 @@ export const useChatMessages = () => {
     setBotId('');
     setLoading(false);
     setController(null);
-    // setOpenConfirm(false);
-  
-  // setPopAuth(true);
+
 };
   useEffect(() => {
     const handlecheck = async (chatId) => {
       const res = await chatExists(chatId)
-      // setExistChat(res.title);
-      
-          // console.log("chatExists result:", res);
+
     if (res && res.title) {
       setExistChat(res.title);
     } else {
@@ -52,15 +47,16 @@ export const useChatMessages = () => {
   
 
     }
-  if (chatId && currentUser) { // ⚠️ тільки якщо є залогінений користувач
+  if (chatId && currentUser) { 
     load(chatId, setMessages);
     handlecheck(chatId);
+
   } else {
-    setMessages([]);       // очищаємо старі повідомлення
+    setMessages([]);   
     setExistChat(null); 
-    // setPopAuth(true);
-       // очищаємо existingChat
+
   }
+  firstMsg.current = true;
   }, [chatId, currentUser])
 
 
@@ -74,6 +70,7 @@ export const useChatMessages = () => {
     });
   }
   }, [messages]);
+
 
 
   const handleSend = async (message) => {
@@ -107,7 +104,7 @@ export const useChatMessages = () => {
       // console.log('response: '+ response.chat)
       setChats(prev => [...prev, response.chat]);
     }
-    
+
 
     try {
 
@@ -123,6 +120,14 @@ export const useChatMessages = () => {
       setController(newController);
       setLoading(true);
       try {
+        console.log(firstMsg.current)
+      if (messages.length < 2){
+        const resName = await generateRes(`what is the topic (1-3 words): ${message}`, newController.signal, false);
+        console.log('my log: '+chatId, resName?.response)
+        if (chatId && resName?.response) {
+          await handleRename(chatId, resName.response);
+        }
+      }
       const res = await generateRes(message, newController.signal, true);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -173,18 +178,7 @@ export const useChatMessages = () => {
           return msg.id === curBodId ? { ...msg, message: fullText} : msg
         }));
       
-      
-
-      
-      if (firstMsg.current){
-        const resName = await generateRes(`what is the topic (1-3 words): ${message}`, newController.signal, false);
-        if (chatId && resName?.response) {
-          // console.log(resName.json().response)
-          // await changeChatTitle(chatId, resName.response);
-          await handleRename(chatId, resName.response);
-        }
-        firstMsg.current = false;
-      }
+    
       await addMessage(chatId, "robot", fullText, curBodId, true);
       console.log('Bot повідомлення збережено для chatId:', chatId);
       return fullText;
