@@ -130,7 +130,7 @@ export const useChatMessages = () => {
           await handleRename(chatId, resName.response);
         }
       }
-      const res = await generateRes(message, newController.signal, true);
+      const res = await generateAiClientStream(message, newController.signal);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let fullText = '';

@@ -47,17 +47,24 @@ export async function generateAiStream(req, res) {
     res.setHeader("Connection", "keep-alive");
     res.flushHeaders();
 
-    const streamRes = await ai.models.streamGenerateContent({
+    const streamRes = await ai.models.generateContentStream({
       model: 'gemini-2.5-flash',
-      contents: [{ role: 'user', parts: [{ text: message }] }],
+      contents: message,
     });
 
-    for await (const chunk of streamRes.stream) {
-      const content = chunk.delta?.content;
-      if (content) {
-        res.write(JSON.stringify({ response: content }) + "\n");
-      }
+  
+    // const candidate = streamRes.candidates?.[0];
+    // if(candidate && candidate.content?.parts){
+      for await (const chunk of streamRes) {
+        if (chunk) {
+          const words = chunk.text.split(' ');
+          for (const word of words) {
+            res.write(JSON.stringify({ response: `${word} ` }) + "\n");
+          }
+          
+        }
     }
+
 
     res.end();
   } catch (error) {
@@ -79,8 +86,6 @@ export const generateAiName = async (req, res) => {
     });
 
     const candidate = response.candidates?.[0];
-    console.log('candidate log: ', candidate.content.parts.text);
-    // const text = candidate?.content?.map(c => c.text).join('') || "";
     let text = "";
 
     if (candidate?.content?.parts?.length) {
