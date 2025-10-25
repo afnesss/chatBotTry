@@ -18,8 +18,8 @@ const MainPage = () => {
 
   // const ref = useRef(null);
   
-  const {openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat} = useChatContext();
-  const {messages, handleSend, loading, controller, existingChat, chatId, toUp, setToUp, containerRef} = useChatMessages();
+  const {openPopUp, closePopUp, popEditChat, handleDeleteChat, setPopEditChat, existingChat, currChatTitle} = useChatContext();
+  const {messages, handleSend, loading, controller, chatId, toUp, setToUp, containerRef} = useChatMessages();
   const {boxes, refs, toggleBox, closeBox, openBox, chatIdToDelete, setIdToDelete} = useBoxContext();
   const {currentUser, setPopAuth, popAuth} = useAuthContext();
 
@@ -53,7 +53,7 @@ const MainPage = () => {
         {existingChat && 
           <div className='flex ml-auto absolute right-3 top-3'>
             <div className='inline-block'>
-          <MdMoreHoriz  ref={buttonRef} size={35} className='lg:opacity-100 text-gray-600 btn-bg ml-auto p-2 max-sm:opacity-0 md:opacity-0 sm:opacity-0' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef)}}/>
+          <MdMoreHoriz  ref={buttonRef} size={35} className='lg:opacity-100 text-gray-600 btn-bg ml-auto p-2 max-sm:opacity-0 md:opacity-0 sm:opacity-0' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef);}}/>
           {popEditChat.open && popEditChat.chatId === chatId && popEditChat.from === 'main' && <EditChat ref={refs.editChat} x={popEditChat.x} y={popEditChat.y} isPersonal={true}  deleteChat={() => {setIdToDelete(chatId); openBox('confirm')}}/>}
 
             </div>
@@ -61,7 +61,7 @@ const MainPage = () => {
         </div>
         }
 
-        {boxes.confirm && <ConfirmDelete title={existingChat} cancelDel={() => closeBox('confirm')} deleteChat={() => {handleDeleteChat(chatIdToDelete, chatId); closeBox('confirm');}} ref={refs.confirm}/>}
+        {boxes.confirm && <ConfirmDelete title={chatIdToDelete === chatId ? currChatTitle : existingChat} cancelDel={() => closeBox('confirm')} deleteChat={() => {handleDeleteChat(chatIdToDelete, chatId); closeBox('confirm');}} ref={refs.confirm}/>}
 
         <div className={`flex flex-col items-center flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
           <div className={`flex my-3 w-full ${toUp ? 'order-first' : 'order-last'}`}>

@@ -1,6 +1,7 @@
 import { forwardRef, useRef } from "react";
 import IconWithLabel from "../IconWithLabel"
-import { LuImagePlus } from "react-icons/lu";
+import { LuImagePlus, LuCamera} from "react-icons/lu";
+import { MdAddAPhoto } from "react-icons/md";
 import { useBoxContext } from "../../contexts/BoxesContext";
 import { AiOutlineClose } from "react-icons/ai";
 
@@ -30,9 +31,10 @@ const PhotoPopUp = forwardRef(({}, ref) => {
         className="hidden"
       />
     <div ref={ref} className="absolute z-50 left-10">
-      <div className="pop-box shadow-md p-2">
+      <div className="pop-box p-2">
         {/* <AiOutlineClose size={25} color="gray" className=" btn-bg " onClick={() => toggleBox('photo')}/> */}
       <IconWithLabel icon={LuImagePlus} text='Add from File' onClick={handleClick}/>
+      <IconWithLabel icon={LuCamera} text='Take a photo' onClick={handleClick}/>
       
       </div>
       </div>

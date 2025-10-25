@@ -13,7 +13,7 @@ export const useChatMessages = () => {
   const [controller, setController] = useState(null);
   const [loading, setLoading] = useState(false);
   const [botId, setBotId] = useState('');
-  const [existingChat, setExistChat] = useState(null);
+  
   const [toUp, setToUp] = useState(false);
 
   const {popAuth, currentUser} = useAuthContext();
@@ -24,7 +24,7 @@ export const useChatMessages = () => {
   const firstMsg = useRef(true);
   // const [moreMsgs, setFirstMessages] = useState({});
 
-    const { setChats, handleRename} = useChatContext();
+    const { setChats, handleRename, setExistChat, setCurrChatTitle} = useChatContext();
 
   const resetChatState = () => {
     controller && controller.abort(); 
@@ -41,8 +41,10 @@ export const useChatMessages = () => {
 
     if (res && res.title) {
       setExistChat(res.title);
+      setCurrChatTitle(res.title);
     } else {
       setExistChat(null);
+      setExistChat(null)
     }
   
 
@@ -54,6 +56,7 @@ export const useChatMessages = () => {
   } else {
     setMessages([]);   
     setExistChat(null); 
+    setCurrChatTitle(null)
 
   }
   firstMsg.current = true;
@@ -204,7 +207,6 @@ export const useChatMessages = () => {
       handleSend,
       loading,
       controller,
-      existingChat,
       // openConfirm,
       // setOpenConfirm,
       confirmDelRef,

@@ -12,6 +12,8 @@ export const ChatProvider = ({ children }) => {
   const [popEditChat, setPopEditChat] = useState({ open: false, x: 0, y: 0, chatId: null, from: null });
   const navigate = useNavigate();
   const {popAuth, currentUser} = useAuthContext();
+  const [existingChat, setExistChat] = useState(null);
+  const [currChatTitle, setCurrChatTitle] = useState('');
 
   const handleDeleteChat = async (chatId, currentChatId) => {
     await deleteChat(chatId);
@@ -104,7 +106,11 @@ export const ChatProvider = ({ children }) => {
       handleRename,
       handleDeleteChat,
       openPopUp,
-      closePopUp
+      closePopUp,
+      existingChat,
+      setExistChat,
+      currChatTitle, 
+      setCurrChatTitle
     }}>
       { children }
     </ChatContext.Provider>

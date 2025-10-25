@@ -26,7 +26,7 @@ const SideBar = () => {
   const [hover, setHover] = useState(false);
   const {editChat, setEditChat, boxes, toggleBox, refs, closeBox, openBox, chatIdToDelete, setIdToDelete} = useBoxContext();
   
-  const {chats, handleNewChat, handleRename, handleDeleteChat, popEditChat, openPopUp, closePopUp} = useChatContext();
+  const {chats, handleNewChat, handleRename, handleDeleteChat, popEditChat, openPopUp, closePopUp, setExistChat} = useChatContext();
   const { currentUser, setPopAuth} = useAuthContext();
 
   const onRename = async () => {
@@ -86,7 +86,7 @@ const SideBar = () => {
                               }
 
                             }}
-                            onClick={(e) => e.preventDefault()} 
+                            onClick={(e) => {e.preventDefault(); setExistChat(chat.title)}} 
                             autoFocus
                             className="focus:outline-none rounded-lg px-2 py-1 text-sm w-full"
                             />
@@ -94,7 +94,7 @@ const SideBar = () => {
                           {chat.title}
                         </span>}
 
-                        <MdMoreHoriz onClick={(e)=> {e.preventDefault(); openPopUp(e, chat.id, 'sidebar'); }} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chatId === chat.id && "opacity-100"}`}/>
+                        <MdMoreHoriz onClick={(e)=> {e.preventDefault(); openPopUp(e, chat.id, 'sidebar'); setExistChat(chat.title)}} className={`cursor-pointer opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity ${popEditChat.open && popEditChat.chatId === chat.id && "opacity-100"}`}/>
                       </NavLink>
                     {popEditChat.open && popEditChat.chatId === chat.id && popEditChat.from === 'sidebar' && <EditChat ref={refs.editChat} x={popEditChat.x} y={popEditChat.y} deleteChat={() => {setIdToDelete(chat.id); openBox('confirm')}} changeChatTitle={() => 
                           {setEditChat({ edit: true, chat, newTitle: chat.title });
