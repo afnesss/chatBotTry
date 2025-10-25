@@ -15,12 +15,15 @@ export const BoxesProvider = ({children}) => {
   // const searchRef = useRef(null);
   // const userPopRef = useRef(null);
   // const editProfref = useRef(null);
+
+
   const [boxes, setBoxes] = useState({
     refInput: false,
     search: false,
     user: false,
     editProf: false,
-    confirm: false
+    confirm: false,
+    photo: false
   })
 
   const toggleBox = (name) => setBoxes(prev => ({ ...prev, [name]: !prev[name] }));
@@ -33,9 +36,15 @@ export const BoxesProvider = ({children}) => {
     search: useRef(null),
     user: useRef(null),
     editProf: useRef(null),
-    confirm: useRef(null)
+    confirm: useRef(null),
+    photo: useRef(null)
   }
 
+    useEffect(() => {
+    if (!refs.editProf){
+      setBoxes(prev => ({ ...prev, [photo]: false }));
+    }
+  }, [refs.editProf])
   useEffect(() => {
     function handleClick(e) {
     if (refs.editChat.current && !refs.editChat.current.contains(e.target)) {

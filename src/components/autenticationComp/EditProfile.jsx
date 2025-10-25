@@ -7,14 +7,15 @@ import { forwardRef, useState } from "react";
 import InputRegBox from "./InputRegBox";
 import { changeUserData } from "../../utils/fetches";
 import { useBoxContext } from "../../contexts/BoxesContext";
+import PhotoPopUp from "./PhotoPopUp";
 // import { SunIcon, MoonIcon, SwatchIcon } from "@heroicons/react/24/solid";
 
 
-const EditProfile = forwardRef(({set}, ref) => {
+const EditProfile = forwardRef(({}, ref) => {
   const {currentUser, setCurrentUser} = useAuthContext();
   const [updatedForm, setUpdatedForm] = useState({name: currentUser.name || ''});
+  const {boxes, toggleBox, refs} = useBoxContext();
 
-  const {toggleBox} = useBoxContext();
   const handleSet = (e) => {setUpdatedForm(prev => ({...prev, [e.target.name]: e.target.value}))};
   const handleUpdate = (updatedForm) => {
     if (Object.values(updatedForm).every(v => v === '')) {
@@ -32,12 +33,13 @@ Object.entries(updatedForm).forEach(async ([key, value]) => {
   }
 
   return (
-    <div ref={ref} className="center-box z-50 ">
-    <div className="pop-box absolute  flex flex-col items-center px-3">
-      <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => set(p => !p)}/>
+    <div  className="center-box z-[100]">
+    <div ref={ref} className="pop-box absolute  flex flex-col items-center px-3">
+      <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => toggleBox('editProf')}/>
       <div className="relative w-20">
         <img className={`w-20 h-20 rounded-full flex-shrink-0`} src={userIcon}/>
-        <HiCamera className="hover:bg-[#396849] bg-green-900 rounded-full text-white p-1 absolute bottom-0 right-0 outline-3 outline-gray-200" size={30}/>
+        <HiCamera className="hover:bg-[#396849] bg-green-900 rounded-full text-white p-1 absolute bottom-0 right-0 outline-3 outline-gray-200" size={30} onClick={() => toggleBox('photo')}/>
+          {boxes.photo && <PhotoPopUp ref={refs.photo}/>}
       </div>
 
       <form onSubmit={(e) => {e.preventDefault(); handleUpdate(updatedForm); toggleBox('editProf')}} className="flex flex-col gap-3 my-5 w-80 px-5">

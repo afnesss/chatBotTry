@@ -1,20 +1,16 @@
 import { TbLayoutSidebar } from "react-icons/tb";  
 import { RiChatNewLine } from "react-icons/ri";     
 import { FiSearch } from "react-icons/fi";  
-import { FiSettings } from "react-icons/fi";   
 import { FiLogIn } from "react-icons/fi";
 import { MdMoreHoriz } from "react-icons/md";
 import userIcon from "../assets/user.png";
 import { NavLink, useNavigate} from "react-router-dom";
 import React, { useState, useEffect, useRef} from "react";
 import UserPopUp from "./autenticationComp/UserPopUp";
-import { iconStyles } from "./IconWithLabel";
 import IconWithLabel from "./IconWithLabel";
-// import EditProfile from "./autenticationComp/EditProfile";
 import EditProfile from "./autenticationComp/EditProfile";
 import { useChatMessages } from "../contexts/MessagesCnxtProvider";
-// import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
-
+import PhotoPopUp from "./autenticationComp/PhotoPopUp";
 import EditChat from "./EditChat";
 
 // import { FaRobot } from "react-icons/fa";
@@ -46,9 +42,10 @@ const SideBar = () => {
         transition-[width] duration-300 ease-in-out max-sm:hidden
       `}>
 
-      {boxes.search && <SearchBox ref={refs.search} searchBox={boxes.search} setSearchBox={() => toggleBox('search')}/>}
-        {boxes.user && <UserPopUp close={() => closeBox('user')} ref={refs.user}/>}
-          {boxes.editProf && <EditProfile ref={refs.editProf} set={() => {toggleBox('editProf');}}/>}
+      {boxes.search && <SearchBox ref={refs.search}/>}
+      {boxes.user && <UserPopUp ref={refs.user}/>}
+      {boxes.editProf && <EditProfile ref={refs.editProf}/>}
+      
           
 
           <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2 "

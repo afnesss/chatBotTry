@@ -51,8 +51,6 @@ export async function generateAiStream(req, res) {
       model: 'gemini-2.5-flash',
       contents: message,
     });
-
-  
     // const candidate = streamRes.candidates?.[0];
     // if(candidate && candidate.content?.parts){
       for await (const chunk of streamRes) {
@@ -64,7 +62,6 @@ export async function generateAiStream(req, res) {
           
         }
     }
-
 
     res.end();
   } catch (error) {

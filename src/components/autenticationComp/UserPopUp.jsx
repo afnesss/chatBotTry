@@ -9,7 +9,7 @@ import { useBoxContext } from "../../contexts/BoxesContext";
 import EditProfile from "./EditProfile";
 
 
-const UserPopUp = forwardRef(({close}, ref) => {
+const UserPopUp = forwardRef(({}, ref) => {
   const {resetChatState} = useChatMessages();
   const {currentUser, setCurrentUser, setPopAuth} = useAuthContext();
   const {toggleBox, boxes, closeBox, refs} = useBoxContext();
@@ -36,7 +36,7 @@ const UserPopUp = forwardRef(({close}, ref) => {
       </div>
       
         <BtnPopUp icon={FiEdit3} title={"Edit profile"} onClick={() => {toggleBox('editProf'); console.log(boxes.editProf)}} bg={" rounded-lg btn-bg w-full mt-2 cursor-pointer gap-2"}/>
-        <BtnPopUp icon={FiLogOut} color={"text-red-800"} title={"Log out"} onClick={() => {handleLogOut(); close(); closeBox('editProf')}} bg={" rounded-lg btn-bg w-full mt-2 cursor-pointer gap-2"}/>
+        <BtnPopUp icon={FiLogOut} color={"text-red-800"} title={"Log out"} onClick={() => {handleLogOut(); closeBox('user'); closeBox('editProf')}} bg={" rounded-lg btn-bg w-full mt-2 cursor-pointer gap-2"}/>
     </div>
     </>
   )

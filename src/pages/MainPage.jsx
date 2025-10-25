@@ -9,9 +9,7 @@ import ConfirmDelete from '../components/ConfirmDelete';
 
 import { useChatMessages } from '../contexts/MessagesCnxtProvider';
 import RegisterForm from '../components/autenticationComp/RegisterForm';
-import { authFetch } from '../utils/authFetches';
 import { useAuthContext } from '../contexts/AuthContext';
-import EditProfile from '../components/autenticationComp/EditProfile';
 import { useBoxContext } from '../contexts/BoxesContext';
 // import UserPopUp from '../components/autenticationComp/UserPopUp';
 
@@ -26,23 +24,6 @@ const MainPage = () => {
   const {currentUser, setPopAuth, popAuth} = useAuthContext();
 
   const buttonRef = useRef(null);
-
-
-  // useEffect(() =>
-  // {
-  //   function handleClick(e) {
-  //     // if (ref.current && !ref.current.contains(e.target)) {
-  //     //   closePopUp();
-  //     // }
-  //     // if (confirmDelRef.current && !confirmDelRef.current.contains(e.target)) {
-  //     //   setOpenConfirm(false);
-  //     // }
-  //   }
-
-  //     document.addEventListener("mousedown", handleClick);
-  //   return () => document.removeEventListener("mousedown", handleClick);
-  // }, []);
-
   
   useEffect(() => {
   const handleResize = () => {
