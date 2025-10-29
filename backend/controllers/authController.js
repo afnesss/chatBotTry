@@ -1,6 +1,7 @@
 import { pool } from "../db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { use } from "react";
 import {v4 as uuidv4} from "uuid"
 
 export const loginUser = async(req, res) => {
@@ -26,7 +27,7 @@ export const loginUser = async(req, res) => {
       {expiresIn: "7d"}
     )
 
-    return res.json({token, user: {id: user.id, name: user.name, email: user.email}})
+    return res.json({token, user: {id: user.id, name: user.name, email: user.email, profile_pic: user.profile_pic}})
 
   } catch (error) {
     console.error(error);
@@ -58,33 +59,50 @@ export const registerUser = async(req, res) => {
   }
 }
 
-// export const getCurrentUser = async (req, res) => {
-//   try {
-//     const userId = req.userId; // authenticate middleware вже встановив
-//     const result = await pool.query("SELECT id, name, email FROM users WHERE id = $1", [userId]);
-//     if (result.rowCount === 0) return res.status(404).json({ error: "User not found" });
-//     return res.json(result.rows[0]);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "Database error" });
-//   }
-// };
-
 export const updateUserData = async(req, res) => {
   try {
+    // const allowedColumns = ['name','profile_pic'];
+
+    // const updates = Object.entries(req.body).filter(
+    //   ([key]) => allowedColumns.includes(key)
+    // );
+    const updates = [];
+
+    // if (updates.length === 0) {
+    //   return res.status(400).json({ error: 'No valid fields to update' });
+    // }
+
+    const userId = req.userId;
+    console.log(typeof(userId))
+
+    if (req.body.name) {
+      updates.push(['name', req.body.name]);
+    }
+    if (req.file) {
+      const imagePath = `/uploads/profile_pics/${req.file.filename}`;
+      updates.push(['profile_pic', imagePath]);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: 'No valid fields to update' });
+    }
+    const setClause = updates.map(([key], i) => `${key} = $${i+1}`).join(', ');
+    console.log(setClause);
+    const values = updates.map(([,value]) => value);
+    // const {column, value} = req.body;
+    const result = await pool.query(
+      `UPDATE users SET ${setClause} WHERE id = $${values.length + 1} RETURNING *`,
+      [...values, userId]
+    );
+
+
     console.log('[Update User]', {
       method: req.method,
       path: req.path,
       body: req.body,
       userId: req.userId
     });
-    const userId = req.userId;
-    const {column, value} = req.body;
-    const result = await pool.query(
-      `UPDATE users SET ${column} = $1 WHERE id = $2 RETURNING *`,
-      [value, userId]
-    );
-
+    // console.log(result.rowCount)
     if (result.rowCount === 0) return res.status(404).json({ error: "User not found" });
     res.status(200).json({ user: result.rows[0] });
 

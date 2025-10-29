@@ -4,7 +4,12 @@ import cors from "cors";
 import chatsRouter from './routes/chats.js';
 import authRouter from './routes/authRoutes.js';
 import aiRouter from './routes/aiRoutes.js'
+import { fileURLToPath } from "url";
+import path from "path";
 // import authenticate from '../middleware/auth.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 4002;
 console.log("JWT_SECRET is:", process.env.JWT_SECRET ? "✅ loaded" : "❌ missing");
@@ -12,6 +17,7 @@ console.log("PORT is:", process.env.PORT ? "✅ loaded" : "❌ missing");
 const app = express();
 
 // Basic request logger to help debug proxy/route issues
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();

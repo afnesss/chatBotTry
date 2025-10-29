@@ -179,17 +179,30 @@ export const chatExists = async(chatId) => {
 
 export const changeUserData = async(dataToUpdate) => {
   try {
-    // Use the Vite proxy path so requests go through the dev server (/api -> backend)
-    const data = await authFetch('/api/auth/update', {
-      method: 'PUT',
-      body: JSON.stringify(dataToUpdate)
-    })
-
-    if(!data) {
-      console.error('error in changing name, fetch');
+    const formData = new FormData();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found!");
       return null;
     }
 
+    Object.entries(dataToUpdate).forEach(([key, value]) => {
+      if (value !== '') formData.append(key, value);
+    })
+
+    const result = await fetch('/api/auth/update', {
+      method: 'PUT',
+      headers: {
+        "Authorization": `Bearer ${token}`
+      },
+      body: formData
+    })
+
+    if(!result) {
+      console.error('error in changing name, fetch');
+      return null;
+    }
+    const data = await result.json();
     return data;
   } catch (error) {
     console.log(error);

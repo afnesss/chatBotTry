@@ -6,8 +6,10 @@ export const AuthProvider = ({children}) => {
 
   const [popAuth, setPopAuth] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  
 
-  useEffect(() => {
+
+    useEffect(() => {
     const initUser = () => {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {

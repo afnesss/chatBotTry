@@ -5,17 +5,19 @@ import { MdAddAPhoto } from "react-icons/md";
 import { useBoxContext } from "../../contexts/BoxesContext";
 import { AiOutlineClose } from "react-icons/ai";
 
-const PhotoPopUp = forwardRef(({}, ref) => {
+const PhotoPopUp = forwardRef(({set}, ref) => {
 
   const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
   const {toggleBox} = useBoxContext();
 
-  const handleClick = () => {
-    fileInputRef.current.click();
+  const handleClick = (ref) => {
+    ref.current.click();
   }
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
+    set(prev => ({...prev, ['profile_pic']: file}))
     if(file) {
       console.log('the photo was chosen', file.name)
     }
@@ -23,18 +25,14 @@ const PhotoPopUp = forwardRef(({}, ref) => {
 
   return (
     <>
-          <input
-        type="file"
-        accept="image/*"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        className="hidden"
-      />
+      <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden"/>
+      <input type="file" accept="image/*" ref={cameraInputRef} onChange={handleFileChange} capture='user' className="hidden"/>
+
     <div ref={ref} className="absolute z-50 left-10">
       <div className="pop-box p-2">
         {/* <AiOutlineClose size={25} color="gray" className=" btn-bg " onClick={() => toggleBox('photo')}/> */}
-      <IconWithLabel icon={LuImagePlus} text='Add from File' onClick={handleClick}/>
-      <IconWithLabel icon={LuCamera} text='Take a photo' onClick={handleClick}/>
+      <IconWithLabel icon={LuImagePlus} text='Add from File' onClick={() => handleClick(fileInputRef)}/>
+      <IconWithLabel icon={LuCamera} text='Take a photo' onClick={() => navigator.mediaDevices.getUserMedia({ video: true })}/>
       
       </div>
       </div>

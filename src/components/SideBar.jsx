@@ -33,7 +33,7 @@ const SideBar = () => {
     handleRename(editChat.chat.id, editChat.newTitle)
     setEditChat({ edit: false, chat: null, newTitle: "" });
   };
-
+console.log(currentUser?.profile_pic)
   return (
     <div
       className={`
@@ -110,10 +110,9 @@ const SideBar = () => {
         <hr className={`border-t border-gray-200 my-2`}></hr>
             {currentUser 
             ?   <div 
-
             className={`flex p-1 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}
             onClick={() => toggleBox('user')}>
-              <img className={`w-7 h-7 rounded-full flex-shrink-0`} src={userIcon}/>
+              <img className={`w-7 h-7 rounded-full flex-shrink-0`} alt="profile" src={`http://localhost:4000/backend${currentUser.profile_pic}` || userIcon}/>
               {/* {console.log(currentUser)} */}
               <span 
               // contentEditable

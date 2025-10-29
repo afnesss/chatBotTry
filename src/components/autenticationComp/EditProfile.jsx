@@ -13,36 +13,35 @@ import PhotoPopUp from "./PhotoPopUp";
 
 const EditProfile = forwardRef(({}, ref) => {
   const {currentUser, setCurrentUser} = useAuthContext();
-  const [updatedForm, setUpdatedForm] = useState({name: currentUser.name || ''});
+  const [updatedForm, setUpdatedForm] = useState({name: currentUser?.name || '', profile_pic: currentUser?.profile_pic || userIcon});
   const {boxes, toggleBox, refs} = useBoxContext();
 
   const handleSet = (e) => {setUpdatedForm(prev => ({...prev, [e.target.name]: e.target.value}))};
-  const handleUpdate = (updatedForm) => {
+  const handleUpdate = async (updatedForm) => {
     if (Object.values(updatedForm).every(v => v === '')) {
       return;
     }
-Object.entries(updatedForm).forEach(async ([key, value]) => {
-  if (value !== '') {
-    const data = await changeUserData({ column: key, value });
+    const data = await changeUserData(updatedForm);
     if (!data) {
       throw new Error('res changing name is not ok');
     }
+    console.log('data : ', data);
+    console.log('data user: ', data.user);
     setCurrentUser(data.user)
   }
-});
-  }
 
+  console.log(currentUser.profile_pic);
   return (
     <div  className="center-box z-[100]">
     <div ref={ref} className="pop-box absolute  flex flex-col items-center px-3">
       <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => toggleBox('editProf')}/>
       <div className="relative w-20">
-        <img className={`w-20 h-20 rounded-full flex-shrink-0`} src={userIcon}/>
+        <img alt="profile" className={`w-20 h-20 rounded-full flex-shrink-0`} src={`http://localhost:4000/backend${currentUser.profile_pic}` || userIcon}/>
         <HiCamera className="hover:bg-[#396849] bg-green-900 rounded-full text-white p-1 absolute bottom-0 right-0 outline-3 outline-gray-200" size={30} onClick={() => toggleBox('photo')}/>
-          {boxes.photo && <PhotoPopUp ref={refs.photo}/>}
+          {boxes.photo && <PhotoPopUp ref={refs.photo} set={setUpdatedForm}/>}
       </div>
 
-      <form onSubmit={(e) => {e.preventDefault(); handleUpdate(updatedForm); toggleBox('editProf')}} className="flex flex-col gap-3 my-5 w-80 px-5">
+      <form onSubmit={async (e) => {e.preventDefault(); await handleUpdate(updatedForm); toggleBox('editProf')}} className="flex flex-col gap-3 my-5 w-80 px-5">
         <InputRegBox 
         type='text' icon={FiUser} value={updatedForm.name} placeHolder={'Your name'} name='name' onChange={handleSet}/>
 
