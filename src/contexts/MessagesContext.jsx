@@ -130,7 +130,8 @@ export const useChatMessages = () => {
         if (!resName || !resName.response) {
         console.warn("AI name generation failed:", resName);}
         if (chatId && resName?.response) {
-          await handleRename(chatId, resName.response);
+          const name = resName.response.replace(/\*\*/g, '');
+          await handleRename(chatId, name);
         }
       }
       const res = await generateAiClientStream(message, newController.signal);

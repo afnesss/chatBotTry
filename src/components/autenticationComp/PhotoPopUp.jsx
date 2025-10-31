@@ -1,15 +1,18 @@
-import { forwardRef, useRef } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import IconWithLabel from "../IconWithLabel"
 import { LuImagePlus, LuCamera} from "react-icons/lu";
 import { MdAddAPhoto } from "react-icons/md";
 import { useBoxContext } from "../../contexts/BoxesContext";
 import { AiOutlineClose } from "react-icons/ai";
 
-const PhotoPopUp = forwardRef(({set}, ref) => {
+
+
+const PhotoPopUp = forwardRef(({set, setPic}, ref) => {
 
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
   const {toggleBox} = useBoxContext();
+ 
 
   const handleClick = (ref) => {
     ref.current.click();
@@ -17,11 +20,17 @@ const PhotoPopUp = forwardRef(({set}, ref) => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    set(prev => ({...prev, ['profile_pic']: file}))
     if(file) {
       console.log('the photo was chosen', file.name)
+      const localPreview = URL.createObjectURL(file);
+      setPic(file);
+      set(prev => ({ ...prev, profile_pic: localPreview }));
     }
   }
+
+  useEffect(() => {
+    setPic(null)
+  }, [])
 
   return (
     <>
@@ -41,4 +50,4 @@ const PhotoPopUp = forwardRef(({set}, ref) => {
   )
 })
 
-export default PhotoPopUp
+export default PhotoPopUp;

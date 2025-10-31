@@ -15,13 +15,15 @@ const EditProfile = forwardRef(({}, ref) => {
   const {currentUser, setCurrentUser} = useAuthContext();
   const [updatedForm, setUpdatedForm] = useState({name: currentUser?.name || '', profile_pic: currentUser?.profile_pic || userIcon});
   const {boxes, toggleBox, refs} = useBoxContext();
+  const [picUrl, setPicUrl] = useState(null);
 
   const handleSet = (e) => {setUpdatedForm(prev => ({...prev, [e.target.name]: e.target.value}))};
   const handleUpdate = async (updatedForm) => {
     if (Object.values(updatedForm).every(v => v === '')) {
       return;
     }
-    const data = await changeUserData(updatedForm);
+    console.log(updatedForm, picUrl)
+    const data = await changeUserData({name: updatedForm.name, profile_pic: picUrl});
     if (!data) {
       throw new Error('res changing name is not ok');
     }
@@ -36,9 +38,13 @@ const EditProfile = forwardRef(({}, ref) => {
     <div ref={ref} className="pop-box absolute  flex flex-col items-center px-3">
       <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => toggleBox('editProf')}/>
       <div className="relative w-20">
-        <img alt="profile" className={`w-20 h-20 rounded-full flex-shrink-0`} src={`http://localhost:4000/backend${currentUser.profile_pic}` || userIcon}/>
+        <img alt="profile" className={`w-20 h-20 rounded-full flex-shrink-0`} 
+        src={    updatedForm.profile_pic.startsWith('blob:')
+      ? updatedForm.profile_pic // локальний preview
+      : `http://localhost:4000/backend${currentUser?.profile_pic}` || userIcon}/>
+
         <HiCamera className="hover:bg-[#396849] bg-green-900 rounded-full text-white p-1 absolute bottom-0 right-0 outline-3 outline-gray-200" size={30} onClick={() => toggleBox('photo')}/>
-          {boxes.photo && <PhotoPopUp ref={refs.photo} set={setUpdatedForm}/>}
+          {boxes.photo && <PhotoPopUp ref={refs.photo} set={setUpdatedForm} setPic={setPicUrl}/>}
       </div>
 
       <form onSubmit={async (e) => {e.preventDefault(); await handleUpdate(updatedForm); toggleBox('editProf')}} className="flex flex-col gap-3 my-5 w-80 px-5">
