@@ -60,7 +60,7 @@ const SearchBox = forwardRef(({}, ref) => {
   // console.log(lastWeekChats)
   return (
     <div  className="center-box z-[100]">
-    <div ref={ref} className="pop-box w-100">
+    <div ref={ref} className="pop-box w-100 mx-4">
       <div className="flex flex-row w-full justify-between items-center">
         <input type="text" value={searchInput} placeholder="Search in Chats..." className="focus:outline-none text-sm text-gray-800" onChange={(e) => setSearchInput(e.target.value)}></input>
         <AiOutlineClose size={25} color="gray" className="btn-bg p-1" onClick={() => toggleBox('search')}/>

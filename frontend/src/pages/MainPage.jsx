@@ -1,6 +1,6 @@
 import {useRef, useEffect, useState} from 'react'
 import ChatInput from '../components/ChatInput'
-
+import SearchBox from '../components/SearchBox';
 import MessagesCont from '../components/MessagesCont';
 import { useChatContext } from '../contexts/ChatContext';
 import { MdMoreHoriz } from 'react-icons/md';
@@ -12,7 +12,7 @@ import RegisterForm from '../components/autenticationComp/RegisterForm';
 import { useAuthContext } from '../contexts/AuthContext';
 import { useBoxContext } from '../contexts/BoxesContext';
 // import UserPopUp from '../components/autenticationComp/UserPopUp';
-
+import UserPopUp from "../components/autenticationComp/UserPopUp";
 
 const MainPage = () => {
 
@@ -50,6 +50,8 @@ const MainPage = () => {
       {/* <EditProfile /> */}
       {popAuth && <RegisterForm setPopAuth={setPopAuth}/>}
       {boxes.editProf && <EditProfile ref={refs.editProf}/>}
+      {boxes.search && <SearchBox ref={refs.search}/>}
+      {boxes.user && <UserPopUp ref={refs.user}/>}
       <div className="flex flex-col shadow-md bg-main w-full p-5 lg:p-7">
         {existingChat && 
           <div className='flex ml-auto absolute right-3 top-3'>

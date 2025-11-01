@@ -6,7 +6,7 @@ import { MdMoreHoriz } from "react-icons/md";
 import userIcon from "../assets/user.png";
 import { NavLink, useNavigate} from "react-router-dom";
 import React, { useState, useEffect, useRef} from "react";
-import UserPopUp from "./autenticationComp/UserPopUp";
+
 import IconWithLabel from "./IconWithLabel";
 
 import { useChatMessages } from "../contexts/MessagesCnxtProvider";
@@ -15,7 +15,7 @@ import EditChat from "./EditChat";
 
 // import { FaRobot } from "react-icons/fa";
 import { MdOutlineSmartToy } from "react-icons/md";
-import SearchBox from '../components/SearchBox';
+
 import { useChatContext } from "../contexts/ChatContext";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useBoxContext } from "../contexts/BoxesContext";
@@ -60,9 +60,6 @@ const SideBar = () => {
         ${sideBar ? "w-40 lg:w-60 max-sm:translate-x-0" : "w-16 max-sm:-translate-x-full"}
         transition-[width] duration-300 ease-in-out sm:flex 
       `}>
-
-      {boxes.search && <SearchBox ref={refs.search}/>}
-      {boxes.user && <UserPopUp ref={refs.user}/>}
       
       
           <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2 "
