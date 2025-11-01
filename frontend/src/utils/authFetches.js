@@ -1,6 +1,6 @@
 export const IfUserExists = async (email, password) => {
   try {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch('https://chatbottry-4.onrender.com/api/auth/login', {
     method: "POST",
     headers: {
       "Content-type": "application/json"
