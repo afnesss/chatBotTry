@@ -1,6 +1,6 @@
 // import { addMessage } from "./fetches"
 import { authFetch } from './authFetches';
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const generateRes = async (message, signal, stream) => {
   const res = await fetch("http://localhost:11434/api/generate",{

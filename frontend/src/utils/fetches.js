@@ -1,6 +1,6 @@
 import {v4 as uuidv4} from 'uuid';
 import { authFetch } from './authFetches';
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const addMessage = async (chatId, sender, message, id, loading = false,) => {
   try {
