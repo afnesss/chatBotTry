@@ -35,8 +35,8 @@ const EditProfile = forwardRef(({}, ref) => {
 
   console.log(currentUser.profile_pic);
   return (
-    <div  className="center-box z-[100]">
-    <div ref={ref} className="pop-box absolute  flex flex-col items-center px-3">
+    <div  className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div ref={ref} className="pop-box relative flex flex-col items-center px-3">
       <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => toggleBox('editProf')}/>
       <div className="relative w-20">
         <img alt="profile" className={`w-20 h-20 rounded-full flex-shrink-0`} 
@@ -46,7 +46,7 @@ const EditProfile = forwardRef(({}, ref) => {
           {boxes.photo && <PhotoPopUp ref={refs.photo} set={setUpdatedForm} setPic={setPicUrl}/>}
       </div>
 
-      <form onSubmit={async (e) => {e.preventDefault(); await handleUpdate(updatedForm); toggleBox('editProf')}} className="flex flex-col gap-3 my-5 w-80 px-5">
+      <form onSubmit={async (e) => {e.preventDefault(); await handleUpdate(updatedForm); toggleBox('editProf')}} className="flex flex-col gap-3 my-5 md:w-80 w:70 px-3">
         <InputRegBox 
         type='text' icon={FiUser} value={updatedForm.name} placeHolder={'Your name'} name='name' onChange={handleSet}/>
 

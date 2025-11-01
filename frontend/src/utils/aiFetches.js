@@ -52,7 +52,7 @@ return res;
 }
 
 export async function generateAiName(input, signal) {
-  const message = `what is the topic (1-3 words): ${input}`;
+  const message = `You are a chat titling assistant. Your task is to generate a concise title (1-3 words) for the given chat message. message: ${input}`;
   const res = await authFetch(`${API_URL}/ai/chatname`, {
     method: "POST",
     body: JSON.stringify({ message }),

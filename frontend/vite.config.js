@@ -8,8 +8,7 @@ export default defineConfig({
     tailwindcss()
     
   // ],
-  // server: {
-  //   port: 4000,
+
   //   proxy: {
   //     '/api': {
   //       target: 'https://chatbottry-4.onrender.com',
@@ -26,8 +25,11 @@ export default defineConfig({
   // },
 
     ],
-  build: {
-    outDir: 'dist',
-  },
+      server: {
+    port: 4000,
+  }
+  // build: {
+  //   outDir: 'dist',
+  // },
 
 })

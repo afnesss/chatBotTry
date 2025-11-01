@@ -124,7 +124,7 @@ export const useChatMessages = () => {
       setLoading(true);
       try {
         console.log(firstMsg.current)
-      if (messages.length < 2){
+      if (messages.length < 2 && currentUser){
         const resName = await generateAiName(message, newController.signal);
         console.log('my log: '+chatId, resName?.response)
         if (!resName || !resName.response) {

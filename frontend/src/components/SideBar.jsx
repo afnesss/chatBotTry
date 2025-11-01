@@ -8,7 +8,7 @@ import { NavLink, useNavigate} from "react-router-dom";
 import React, { useState, useEffect, useRef} from "react";
 import UserPopUp from "./autenticationComp/UserPopUp";
 import IconWithLabel from "./IconWithLabel";
-import EditProfile from "./autenticationComp/EditProfile";
+
 import { useChatMessages } from "../contexts/MessagesCnxtProvider";
 import PhotoPopUp from "./autenticationComp/PhotoPopUp";
 import EditChat from "./EditChat";
@@ -38,19 +38,33 @@ const SideBar = () => {
   };
 // console.log(currentUser?.profile_pic)
   return (
+
+    <>
+      <button onClick={() => setSideBar (p => !p)} className="absolute left-2 top-1 sm:hidden z-50"
+    onMouseEnter={() => setHover(true)}
+    onMouseLeave={() => setHover(false)}>
+      {hover || sideBar ? 
+      <TbLayoutSidebar className={`btn-bg cursor-ew-resize`} size={30} color='green'/>
+    : <MdOutlineSmartToy className={`btn-bg cursor-ew-resize`} size={30} color='green'/>}  
+    </button>
     <div
       className={`
-        flex flex-col bg-green-50 p-3 h-[100dvh] relative
-        ${sideBar ? "w-40 lg:w-60" : "w-16"}
-        transition-[width] duration-300 ease-in-out max-sm:hidden
+        flex flex-col bg-green-50 p-3 h-[100dvh] sm:block sm:relative
+          max-sm:fixed max-sm:top-0 max-sm:left-0 max-sm:z-50
+          max-sm:w-60 max-sm:shadow-2xl
+          max-sm:transform
+          max-sm:transition-transform
+          max-sm:duration-300
+          max-sm:ease-in-out
+
+        ${sideBar ? "w-40 lg:w-60 max-sm:translate-x-0" : "w-16 max-sm:-translate-x-full"}
+        transition-[width] duration-300 ease-in-out sm:flex 
       `}>
 
       {boxes.search && <SearchBox ref={refs.search}/>}
       {boxes.user && <UserPopUp ref={refs.user}/>}
-      {boxes.editProf && <EditProfile ref={refs.editProf}/>}
       
-          
-
+      
           <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2 "
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}>
@@ -126,7 +140,7 @@ const SideBar = () => {
               <button className="btn-primary ml-2 cursor-pointer px-2 hover:bg-green-700" onClick={() =>{setPopAuth(true); closeBox('user')}}>{sideBar? "Log in" : <FiLogIn size={15} className="text-white"/>}</button>
             }
         </div>
-
+</>
   )
 }
 

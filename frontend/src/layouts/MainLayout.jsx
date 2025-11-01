@@ -14,7 +14,7 @@ const MainLayout = () => {
     <ChatProvider>
       <MessagesProvider>
         <BoxesProvider>
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen relative">
       <SideBar />
       <div className="flex-1">
         <Outlet />
