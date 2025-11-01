@@ -23,7 +23,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors());
+// Configure CORS for your Netlify frontend
+app.use(cors({
+  origin: ['https://chatbot-afnesssfull1.netlify.app', 'http://localhost:4000'],
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/auth',authRouter);
@@ -36,7 +40,12 @@ app.use('/ai', aiRouter);
 // });
 
 app.listen(PORT, () => {
-  console.log("Backend running on http://localhost:" + PORT);
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  const baseUrl = isDevelopment 
+    ? `http://localhost:${PORT}`
+    : 'https://chatbottry-4.onrender.com';
+    
+  console.log(`Backend running on ${baseUrl}`);
   console.log("\nRegistered /auth routes:");
   authRouter.stack.forEach(layer => {
     if (layer.route) {
