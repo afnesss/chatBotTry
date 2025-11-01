@@ -4,10 +4,8 @@ import authenticate from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.use(authenticate);
-
 router.post("/stream",generateAiStream);
-router.post("/chatname",generateAiName);
+router.post("/chatname",authenticate, generateAiName);
 
 
 export default router;

@@ -41,13 +41,14 @@ export const generateRes = async (message, signal, stream) => {
 // }
 
 export async function generateAiClientStream(message, signal) {
-  const res = await authFetch(`${API_URL}/ai/stream`, {
+  const res = await fetch(`${API_URL}/ai/stream`, {
     method: "POST",
     body: JSON.stringify({ message }),
     signal
   }, true);
 // const text = await res.text(); // temporarily get raw text
 // console.log(text);
+
 return res;
 }
 

@@ -84,8 +84,10 @@ export const useChatMessages = () => {
     const botMessage = messages.find(msg => msg.id === botId);
     
       try {
+        if(currentUser){
+          await addMessage(chatId, botMessage.sender, botMessage.message, botMessage.id, true);
+        }
 
-        await addMessage(chatId, botMessage.sender, botMessage.message, botMessage.id, true);
       } catch (error) {
         console.log('Error saving aborted message:', error);
       }
@@ -94,19 +96,21 @@ export const useChatMessages = () => {
     }
 
     const curBodId = uuidv4();
-     setBotId(curBodId);
+    setBotId(curBodId);
 
     const userMsg = { id: uuidv4(), chatId, sender: "user", message };
     const botMsg = { id: curBodId, chatId, sender: "robot", message: ""};
 
     setMessages((prev) => [...prev, userMsg, botMsg]);
 
-
-    const response = await addMessage(chatId, userMsg.sender, userMsg.message, userMsg.id);
-    if(response.chatCreated){
+    if(currentUser){
+      const response = await addMessage(chatId, userMsg.sender, userMsg.message, userMsg.id);
+      if(response.chatCreated){
       // console.log('response: '+ response.chat)
       setChats(prev => [...prev, response.chat]);
+      }
     }
+
 
 
     try {
@@ -185,7 +189,7 @@ export const useChatMessages = () => {
         }));
       
     
-      await addMessage(chatId, "robot", fullText, curBodId, true);
+      currentUser && await addMessage(chatId, "robot", fullText, curBodId, true);
       console.log('Bot повідомлення збережено для chatId:', chatId);
       return fullText;
   
