@@ -41,7 +41,7 @@ export const generateRes = async (message, signal, stream) => {
 // }
 
 export async function generateAiClientStream(message, signal) {
-  const res = await authFetch(`${API_URL}/api/ai/stream`, {
+  const res = await authFetch(`${API_URL}/ai/stream`, {
     method: "POST",
     body: JSON.stringify({ message }),
     signal
@@ -53,7 +53,7 @@ return res;
 
 export async function generateAiName(input, signal) {
   const message = `what is the topic (1-3 words): ${input}`;
-  const res = await authFetch(`${API_URL}/api/ai/chatname`, {
+  const res = await authFetch(`${API_URL}/ai/chatname`, {
     method: "POST",
     body: JSON.stringify({ message }),
     signal
