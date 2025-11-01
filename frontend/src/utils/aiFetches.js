@@ -1,5 +1,6 @@
 // import { addMessage } from "./fetches"
 import { authFetch } from './authFetches';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const generateRes = async (message, signal, stream) => {
   const res = await fetch("http://localhost:11434/api/generate",{
@@ -40,7 +41,7 @@ export const generateRes = async (message, signal, stream) => {
 // }
 
 export async function generateAiClientStream(message, signal) {
-  const res = await authFetch('/api/ai/stream', {
+  const res = await authFetch(`${API_URL}/api/ai/stream`, {
     method: "POST",
     body: JSON.stringify({ message }),
     signal
@@ -52,7 +53,7 @@ return res;
 
 export async function generateAiName(input, signal) {
   const message = `what is the topic (1-3 words): ${input}`;
-  const res = await authFetch('/api/ai/chatname', {
+  const res = await authFetch(`${API_URL}/api/ai/chatname`, {
     method: "POST",
     body: JSON.stringify({ message }),
     signal

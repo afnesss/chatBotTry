@@ -1,9 +1,10 @@
 import {v4 as uuidv4} from 'uuid';
 import { authFetch } from './authFetches';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const addMessage = async (chatId, sender, message, id, loading = false,) => {
   try {
-    const data = await authFetch(`/api/chats/${chatId}/messages`, {
+    const data = await authFetch(`${API_URL}/api/chats/${chatId}/messages`, {
       method: "POST",
       body: JSON.stringify({id, sender, message, loading }),
     });
@@ -30,7 +31,7 @@ export const load = async(chatId, setMessages) => {
   }
 
   try {
-    const data = await authFetch(`/api/chats/${chatId}/messages`);
+    const data = await authFetch(`${API_URL}/api/chats/${chatId}/messages`);
     if (!data){
       console.log('No chats found or request failed, load');
       setMessages([]);
@@ -56,7 +57,7 @@ export const makeNewChat = async(passedId=null) => {
     const title = "New Chat";
     // const messages = [];
     const created_at = new Date().toISOString();
-    const data = await authFetch('/api/chats',{
+    const data = await authFetch(`${API_URL}/api/chats`,{
     method: "POST",
     body: JSON.stringify({
       id, 
@@ -79,7 +80,7 @@ export const makeNewChat = async(passedId=null) => {
 
 export const deleteChat = async(chatId) => {
   try {
-    const data = await authFetch(`/api/chats/${chatId}`, {
+    const data = await authFetch(`${API_URL}/api/chats/${chatId}`, {
       method: "DELETE",
 
     });
@@ -99,7 +100,7 @@ export const deleteChat = async(chatId) => {
 
 export const changeChatTitle = async(chatId, newTitle) => {
   try {
-    const data = await authFetch(`/api/chats/${chatId}`, {
+    const data = await authFetch(`${API_URL}/api/chats/${chatId}`, {
       method: "PUT",
       body: JSON.stringify({
         title: newTitle
@@ -121,7 +122,7 @@ export const changeChatTitle = async(chatId, newTitle) => {
 
 export const getChats= async() => {
   try {
-    const data = await authFetch(`/api/chats`)
+    const data = await authFetch(`${API_URL}/api/chats`)
 
     // const data = await res.json();
     // setLastChats(data);
@@ -140,7 +141,7 @@ export const getChats= async() => {
 
 export const findChat = async(search) => {
   try {
-    const data = await authFetch(`/api/chats/find`, {
+    const data = await authFetch(`${API_URL}/api/chats/find`, {
       method: "POST",
       body: JSON.stringify({search})
     });
@@ -161,7 +162,7 @@ export const findChat = async(search) => {
 export const chatExists = async(chatId) => {
   try {
 
-  const data = await authFetch(`/api/chats/${chatId}`);
+  const data = await authFetch(`${API_URL}/api/chats/${chatId}`);
 
     // const data = await res.json();
 
@@ -190,7 +191,7 @@ export const changeUserData = async(dataToUpdate) => {
       if (value !== '') formData.append(key, value);
     })
 
-    const result = await fetch('/api/auth/update', {
+    const result = await fetch(`${API_URL}/api/auth/update`, {
       method: 'PUT',
       headers: {
         "Authorization": `Bearer ${token}`

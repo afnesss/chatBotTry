@@ -1,6 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL;
 export const IfUserExists = async (email, password) => {
   try {
-    const res = await fetch('https://chatbottry-4.onrender.com/api/auth/login', {
+    const res = await fetch(`${API_URL}/api/auth/login`, {
     method: "POST",
     headers: {
       "Content-type": "application/json"
@@ -27,7 +28,7 @@ export const IfUserExists = async (email, password) => {
 
 export const fetchRegisterUser = async (name, email, password) => {
   try {
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch(`${API_URL}/api/auth/register`, {
     method: "POST",
     headers: {
       "Content-type": "application/json"
