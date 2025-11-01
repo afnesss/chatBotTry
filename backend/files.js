@@ -3,7 +3,7 @@ import {transliterate} from 'transliteration'
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'backend/uploads/profile_pics')
+    cb(null, 'uploads/profile_pics')
   },
   filename: (req, file, cb) => {
     const sanitized = transliterate(file.originalname).replace(/\s+/g, '-');
