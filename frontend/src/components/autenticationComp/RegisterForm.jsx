@@ -69,7 +69,7 @@ const RegisterForm = ({isFormLogin, setPopAuth}) => {
       }
 
       console.log("signed up user:", data.user);
-      setCurrentUser(data.user);
+      // setCurrentUser(data.user);
       setIsLogin(true);
       resetChatState();
       const newChatId = uuidv4();

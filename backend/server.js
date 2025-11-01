@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 
 // Configure CORS for your Netlify frontend
 app.use(cors({
-  origin: ['https://chatbot-afnesssfull1.netlify.app', 'http://localhost:4000'],
+  origin: ['https://chatbot-afnesssfull1.netlify.app', 'http://localhost:4000', 'https://chat-bot-try-frontend.vercel.app'],
   credentials: true
 }));
 app.use(express.json());

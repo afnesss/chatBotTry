@@ -3,7 +3,7 @@
 const BACKEND = import.meta.env.VITE_BACKEND_URL?.replace(/\/$/, '') || '';
 
 export default function resolveImageSrc(pic, fallback = '') {
-  if (!pic) return fallback;
+  if (!pic || pic === '') return fallback;
   if (typeof pic !== 'string') return fallback;
   // Local preview (File/URL.createObjectURL)
   if (pic.startsWith('blob:')) return pic;
