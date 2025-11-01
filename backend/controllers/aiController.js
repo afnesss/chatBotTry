@@ -1,37 +1,4 @@
-// import OpenAI from "openai";
 
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
-
-// export const generateAiRes = async (req, res) => {
-
-//   try {
-//     const {message} = req.body;
-//     res.setHeader("Content-Type", "text/event-stream");
-//     res.setHeader("Cache-Control", "no-cache");
-//     res.setHeader("Connection", "keep-alive");
-//     res.flushHeaders();
-
-//     const stream = openai.chat.completions.create({
-//       model: "gemini 2.5 flash",
-//       input: message,
-//     })
-
-//     for await (const chunk of stream) {
-//       const content = chunk.choices[0]?.delta?.content;
-//       if (content) {
-//         res.write(JSON.stringify({ response: content }) + "\n");
-//       }
-//     }
-
-//     res.end();
-//   } catch (error) {
-//     console.error("Streaming error:", error);
-//     res.end();
-//   }
-
-// }
 
 import {GoogleGenAI} from '@google/genai';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;

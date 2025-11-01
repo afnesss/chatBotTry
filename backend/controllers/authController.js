@@ -1,7 +1,7 @@
 import { pool } from "../db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { use } from "react";
+
 import {v4 as uuidv4} from "uuid"
 
 export const loginUser = async(req, res) => {
