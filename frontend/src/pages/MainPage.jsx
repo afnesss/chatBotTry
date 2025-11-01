@@ -64,7 +64,7 @@ const MainPage = () => {
 
         {boxes.confirm && <ConfirmDelete title={chatIdToDelete === chatId ? currChatTitle : existingChat} cancelDel={() => closeBox('confirm')} deleteChat={() => {handleDeleteChat(chatIdToDelete, chatId); closeBox('confirm');}} ref={refs.confirm}/>}
 
-        <div className={`flex flex-col items-center flex-1 overflow-y-auto mt-auto container mx-auto`}>
+        <div className={`flex flex-col items-center flex-1 overflow-y-auto mt-auto container max-w-250 mx-auto`}>
           <div className={`flex my-3 w-full ${toUp ? 'order-first' : 'order-last'}`}>
             <ChatInput onSend={handleSend} loading={loading} controller={controller}/>
           </div>

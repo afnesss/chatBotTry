@@ -43,6 +43,7 @@ export const generateRes = async (message, signal, stream) => {
 export async function generateAiClientStream(message, signal) {
   const res = await fetch(`${API_URL}/ai/stream`, {
     method: "POST",
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message }),
     signal
   }, true);
