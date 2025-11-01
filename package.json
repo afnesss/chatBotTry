@@ -1,69 +1,20 @@
 {
-  "name": "package.json",
+  "name": "chatbot",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "dev:server": "nodemon --env-file=.env backend/server.js"
-  },
-  "dependencies": {
-    "@google/genai": "^1.26.0",
-    "@heroicons/react": "^2.2.0",
-    "@tailwindcss/vite": "^4.1.13",
-    "bcrypt": "^6.0.0",
-    "bcryptjs": "^3.0.2",
-    "body-parser": "^2.2.0",
-    "cors": "^2.8.5",
-    "dayjs": "^1.11.18",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.2",
-    "nodemon": "^3.1.10",
-    "openai": "^6.6.0",
-    "path": "^0.12.7",
-    "pg": "^8.16.3",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-icons": "^5.5.0",
-    "react-loading-indicators": "^1.0.1",
-    "react-router-dom": "^7.9.3",
-    "transliterate": "^1.0.1",
-    "transliteration": "^2.3.5",
-    "url": "^0.11.4",
-    "uuid": "^13.0.0"
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm run preview"
   },
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
-    "@tailwindcss/postcss": "^4.1.14",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "@vitejs/plugin-react": "^5.0.2",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.35.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.4.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.14",
-    "vite": "^7.1.6"
-  },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/afnesss/chatBotTry.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/afnesss/chatBotTry/issues"
-  },
-  "homepage": "https://github.com/afnesss/chatBotTry#readme"
+    "concurrently": "^8.2.2"
+  }
 }

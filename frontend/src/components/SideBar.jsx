@@ -20,6 +20,9 @@ import { useChatContext } from "../contexts/ChatContext";
 import { useAuthContext } from "../contexts/AuthContext";
 import { useBoxContext } from "../contexts/BoxesContext";
 
+// normalize backend URL from Vite env (remove trailing slash if present)
+const BACKEND = import.meta.env.VITE_BACKEND_URL?.replace(/\/$/, '') || '';
+
 const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
   
@@ -33,7 +36,7 @@ const SideBar = () => {
     handleRename(editChat.chat.id, editChat.newTitle)
     setEditChat({ edit: false, chat: null, newTitle: "" });
   };
-console.log(currentUser?.profile_pic)
+// console.log(currentUser?.profile_pic)
   return (
     <div
       className={`
@@ -112,7 +115,7 @@ console.log(currentUser?.profile_pic)
             ?   <div 
             className={`flex p-1 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}
             onClick={() => toggleBox('user')}>
-              <img className={`w-7 h-7 rounded-full flex-shrink-0`} alt="profile" src={`http://localhost:4000/backend${currentUser.profile_pic}` || userIcon}/>
+              <img className={`w-7 h-7 rounded-full flex-shrink-0`} alt="profile" src={currentUser?.profile_pic ? `http://localhost:4002${currentUser.profile_pic}` : userIcon} />
               {/* {console.log(currentUser)} */}
               <span 
               // contentEditable

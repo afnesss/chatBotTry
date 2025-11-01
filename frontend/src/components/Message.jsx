@@ -4,6 +4,7 @@ import { ThreeDot } from "react-loading-indicators"
 import robotIcon from "../assets/robot.png";
 import userIcon from "../assets/user.png";
 import { useAuthContext } from "../contexts/AuthContext";
+import resolveImageSrc from "../utils/resolveImageSrc";
 
 const iconStyle = "mx-3 lg:mx-5 lg:w-13 lg:h-13 w-10 h-10 rounded-full";
 
@@ -26,7 +27,7 @@ const Message = ({message, sender}) => {
         <div dangerouslySetInnerHTML={{ __html: message }} style={{ whiteSpace: 'pre-wrap' }} className="px-4 py-2 bg-gray-200 text-start items-center rounded-xl shadow-md max-w-[70%] text-sm lg:text-base lg:max-w-[60%] break-words"/> 
          {/* } */}
       {sender === 'user' && (
-        <img alt="profile" className={iconStyle} src={`http://localhost:4000/backend${currentUser.profile_pic}` || userIcon}/>
+        <img alt="profile" className={iconStyle} src={resolveImageSrc(currentUser?.profile_pic, userIcon)} />
         )}
     </div>
   )

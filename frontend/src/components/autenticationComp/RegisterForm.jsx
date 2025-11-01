@@ -8,6 +8,7 @@ import { useAuthContext } from "../../contexts/AuthContext";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 
+
 const RegisterForm = ({isFormLogin, setPopAuth}) => {
   const [form, setForm] = useState({name: '', email: '', password: '', password2: ''});
   const [isLogin, setIsLogin] = useState(isFormLogin || true);

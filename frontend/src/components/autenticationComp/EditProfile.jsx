@@ -1,5 +1,6 @@
 import { useAuthContext } from "../../contexts/AuthContext";
 import userIcon from "../../assets/user.png";
+import resolveImageSrc from "../../utils/resolveImageSrc";
 import { FiUser} from "react-icons/fi"
 import { HiCamera } from "react-icons/hi2";
 import { AiOutlineClose } from "react-icons/ai";
@@ -39,9 +40,7 @@ const EditProfile = forwardRef(({}, ref) => {
       <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => toggleBox('editProf')}/>
       <div className="relative w-20">
         <img alt="profile" className={`w-20 h-20 rounded-full flex-shrink-0`} 
-        src={    updatedForm.profile_pic.startsWith('blob:')
-      ? updatedForm.profile_pic // локальний preview
-      : `http://localhost:4000/backend${currentUser?.profile_pic}` || userIcon}/>
+        src={resolveImageSrc(updatedForm.profile_pic || currentUser?.profile_pic, userIcon)} />
 
         <HiCamera className="hover:bg-[#396849] bg-green-900 rounded-full text-white p-1 absolute bottom-0 right-0 outline-3 outline-gray-200" size={30} onClick={() => toggleBox('photo')}/>
           {boxes.photo && <PhotoPopUp ref={refs.photo} set={setUpdatedForm} setPic={setPicUrl}/>}

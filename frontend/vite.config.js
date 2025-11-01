@@ -17,6 +17,11 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ''),
 
       },
+      // Proxy uploads so frontend can use relative `/uploads/...` paths in dev
+      '/uploads': {
+        target: 'http://localhost:4002',
+        changeOrigin: true,
+      },
     },
   },
 
