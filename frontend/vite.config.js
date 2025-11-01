@@ -12,14 +12,14 @@ export default defineConfig({
     port: 4000,
     proxy: {
       '/api': {
-        target: 'http://localhost:4002',
+        target: 'https://chatbottry-4.onrender.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
 
       },
       // Proxy uploads so frontend can use relative `/uploads/...` paths in dev
       '/uploads': {
-        target: 'http://localhost:4002',
+        target: 'https://chatbottry-4.onrender.com',
         changeOrigin: true,
       },
     },
