@@ -6,7 +6,6 @@ import { useBoxContext } from "../../contexts/BoxesContext";
 import { AiOutlineClose } from "react-icons/ai";
 
 
-
 const PhotoPopUp = forwardRef(({set, setPic}, ref) => {
 
   const fileInputRef = useRef(null);
