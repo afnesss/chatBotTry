@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { makeNewChat, changeChatTitle, deleteChat } from "../utils/fetches";
+import { authFetch } from "../utils/authFetches";
 import {v4 as uuidv4} from "uuid";
 import { useAuthContext } from "./AuthContext";
 
@@ -54,19 +55,10 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
   const fetchChats = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const res = await fetch('/api/chats/titles', {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || `HTTP error ${res.status}`);
+      const data = await authFetch(`${import.meta.env.VITE_BACKEND_URL}/chats/titles`);
+      if (!data) {
+        throw new Error('Failed to fetch chats titles');
       }
-
-      const data = await res.json();
       setChats(data);
 
     } catch (error) {

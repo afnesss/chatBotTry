@@ -115,7 +115,7 @@ const SideBar = () => {
             ?   <div 
             className={`flex p-1 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}
             onClick={() => toggleBox('user')}>
-              <img className={`w-7 h-7 rounded-full flex-shrink-0`} alt="profile" src={currentUser?.profile_pic ? `http://localhost:4002${currentUser.profile_pic}` : userIcon} />
+              <img className={`w-7 h-7 rounded-full flex-shrink-0`} alt="profile" src={currentUser?.profile_pic ? `${import.meta.env.VITE_BACKEND_URL}${currentUser.profile_pic}` : userIcon} />
               {/* {console.log(currentUser)} */}
               <span 
               // contentEditable
