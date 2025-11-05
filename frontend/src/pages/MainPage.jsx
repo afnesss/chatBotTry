@@ -51,12 +51,12 @@ const MainPage = () => {
       {popAuth && <RegisterForm setPopAuth={setPopAuth}/>}
       {boxes.editProf && <EditProfile ref={refs.editProf}/>}
       {boxes.search && <SearchBox ref={refs.search}/>}
-      {boxes.user && <UserPopUp ref={refs.user}/>}
+      
       <div className="flex flex-col shadow-md bg-main w-full p-5 lg:p-7">
         {existingChat && 
           <div className='flex ml-auto absolute right-3 top-3'>
             <div className='inline-block'>
-          <MdMoreHoriz  ref={buttonRef} size={35} className='lg:opacity-100 text-gray-600 btn-bg ml-auto p-2 max-sm:opacity-0 md:opacity-0 sm:opacity-0' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef);}}/>
+          <MdMoreHoriz  ref={buttonRef} size={35} className='lg:opacity-100 text-gray-600 btn-bg ml-auto p-2 max-sm:hidden' onClick={(e) => {openPopUp(e, chatId, 'main', buttonRef);}}/>
           {popEditChat.open && popEditChat.chatId === chatId && popEditChat.from === 'main' && <EditChat ref={refs.editChat} x={popEditChat.x} y={popEditChat.y} isPersonal={true}  deleteChat={() => {setIdToDelete(chatId); openBox('confirm')}}/>}
 
             </div>

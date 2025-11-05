@@ -6,7 +6,7 @@ export const AuthProvider = ({children}) => {
 
   const [popAuth, setPopAuth] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  
+  const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
@@ -23,6 +23,7 @@ export const AuthProvider = ({children}) => {
           localStorage.removeItem("user");
         }
       }
+      setLoading(false)
     };
 
     initUser();
@@ -31,6 +32,7 @@ export const AuthProvider = ({children}) => {
   useEffect(() => {
     if(currentUser){
       localStorage.setItem('user', JSON.stringify(currentUser));
+      console.log(currentUser.profile_pic)
     }
 
   }, [currentUser])
@@ -42,7 +44,7 @@ export const AuthProvider = ({children}) => {
       currentUser,
       setCurrentUser,
     }}>
-      { children }
+      {!loading && children }
     </AuthContext.Provider>
   )
 }

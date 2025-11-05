@@ -4,7 +4,7 @@ import resolveImageSrc from "../../utils/resolveImageSrc";
 import { FiUser} from "react-icons/fi"
 import { HiCamera } from "react-icons/hi2";
 import { AiOutlineClose } from "react-icons/ai";
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import InputRegBox from "./InputRegBox";
 import { changeUserData } from "../../utils/fetches";
 import { useBoxContext } from "../../contexts/BoxesContext";
@@ -17,6 +17,9 @@ const EditProfile = forwardRef(({}, ref) => {
   const [updatedForm, setUpdatedForm] = useState({name: currentUser?.name || '', profile_pic: currentUser?.profile_pic || userIcon});
   const {boxes, toggleBox, refs} = useBoxContext();
   const [picUrl, setPicUrl] = useState(null);
+  const [errorImg, setErrorImg] = useState(false);
+  
+
 
   const handleSet = (e) => {setUpdatedForm(prev => ({...prev, [e.target.name]: e.target.value}))};
   const handleUpdate = async (updatedForm) => {
@@ -33,14 +36,17 @@ const EditProfile = forwardRef(({}, ref) => {
     setCurrentUser(data.user)
   }
 
+  useEffect(() => {
+  setErrorImg(false); // скидаємо помилку, коли профільне фото змінюється
+}, [currentUser?.profile_pic]);
   console.log(currentUser.profile_pic);
   return (
     <div  className="fixed inset-0 z-[100] flex items-center justify-center p-4">
     <div ref={ref} className="pop-box relative flex flex-col items-center px-3">
       <AiOutlineClose size={25} color="gray" className="absolute btn-bg p-1 right-3" onClick={() => toggleBox('editProf')}/>
       <div className="relative w-20">
-        <img alt="profile" className={`w-20 h-20 rounded-full flex-shrink-0`} 
-        src={resolveImageSrc(updatedForm.profile_pic || currentUser?.profile_pic, userIcon)} />
+        <img onError={() => setErrorImg(true)} alt="profile" className={`w-20 h-20 rounded-full flex-shrink-0`} 
+        src={errorImg? userIcon: resolveImageSrc(updatedForm.profile_pic || currentUser?.profile_pic, userIcon)} />
 
         <HiCamera className="hover:bg-[#396849] bg-green-900 rounded-full text-white p-1 absolute bottom-0 right-0 outline-3 outline-gray-200" size={30} onClick={() => toggleBox('photo')}/>
           {boxes.photo && <PhotoPopUp ref={refs.photo} set={setUpdatedForm} setPic={setPicUrl}/>}

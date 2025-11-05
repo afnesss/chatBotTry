@@ -12,6 +12,7 @@ import IconWithLabel from "./IconWithLabel";
 import { useChatMessages } from "../contexts/MessagesCnxtProvider";
 import PhotoPopUp from "./autenticationComp/PhotoPopUp";
 import EditChat from "./EditChat";
+import UserPopUp from "./autenticationComp/UserPopUp";
 
 // import { FaRobot } from "react-icons/fa";
 import { MdOutlineSmartToy } from "react-icons/md";
@@ -25,7 +26,7 @@ const BACKEND = import.meta.env.VITE_BACKEND_URL?.replace(/\/$/, '') || '';
 
 const SideBar = () => {
   const [sideBar, setSideBar] = useState(false);
-  
+  const [errorImg, setErrorImg] = useState(false);
   const [hover, setHover] = useState(false);
   const {editChat, setEditChat, boxes, toggleBox, refs, closeBox, openBox, chatIdToDelete, setIdToDelete} = useBoxContext();
   
@@ -36,6 +37,10 @@ const SideBar = () => {
     handleRename(editChat.chat.id, editChat.newTitle)
     setEditChat({ edit: false, chat: null, newTitle: "" });
   };
+
+  useEffect(() => {
+  setErrorImg(false); // скидаємо помилку, коли профільне фото змінюється
+}, [currentUser?.profile_pic]);
 // console.log(currentUser?.profile_pic)
   return (
 
@@ -61,6 +66,7 @@ const SideBar = () => {
         transition-[width] duration-300 ease-in-out sm:flex 
       `}>
       
+      {boxes.user && <UserPopUp ref={refs.user}/>}
       
           <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2 "
             onMouseEnter={() => setHover(true)}
@@ -126,7 +132,8 @@ const SideBar = () => {
             ?   <div 
             className={`flex p-1 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}
             onClick={() => toggleBox('user')}>
-              <img className={`w-7 h-7 rounded-full flex-shrink-0`} alt="profile" src={currentUser?.profile_pic ? `${import.meta.env.VITE_BACKEND_URL}${currentUser.profile_pic}` : userIcon} />
+              <img onError={()=>setErrorImg(true)} className={`w-7 h-7 rounded-full flex-shrink-0`} alt="profile" src={errorImg? userIcon : currentUser?.profile_pic ? `${import.meta.env.VITE_BACKEND_URL}${currentUser.profile_pic}` : userIcon} />
+              {/* {img.onerror ? () => {}} */}
               {/* {console.log(currentUser)} */}
               <span 
               // contentEditable
