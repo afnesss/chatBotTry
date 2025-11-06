@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react'
-import { addMessage, changeChatTitle, chatExists, load} from '../utils/fetches';
+import { addMessage, chatExists, load} from '../utils/fetches';
 
 import {generateAiClientStream, generateAiName, generateRes } from "../utils/aiFetches.js";
 import { useChatContext } from "./ChatContext";
@@ -22,9 +22,8 @@ export const useChatMessages = () => {
   const containerRef = useRef(null);
   const { id: chatId } = useParams();
   const firstMsg = useRef(true);
-  // const [moreMsgs, setFirstMessages] = useState({});
 
-    const { setChats, handleRename, setExistChat, setCurrChatTitle} = useChatContext();
+    const { setChats, handleRename, setExistChat, setCurrChatTitle, existingChat} = useChatContext();
 
   const resetChatState = () => {
     controller && controller.abort(); 
@@ -41,16 +40,18 @@ export const useChatMessages = () => {
 
     if (res && res.title) {
       setExistChat(res.title);
+      load(chatId, setMessages);
       setCurrChatTitle(res.title);
     } else {
-      setExistChat(null);
-      setExistChat(null)
+    setMessages([]);   
+    setExistChat(null); 
+    setCurrChatTitle(null)
     }
-  
 
-    }
+  }
+    console.log(existingChat)
   if (chatId && currentUser) { 
-    load(chatId, setMessages);
+
     handlecheck(chatId);
 
   } else {

@@ -25,7 +25,7 @@ import { useBoxContext } from "../contexts/BoxesContext";
 const BACKEND = import.meta.env.VITE_BACKEND_URL?.replace(/\/$/, '') || '';
 
 const SideBar = () => {
-  const [sideBar, setSideBar] = useState(false);
+  // const [sideBar, setSideBar] = useState(false);
   const [errorImg, setErrorImg] = useState(false);
   const [hover, setHover] = useState(false);
   const {editChat, setEditChat, boxes, toggleBox, refs, closeBox, openBox, chatIdToDelete, setIdToDelete} = useBoxContext();
@@ -41,18 +41,37 @@ const SideBar = () => {
   useEffect(() => {
   setErrorImg(false); // скидаємо помилку, коли профільне фото змінюється
 }, [currentUser?.profile_pic]);
+
+
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (
+  //       boxes.sideBar &&
+  //       window.innerWidth <= 640 && // max-sm
+  //       refs.sideBar.current &&
+  //       !refs.sideBar.current.contains(event.target)
+  //     ) {
+  //       closeBox('sideBar')
+  //     }
+  //   };
+
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, [sideBar]);
 // console.log(currentUser?.profile_pic)
   return (
 
     <>
-      <button onClick={() => setSideBar (p => !p)} className="absolute left-2 top-1 sm:hidden z-50"
+      <button onClick={() => toggleBox('sideBar')} className="absolute left-2 top-1 sm:hidden z-50"
     onMouseEnter={() => setHover(true)}
     onMouseLeave={() => setHover(false)}>
-      {hover || sideBar ? 
+      {hover || boxes.sideBar ? 
       <TbLayoutSidebar className={`btn-bg cursor-ew-resize`} size={30} color='green'/>
     : <MdOutlineSmartToy className={`btn-bg cursor-ew-resize`} size={30} color='green'/>}  
     </button>
-    <div
+    <div ref={refs.sideBar}
       className={`
         flex flex-col bg-green-50 p-3 h-[100dvh] sm:block sm:relative
           max-sm:fixed max-sm:top-0 max-sm:left-0 max-sm:z-50
@@ -62,27 +81,27 @@ const SideBar = () => {
           max-sm:duration-300
           max-sm:ease-in-out
 
-        ${sideBar ? "w-40 lg:w-60 max-sm:translate-x-0" : "w-16 max-sm:-translate-x-full"}
+        ${boxes.sideBar ? "w-40 lg:w-60 max-sm:translate-x-0" : "w-16 max-sm:-translate-x-full"}
         transition-[width] duration-300 ease-in-out sm:flex 
       `}>
       
       {boxes.user && <UserPopUp ref={refs.user}/>}
       
-          <button onClick={() => setSideBar (p => !p)} className="ml-auto mr-2 "
+          <button onClick={() => toggleBox('sideBar')} className="ml-auto mr-2 "
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}>
-              {hover || sideBar ? 
+              {hover || boxes.sideBar ? 
               <TbLayoutSidebar className={`btn-bg cursor-ew-resize`} size={35} color='green'/>
             : <MdOutlineSmartToy className={`btn-bg cursor-ew-resize`} size={35} color='green'/>}  
           </button>
 
             <div className="mt-7">
-            <IconWithLabel text="New Chat" sideBar={sideBar} icon={RiChatNewLine} onClick={handleNewChat}/>
-            <IconWithLabel text="Find in Chat" sideBar={sideBar} icon={FiSearch} onClick={() => {toggleBox('search')}}/>
+            <IconWithLabel text="New Chat" sideBar={boxes.sideBar} icon={RiChatNewLine} onClick={handleNewChat}/>
+            <IconWithLabel text="Find in Chat" sideBar={boxes.sideBar} icon={FiSearch} onClick={() => {toggleBox('search')}}/>
             </div>
 
-            <div className={`mt-10 text-gray-600 text-sm lg:text-base transition-opacity duration-300 ${sideBar? "opacity-100" : "opacity-0"}`}>Your Chats</div>
-            <div className={`flex-1 min-h-0 overflow-y-auto ${sideBar? "opacity-100" : "opacity-0"}`}>
+            <div className={`mt-10 text-gray-600 text-sm lg:text-base transition-opacity duration-300 ${boxes.sideBar? "opacity-100" : "opacity-0"}`}>Your Chats</div>
+            <div className={`flex-1 min-h-0 overflow-y-auto ${boxes.sideBar? "opacity-100" : "opacity-0"}`}>
               
                 <div className="space-y-1 pb-2">
                   {/* {console.log("Chats:", chats.map(c => ({ id: c.id, title: c.title })))}  */}
@@ -130,7 +149,7 @@ const SideBar = () => {
         <hr className={`border-t border-gray-200 my-2`}></hr>
             {currentUser 
             ?   <div 
-            className={`flex p-1 btn-bg ${sideBar ? " justify-start" : "items-center"} cursor-pointer`}
+            className={`flex p-1 btn-bg ${boxes.sideBar ? " justify-start" : "items-center"} cursor-pointer`}
             onClick={() => toggleBox('user')}>
               <img onError={()=>setErrorImg(true)} className={`w-7 h-7 rounded-full flex-shrink-0`} alt="profile" src={errorImg? userIcon : currentUser?.profile_pic ? `${import.meta.env.VITE_BACKEND_URL}${currentUser.profile_pic}` : userIcon} />
               {/* {img.onerror ? () => {}} */}
@@ -138,10 +157,11 @@ const SideBar = () => {
               <span 
               // contentEditable
               // suppressContentEditableWarning={true}
-              className= {`mx-3 ${sideBar? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-hidden whitespace-nowrap truncate block hover:overflow-visible hover:whitespace-normal`} >{currentUser?.name}</span>
+              className= {`mx-3 ${boxes.sideBar? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-hidden whitespace-nowrap truncate block hover:overflow-visible hover:whitespace-normal`} >{currentUser?.name}</span>
             </div>
             : 
-              <button className="btn-primary ml-2 cursor-pointer px-2 hover:bg-green-700" onClick={() =>{setPopAuth(true); closeBox('user')}}>{sideBar? "Log in" : <FiLogIn size={15} className="text-white"/>}</button>
+              <button className="btn-primary ml-2 cursor-pointer px-2 hover:bg-green-700" onClick={() =>{setPopAuth(true); closeBox('user')}}>{boxes.sideBar
+                ? "Log in" : <FiLogIn size={15} className="text-white"/>}</button>
             }
         </div>
 </>

@@ -23,7 +23,8 @@ export const BoxesProvider = ({children}) => {
     user: false,
     editProf: false,
     confirm: false,
-    photo: false
+    photo: false,
+    sideBar: false
   })
 
   const toggleBox = (name) => setBoxes(prev => ({ ...prev, [name]: !prev[name] }));
@@ -37,7 +38,8 @@ export const BoxesProvider = ({children}) => {
     user: useRef(null),
     editProf: useRef(null),
     confirm: useRef(null),
-    photo: useRef(null)
+    photo: useRef(null),
+    sideBar: useRef(null)
   }
 
     useEffect(() => {
@@ -47,13 +49,21 @@ export const BoxesProvider = ({children}) => {
   }, [refs.editProf])
   useEffect(() => {
     function handleClick(e) {
+
     if (refs.editChat.current && !refs.editChat.current.contains(e.target)) {
       setEditChat({ edit: false, chat: null, newTitle: '' });
       closePopUp();
     }
       Object.entries(refs).forEach(([name, ref]) => {
         if (ref.current && !ref.current.contains(e.target)) {
-          setBoxes(prev => ({ ...prev, [name]: false }));
+          if (name === 'sideBar'){
+            if(window.innerWidth <=640){
+              setBoxes(prev => ({ ...prev, sideBar: false }));
+            } 
+          }
+          else {
+            setBoxes(prev => ({ ...prev, [name]: false }));
+          }
         }
       });
 
